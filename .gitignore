@@ -1,5 +1,5 @@
-src/obj/
-src/bin/
-src/.vscode/
-src/Projekt-Zespolowy.csproj.user
+backend/src/obj/
+backend/src/bin/
+backend/src/.vscode/
+backend/src/Projekt-Zespolowy.csproj.user
 .vs/
