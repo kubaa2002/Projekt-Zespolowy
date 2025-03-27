@@ -1,6 +1,10 @@
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors();
+
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.UseCors(policy => policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
+
+app.MapGet("/", () => new { message = "Hello from backend!" });
 
 app.Run();
