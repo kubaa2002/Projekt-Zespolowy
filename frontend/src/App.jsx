@@ -11,8 +11,10 @@ export default function App() {
   }, []);
 
   return (
-    <div>
-      <h1>{message || 'Not working...'}</h1>
+    <div className="container">
+      <div className="row min-vh-100">
+        <h1>{message || 'Not working...'}</h1>
+      </div>
     </div>
   );
 }
