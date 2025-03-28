@@ -11,10 +11,8 @@ export default function App() {
   }, []);
 
   return (
-    <div className="container">
-      <div className="row min-vh-100">
+    <div className="container min-vh-100 d-flex justify-content-center align-items-center">
         <h1>{message || 'Not working...'}</h1>
-      </div>
     </div>
   );
 }
