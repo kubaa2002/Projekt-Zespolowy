@@ -1,3 +1,7 @@
 src/obj/
 src/bin/
-src/.vscode/
+.vscode/
+*.user
+*.suo
+*.vsp
+*.vspx
