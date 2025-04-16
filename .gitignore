@@ -1,6 +1,7 @@
 src/obj/
 src/bin/
 .vscode/
+.vs/
 *.user
 *.suo
 *.vsp
