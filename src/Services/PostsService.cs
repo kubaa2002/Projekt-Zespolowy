@@ -6,7 +6,7 @@ namespace Projekt_Zespolowy.Services
 {
     //TODO: Add connection to database instead of hard coded objects
     //WhyNotDoneAlready: no posts database, no knowledge what post like :(
-    public class PostsService : Controller
+    public class PostsService
     {
         AppDbContext context;
         List<Post> posts;
@@ -41,6 +41,8 @@ namespace Projekt_Zespolowy.Services
                 throw new PartialContentException<List<Post>>(posts.Where(x => x.CommunityId == commnityId).ToList().Skip(start).ToList());
             return posts.Where(x => x.CommunityId == commnityId).ToList().GetRange(start, length);
         }
+        public void Add(PostDTO post)
+        {}
     }
     class NoContentException : Exception
     {

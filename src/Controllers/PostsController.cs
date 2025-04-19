@@ -78,5 +78,12 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(StatusCodes.Status206PartialContent, posts);
             }
         }
+        [HttpPost()]
+        public IActionResult Post([FromBody] PostDTO postDTO)
+        {
+            postsService.Add(postDTO);
+            return Created($"/posts/{postDTO.Id}", postDTO);
+
+        }
     }
 }
