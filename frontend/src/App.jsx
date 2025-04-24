@@ -1,10 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:5192/')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Nie udało się pobrać wiadomości z backendu.');
+        }
+        return response.text();
+      })
+      .then((data) => setMessage(data))
+      .catch((error) => {
+        console.error('Error fetching message:', error);
+        setError('Nie udało się pobrać wiadomości z backendu.');
+      });
+  }, []);
 
   return (
     <>
@@ -13,4 +27,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
