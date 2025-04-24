@@ -14,9 +14,9 @@ namespace Projekt_Zespolowy.Services
         {
             this.context = context;
             posts = new List<Post>();
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 50; i++)
             {
-                posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = (i%3)+i/3});
+                posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = (i%3)+i/3, authorId = i/3, parentId = i%4 == 0 ? null : i%4, CreatedDateTime = DateTime.UtcNow});
             }
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
