@@ -6,3 +6,5 @@ src/bin/
 *.vsp
 *.vspx
 /.vs/Projekt-Zespolowy
+/.vs/ProjectEvaluation
+/src/.vs/Projekt-Zespolowy
