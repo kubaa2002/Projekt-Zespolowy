@@ -24,26 +24,21 @@ namespace Projekt_Zespolowy.Controllers
             int startPoint = (page-1) * pageSize;
             try
             {
-                List<Post> posts = postsService.GetPostsFromRange(startPoint, pageSize);
+                ServiceResponse<List<Post>> response = postsService.GetPostsFromRange(startPoint, pageSize);
+                List <Post> posts = response.ResponseBody;
                 List<PostDTO> postsDTO = new List<PostDTO>();
                 foreach (Post post in posts)
                 {
                     postsDTO.Add(post);
                 }
-                return Ok(postsDTO);
+                if(response.ResponseCode == StatusCodes.Status200OK)
+                    return Ok(postsDTO);
+                else
+                    return StatusCode(StatusCodes.Status206PartialContent, posts);
             }
             catch (NoContentException)
             {
                 return NoContent();
-            }
-            catch (PartialContentException<List<Post>> e)
-            {
-                List<PostDTO> posts = new List<PostDTO>();
-                for (int i = 0; i < e.partialContent.Count; i++)
-                {
-                    posts.Add(e.partialContent[i]);
-                }
-                return StatusCode(StatusCodes.Status206PartialContent, posts);
             }
         }
         [HttpGet("community/{communityId}")]
@@ -56,26 +51,21 @@ namespace Projekt_Zespolowy.Controllers
             int startPoint = (page - 1) * pageSize;
             try
             {
-                List<Post> posts = postsService.GetPostsFromRangeFromCommunity(startPoint, pageSize, communityId);
+                ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromCommunity(startPoint, pageSize, communityId);
+                List<Post> posts = response.ResponseBody;
                 List<PostDTO> postsDTO = new List<PostDTO>();
                 foreach (Post post in posts)
                 {
                     postsDTO.Add(post);
                 }
-                return Ok(postsDTO);
+                if(response.ResponseCode == StatusCodes.Status200OK)
+                    return Ok(postsDTO);
+                else
+                    return StatusCode(StatusCodes.Status206PartialContent, posts);
             }
             catch (NoContentException)
             {
                 return NoContent();
-            }
-            catch (PartialContentException<List<Post>> e)
-            {
-                List<PostDTO> posts = new List<PostDTO>();
-                for (int i = 0; i < e.partialContent.Count; i++)
-                {
-                    posts.Add(e.partialContent[i]);
-                }
-                return StatusCode(StatusCodes.Status206PartialContent, posts);
             }
         }
     }
