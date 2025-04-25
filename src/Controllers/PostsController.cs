@@ -26,11 +26,7 @@ namespace Projekt_Zespolowy.Controllers
             {
                 ServiceResponse<List<Post>> response = postsService.GetPostsFromRange(startPoint, pageSize);
                 List <Post> posts = response.ResponseBody;
-                List<PostDTO> postsDTO = new List<PostDTO>();
-                foreach (Post post in posts)
-                {
-                    postsDTO.Add(post);
-                }
+                List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
                 if(response.ResponseCode == StatusCodes.Status200OK)
                     return Ok(postsDTO);
                 else
@@ -53,11 +49,7 @@ namespace Projekt_Zespolowy.Controllers
             {
                 ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromCommunity(startPoint, pageSize, communityId);
                 List<Post> posts = response.ResponseBody;
-                List<PostDTO> postsDTO = new List<PostDTO>();
-                foreach (Post post in posts)
-                {
-                    postsDTO.Add(post);
-                }
+                List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
                 if(response.ResponseCode == StatusCodes.Status200OK)
                     return Ok(postsDTO);
                 else
@@ -83,11 +75,7 @@ namespace Projekt_Zespolowy.Controllers
             {
                 ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromUser(startPoint, pageSize, authorId);
                 List<Post> posts = response.ResponseBody;
-                List<PostDTO> postsDTO = new List<PostDTO>();
-                foreach (Post post in posts)
-                {
-                    postsDTO.Add(post);
-                }
+                List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
                 if (response.ResponseCode == StatusCodes.Status200OK)
                     return Ok(postsDTO);
                 else
@@ -113,11 +101,7 @@ namespace Projekt_Zespolowy.Controllers
             {
                 ServiceResponse<List<Post>> response = postsService.GetCommentsFromRangeFromPost(startPoint, pageSize, parentId);
                 List<Post> posts = response.ResponseBody;
-                List<PostDTO> postsDTO = new List<PostDTO>();
-                foreach (Post post in posts)
-                {
-                    postsDTO.Add(post);
-                }
+                List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList();
                 if (response.ResponseCode == StatusCodes.Status200OK)
                     return Ok(postsDTO);
                 else
@@ -128,5 +112,6 @@ namespace Projekt_Zespolowy.Controllers
                 return NoContent();
             }
         }
+
     }
 }
