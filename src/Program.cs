@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Services;
-using System.Text; 
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,17 +61,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

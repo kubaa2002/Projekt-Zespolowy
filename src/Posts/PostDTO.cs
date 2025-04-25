@@ -7,7 +7,6 @@
         public string Content { get; set; }
         public int? CommunityId { get; set; }
         public DateTime CreatedDateTime { get; set; }
-        //public DateTime UpdatedDateTime { get; set; }
         public int? parentId { get; set; }
         public static implicit operator PostDTO(Post? p)
         {

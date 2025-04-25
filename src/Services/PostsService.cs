@@ -9,7 +9,7 @@ namespace Projekt_Zespolowy.Services
 {
     //TODO: Add connection to database instead of hard coded objects
     //WhyNotDoneAlready: no posts database, no knowledge what post like :(
-    public class PostsService
+    public class PostsService : Controller
     {
         AppDbContext context;
         List<Post> posts;
@@ -19,7 +19,7 @@ namespace Projekt_Zespolowy.Services
             posts = new List<Post>();
             for (int i = 0; i < 150; i++)
             {
-                posts.Add(new Post() { Id = i, Content = $"test{i}", CommunityId = i % 12 >= 8 ? null : i / 12, authorId = i % 16, parentId = i % 4 == 0 ? null : i / 4, CreatedDateTime = DateTime.UtcNow });
+                posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = i%12 >= 8 ? null : i/12, authorId = i%16, parentId = i%4 == 0 ? null : i/4, CreatedDateTime = DateTime.UtcNow});
             }
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
@@ -34,9 +34,9 @@ namespace Projekt_Zespolowy.Services
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
             // When only partial content
             if (start + length > foundPosts.Count)
-                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent, foundPosts.Skip(start).ToList());
+                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent,foundPosts.Skip(start).ToList());
             // When ok
-            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
+            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,foundPosts.GetRange(start, length));
         }
         public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId)
         {
