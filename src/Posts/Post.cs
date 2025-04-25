@@ -7,7 +7,7 @@ namespace Projekt_Zespolowy.Posts
     {
         public int Id { get; set; }
         public int authorId { get; set; }
-        public int CommunityId { get; set; }
+        public int? CommunityId { get; set; }
         public string Content { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public int? parentId { get; set; }

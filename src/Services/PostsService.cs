@@ -14,9 +14,9 @@ namespace Projekt_Zespolowy.Services
         {
             this.context = context;
             posts = new List<Post>();
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 150; i++)
             {
-                posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = (i%3)+i/3, authorId = i/3, parentId = i%4 == 0 ? null : i%4, CreatedDateTime = DateTime.UtcNow});
+                posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = i%12 >= 8 ? null : i/12, authorId = i%16, parentId = i%4 == 0 ? null : i/4, CreatedDateTime = DateTime.UtcNow});
             }
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
@@ -25,22 +25,43 @@ namespace Projekt_Zespolowy.Services
             //ale jeśli jakieś posty zostałyby usunięte doprowadziłoby to do wyświetlenie mniejszej liczby postów niż length, nie sądzę,
             //żeby było to docelowe działanie
             //context.Posts.Where(x => x.Id >= start && x.Id < start + length); <--- to o czym myślę
-           
-            if(start > posts.Count)
+            int count = posts.Where(x => x.parentId == null).ToList().Count;
+            if (start > count)
                 throw new NoContentException("No Posts were possible to be Retrived");
-            if(start + length > posts.Count)
+            if(start + length > count)
                 //prosze niech nikt mnie nie bije, czuję, że to nie potrzebuje exception ale zanim się o to zapytam to zrobiłem to tak
-                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent,posts.GetRange(start, posts.Count-start));
-            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,posts.GetRange(start, length));
+                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent,posts.Where(x => x.parentId == null).ToList().Skip(start).ToList());
+            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,posts.Where(x => x.parentId == null).ToList().GetRange(start, length));
         }
         public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId)
         {
-            if (start > posts.Count)
+            int count = posts.Where(x => x.parentId == null).Where(x => x.CommunityId == commnityId).ToList().Count;
+            if (start > count)
                 throw new NoContentException("No Posts were possible to be Retrived");
-            if (start + length > posts.Where(x => x.CommunityId == commnityId).ToList().Count)
+            if (start + length > count)
                 //prosze niech nikt mnie nie bije, czuję, że to nie potrzebuje exception ale zanim się o to zapytam to zrobiłem to tak
-                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent,posts.Where(x => x.CommunityId == commnityId).ToList().Skip(start).ToList());
-            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,posts.Where(x => x.CommunityId == commnityId).ToList().GetRange(start, length));
+                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent,posts.Where(x => x.parentId == null).Where(x => x.CommunityId == commnityId).ToList().Skip(start).ToList());
+            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,posts.Where(x => x.parentId == null).Where(x => x.CommunityId == commnityId).ToList().GetRange(start, length));
+        }
+        public ServiceResponse<List<Post>> GetPostsFromRangeFromUser(int start, int length, int authorId)
+        {
+            int count = posts.Where(x => x.parentId == null).Where(x => x.authorId == authorId).ToList().Count;
+            if (start > count)
+                throw new NoContentException("No Posts were possible to be Retrived");
+            if (start + length > count)
+                //prosze niech nikt mnie nie bije, czuję, że to nie potrzebuje exception ale zanim się o to zapytam to zrobiłem to tak
+                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent, posts.Where(x => x.parentId == null).Where(x => x.CommunityId == null).Where(x => x.authorId == authorId).ToList().Skip(start).ToList());
+            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts.Where(x => x.parentId == null).Where(x => x.CommunityId == null).Where(x => x.authorId == authorId).ToList().GetRange(start, length));
+        }
+        public ServiceResponse<List<Post>> GetCommentsFromRangeFromPost(int start, int length, int parentId)
+        {
+            int count = posts.Where(x => x.parentId == parentId).ToList().Count;
+            if (start > count)
+                throw new NoContentException("No Posts were possible to be Retrived");
+            if (start + length > count)
+                //prosze niech nikt mnie nie bije, czuję, że to nie potrzebuje exception ale zanim się o to zapytam to zrobiłem to tak
+                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent, posts.Where(x => x.parentId == parentId).ToList().Skip(start).ToList());
+            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts.Where(x => x.parentId == parentId).ToList().GetRange(start, length));
         }
     }
     class NoContentException : Exception

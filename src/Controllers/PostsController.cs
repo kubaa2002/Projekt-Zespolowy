@@ -5,7 +5,7 @@ using Projekt_Zespolowy.Posts;
 namespace Projekt_Zespolowy.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("posts")]
     public class PostsController : Controller
     {
         PostsService postsService;
@@ -34,7 +34,7 @@ namespace Projekt_Zespolowy.Controllers
                 if(response.ResponseCode == StatusCodes.Status200OK)
                     return Ok(postsDTO);
                 else
-                    return StatusCode(StatusCodes.Status206PartialContent, posts);
+                    return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
             }
             catch (NoContentException)
             {
@@ -46,7 +46,7 @@ namespace Projekt_Zespolowy.Controllers
         {
             if(!communityService.GetIfCommunityExists(communityId))
             {
-                NotFound();
+                return NotFound();
             }
             int startPoint = (page - 1) * pageSize;
             try
@@ -61,7 +61,67 @@ namespace Projekt_Zespolowy.Controllers
                 if(response.ResponseCode == StatusCodes.Status200OK)
                     return Ok(postsDTO);
                 else
-                    return StatusCode(StatusCodes.Status206PartialContent, posts);
+                    return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
+            }
+            catch (NoContentException)
+            {
+                return NoContent();
+            }
+        }
+        [HttpGet("user/{authorId}")]
+        public IActionResult UserPosts(int authorId, int page, int pageSize)
+        {
+            // Here should go a chech whether the user exists or not, but I am not sure what user it is supposed to be
+            // as in newer files there showes up something called community user, and we already have app user
+            // and if it is supposed to be appUser I do not really have a way to check if it exists as it would require having a database which I lack
+            //if (!communityService.GetIfCommunityExists(communityId))
+            //{
+            //    return NotFound();
+            //}
+            int startPoint = (page - 1) * pageSize;
+            try
+            {
+                ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromUser(startPoint, pageSize, authorId);
+                List<Post> posts = response.ResponseBody;
+                List<PostDTO> postsDTO = new List<PostDTO>();
+                foreach (Post post in posts)
+                {
+                    postsDTO.Add(post);
+                }
+                if (response.ResponseCode == StatusCodes.Status200OK)
+                    return Ok(postsDTO);
+                else
+                    return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
+            }
+            catch (NoContentException)
+            {
+                return NoContent();
+            }
+        }
+        [HttpGet("{parentId}/comments")]
+        public IActionResult PostComments(int parentId, int page, int pageSize)
+        {
+            // Here should go a chech whether the user exists or not, but I am not sure what user it is supposed to be
+            // as in newer files there showes up something called community user, and we already have app user
+            // and if it is supposed to be appUser I do not really have a way to check if it exists as it would require having a database which I lack
+            //if (!communityService.GetIfCommunityExists(communityId))
+            //{
+            //    return NotFound();
+            //}
+            int startPoint = (page - 1) * pageSize;
+            try
+            {
+                ServiceResponse<List<Post>> response = postsService.GetCommentsFromRangeFromPost(startPoint, pageSize, parentId);
+                List<Post> posts = response.ResponseBody;
+                List<PostDTO> postsDTO = new List<PostDTO>();
+                foreach (Post post in posts)
+                {
+                    postsDTO.Add(post);
+                }
+                if (response.ResponseCode == StatusCodes.Status200OK)
+                    return Ok(postsDTO);
+                else
+                    return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
             }
             catch (NoContentException)
             {
