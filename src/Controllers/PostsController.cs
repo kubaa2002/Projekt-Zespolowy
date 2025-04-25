@@ -27,7 +27,7 @@ namespace Projekt_Zespolowy.Controllers
             if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
             List <Post> posts = response.ResponseBody;
-            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
+            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList();
             if(response.ResponseCode == StatusCodes.Status200OK)
                 return Ok(postsDTO);
             else
@@ -45,7 +45,7 @@ namespace Projekt_Zespolowy.Controllers
             if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
             List<Post> posts = response.ResponseBody;
-            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
+            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList();
             if(response.ResponseCode == StatusCodes.Status200OK)
                 return Ok(postsDTO);
             else
@@ -66,7 +66,7 @@ namespace Projekt_Zespolowy.Controllers
             if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
             List<Post> posts = response.ResponseBody;
-            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
+            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList();
             if (response.ResponseCode == StatusCodes.Status200OK)
                 return Ok(postsDTO);
             else
