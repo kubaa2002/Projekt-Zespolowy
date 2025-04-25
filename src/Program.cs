@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +57,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 
 });
+
+builder.Services.AddScoped<PostsService>();
+builder.Services.AddScoped<CommunityService>();
 
 var app = builder.Build();
 
