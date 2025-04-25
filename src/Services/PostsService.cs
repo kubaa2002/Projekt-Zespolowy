@@ -28,9 +28,9 @@ namespace Projekt_Zespolowy.Services
             List<Post> foundPosts = posts.Where(x => x.parentId == null).ToList();
             // When no posts
             if (start > foundPosts.Count)
-                throw new NoContentException("No Posts were possible to be Retrived");
+                return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
             // When only partial content
-            if(start + length > foundPosts.Count)
+            if (start + length > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent,foundPosts.Skip(start).ToList());
             // When ok
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,foundPosts.GetRange(start, length));
@@ -40,7 +40,7 @@ namespace Projekt_Zespolowy.Services
             List<Post> foundPosts = posts.Where(x => x.parentId == null).Where(x => x.CommunityId == commnityId).ToList();
             // When no posts
             if (start > foundPosts.Count)
-                throw new NoContentException("No Posts were possible to be Retrived");
+                return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
             // When only partial content
             if (start + length > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent, foundPosts.Skip(start).ToList());
@@ -52,7 +52,7 @@ namespace Projekt_Zespolowy.Services
             List<Post> foundPosts = posts.Where(x => x.parentId == null).Where(x => x.CommunityId == null).Where(x => x.authorId == authorId).ToList();
             // When no posts
             if (start > foundPosts.Count)
-                throw new NoContentException("No Posts were possible to be Retrived");
+                return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
             // When only partial content
             if (start + length > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent, foundPosts.Skip(start).ToList());
@@ -64,26 +64,12 @@ namespace Projekt_Zespolowy.Services
             List<Post> foundPosts = posts.Where(x => x.parentId == parentId).ToList();
             // When no posts
             if (start > foundPosts.Count)
-                throw new NoContentException("No Comments were possible to be Retrived");
+                return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
             // When only partial content
             if (start + length > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent, foundPosts.Skip(start).ToList());
             // When ok
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
-        }
-    }
-    class NoContentException : Exception
-    {
-        public NoContentException()
-        {
-        }
-
-        public NoContentException(string? message) : base(message)
-        {
-        }
-
-        public NoContentException(string? message, Exception? innerException) : base(message, innerException)
-        {
         }
     }
 }

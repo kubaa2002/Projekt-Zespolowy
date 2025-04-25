@@ -22,20 +22,15 @@ namespace Projekt_Zespolowy.Controllers
         public IActionResult Posts(int page, int pageSize)
         {
             int startPoint = (page-1) * pageSize;
-            try
-            {
-                ServiceResponse<List<Post>> response = postsService.GetPostsFromRange(startPoint, pageSize);
-                List <Post> posts = response.ResponseBody;
-                List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
-                if(response.ResponseCode == StatusCodes.Status200OK)
-                    return Ok(postsDTO);
-                else
-                    return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
-            }
-            catch (NoContentException)
-            {
+            ServiceResponse<List<Post>> response = postsService.GetPostsFromRange(startPoint, pageSize);
+            if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
-            }
+            List <Post> posts = response.ResponseBody;
+            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
+            if(response.ResponseCode == StatusCodes.Status200OK)
+                return Ok(postsDTO);
+            else
+                return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
         }
         [HttpGet("community/{communityId}")]
         public IActionResult CommunityPosts(int communityId, int page, int pageSize) 
@@ -45,20 +40,15 @@ namespace Projekt_Zespolowy.Controllers
                 return NotFound();
             }
             int startPoint = (page - 1) * pageSize;
-            try
-            {
-                ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromCommunity(startPoint, pageSize, communityId);
-                List<Post> posts = response.ResponseBody;
-                List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
-                if(response.ResponseCode == StatusCodes.Status200OK)
-                    return Ok(postsDTO);
-                else
-                    return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
-            }
-            catch (NoContentException)
-            {
+            ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromCommunity(startPoint, pageSize, communityId);
+            if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
-            }
+            List<Post> posts = response.ResponseBody;
+            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
+            if(response.ResponseCode == StatusCodes.Status200OK)
+                return Ok(postsDTO);
+            else
+                return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
         }
         [HttpGet("user/{authorId}")]
         public IActionResult UserPosts(int authorId, int page, int pageSize)
@@ -71,20 +61,15 @@ namespace Projekt_Zespolowy.Controllers
             //    return NotFound();
             //}
             int startPoint = (page - 1) * pageSize;
-            try
-            {
-                ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromUser(startPoint, pageSize, authorId);
-                List<Post> posts = response.ResponseBody;
-                List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
-                if (response.ResponseCode == StatusCodes.Status200OK)
-                    return Ok(postsDTO);
-                else
-                    return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
-            }
-            catch (NoContentException)
-            {
+            ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromUser(startPoint, pageSize, authorId);
+            if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
-            }
+            List<Post> posts = response.ResponseBody;
+            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList(); ;
+            if (response.ResponseCode == StatusCodes.Status200OK)
+                return Ok(postsDTO);
+            else
+                return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
         }
         [HttpGet("{parentId}/comments")]
         public IActionResult PostComments(int parentId, int page, int pageSize)
@@ -97,20 +82,15 @@ namespace Projekt_Zespolowy.Controllers
             //    return NotFound();
             //}
             int startPoint = (page - 1) * pageSize;
-            try
-            {
-                ServiceResponse<List<Post>> response = postsService.GetCommentsFromRangeFromPost(startPoint, pageSize, parentId);
-                List<Post> posts = response.ResponseBody;
-                List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList();
-                if (response.ResponseCode == StatusCodes.Status200OK)
-                    return Ok(postsDTO);
-                else
-                    return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
-            }
-            catch (NoContentException)
-            {
+            ServiceResponse<List<Post>> response = postsService.GetCommentsFromRangeFromPost(startPoint, pageSize, parentId);
+            if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
-            }
+            List<Post> posts = response.ResponseBody;
+            List<PostDTO> postsDTO = posts.Select(x => (PostDTO)x).ToList();
+            if (response.ResponseCode == StatusCodes.Status200OK)
+                return Ok(postsDTO);
+            else
+                return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
         }
 
     }
