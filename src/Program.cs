@@ -58,12 +58,27 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 
+builder.Services.AddCors(options =>
+{
+    var frontendUrl = builder.Configuration["FrontendUrl"];
+    if (string.IsNullOrEmpty(frontendUrl))
+    {
+        throw new ApplicationException("FrontendUrl is not set in the configuration.");
+    }
+
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins(frontendUrl).AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
