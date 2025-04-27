@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import axios from "axios";
 import { Link } from "@tanstack/react-router";
-import "./authForm.css"; 
+import "./authForm.css";
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,14 +13,15 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:5000/user/login", {
+      // TODO: hardcoded url
+      const response = await axios.post("http://localhost:5192/user/login", {
         email,
         password,
       });
 
       const { token } = response.data;
       localStorage.setItem("token", token); // Just for testing. TODO: use cookies or sessions in useAuth Hook
-      navigate({to: "/"}); 
+      navigate({ to: "/" });
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.errors?.error || "Login failed");
@@ -28,7 +29,7 @@ const LoginForm = () => {
         setErrorMessage("Failed to connect to the server");
       }
     }
-}
+  };
 
   return (
     <div className="form-wrapper">
@@ -55,7 +56,9 @@ const LoginForm = () => {
             required
           />
         </label>
-        <p>Don't have an account? <Link to='/signup'>Create one now!</Link></p>
+        <p>
+          Don't have an account? <Link to="/signup">Create one now!</Link>
+        </p>
         <button type="submit">Submit</button>
       </form>
     </div>
