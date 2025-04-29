@@ -1,3 +1,8 @@
+@use "sass:color";
+@use "sass:map";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
 //key colors
 $key-colors: (
 	white: rgba(255, 255, 255),
@@ -110,6 +115,12 @@ $changed-icon: (
 	dark-down-model-gray-800: rgba(190,195,200),
 );
 
+:root {
+	--razacy-rozowy: #{map.get($key-colors, razacy-rozowy)};
+	@each $key, $value in $main-page {
+	  --#{$key}: #{$value};
+	}
+  }
 
 // Base mixin for shared text styles
 @mixin base-text-style($font-size, $font-weight, $line-height: null, $letter-spacing: null, $text-decoration: none) {
@@ -274,3 +285,86 @@ $changed-icon: (
   @mixin useless-scrollbar() {
 	@include base-text-style(4px, 400);
   }
+
+//customized classes
+.background-circle {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+}
+
+.main-page-container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center; // Wyśrodkowanie tekstu
+}
+  
+.main-page-title {
+	@include display-main-page-title();
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: map.get($key-colors, white);
+  
+	i {
+	  font-size: 104px;
+	  margin-right: 10px;
+	}
+}
+  
+.main-page-subtitle {
+	@include display-main-page-subtitle();
+	color: map.get($key-colors, white);
+}
+
+body {
+	background-color: map.get($key-colors, razacy-rozowy);
+	overflow: hidden;
+};
+
+.btn-register {
+	width: 190px;
+	height: 72px;
+	margin-right: 2vw;
+	background-color: map.get($key-colors, black);
+	color: map.get($key-colors, white);
+	border: 1px solid map.get($key-colors, white);
+};
+  
+.btn-login {
+	width: 120px;
+	height: 72px;
+	background-color: map.get($key-colors, white);
+	color: map.get($key-colors, black);
+	border: 1px solid map.get($key-colors, black);
+};
+
+.btn-register,
+.btn-login {
+	position: relative;
+	z-index:1
+}
+
+.btn-welcome {
+	@include button-welcome-button-user-name();
+	width: 393px;
+	border-radius: 60px;
+	margin-top:31px;
+	background-color: map.get($key-colors, black);
+	border: 1px solid map.get($key-colors, white);
+	color : map.get($key-colors, white);
+}
+
+.circle-icon {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	font-size: 32px;
+	color: map.get($key-colors, black);
+	transform: translate(-50%, -50%);
+	z-index:1
+}
