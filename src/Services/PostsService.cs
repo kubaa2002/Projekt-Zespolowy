@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Posts;
 
@@ -41,8 +42,27 @@ namespace Projekt_Zespolowy.Services
                 throw new PartialContentException<List<Post>>(posts.Where(x => x.CommunityId == commnityId).ToList().Skip(start).ToList());
             return posts.Where(x => x.CommunityId == commnityId).ToList().GetRange(start, length);
         }
+
+        public IEnumerable<Post> GetAll()
+        {
+            return context.Posts.ToList();
+        }
+        public Post GetById(int id)
+        {
+            return context.Posts.SingleOrDefault(x => x.Id == id);
+        }
         public void Add(PostDTO post)
-        {}
+        {
+            context.Posts.Add(post);
+        }
+        public void Update(PostDTO post)
+        {
+            context.Posts.Update(post);
+        }
+        public void Remove(PostDTO post)
+        {
+            context.Posts.Remove(post);
+        }
     }
     class NoContentException : Exception
     {

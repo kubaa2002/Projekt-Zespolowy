@@ -11,7 +11,7 @@
         }
         public static implicit operator Post(PostDTO? p)
         {
-            return new Post() { Id = p.Id, CommunityId = p.CommunityId, Content = p.Content };
+            return new Post() { Id = p.Id, Content = p.Content, CommunityId = p.CommunityId };
         }
     }
 }

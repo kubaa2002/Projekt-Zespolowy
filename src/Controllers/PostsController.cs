@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt_Zespolowy.Services;
 using Projekt_Zespolowy.Posts;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Projekt_Zespolowy.Controllers
 {
@@ -78,12 +79,43 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(StatusCodes.Status206PartialContent, posts);
             }
         }
+
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<PostDTO>), 200)]
+        public IActionResult GetAll()
+        {
+            var result = postsService.GetAll();
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(PostDTO), 200)]
+        public IActionResult GetById(int id)
+        {
+            var result = postsService.GetById(id);
+            return result != null ? Ok(result) : NotFound(); 
+        }
+
         [HttpPost()]
         public IActionResult Post([FromBody] PostDTO postDTO)
         {
             postsService.Add(postDTO);
             return Created($"/posts/{postDTO.Id}", postDTO);
+        }
+        [HttpPut()]
+        public IActionResult Put([FromBody] PostDTO postDTO)
+        {
+            postsService.Update(postDTO);
 
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromBody] PostDTO post)
+        {
+            postsService.Remove(post);
+
+            return NoContent();
         }
     }
 }

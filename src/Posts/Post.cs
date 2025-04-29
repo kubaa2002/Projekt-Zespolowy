@@ -11,6 +11,7 @@ namespace Projekt_Zespolowy.Posts
         public virtual Community CommunityNavigation { get; set; } = null!;
         public string Content { get; set; }
         public DateTime CreatedDatetime { get; set; }
+        public DateTime UpdatedDateTime { get; set; }
         public int? ParentId { get; set; }
-}
+    }
 }
