@@ -1,52 +1,28 @@
 import { useAuth } from "../../contexts/authProvider";
-import { Link} from "@tanstack/react-router";
-import "./navbar.css";
 export default function Navbar() {
   const auth = useAuth();
   return (
-      <nav>
-          <Link
-            to="/"
-            className="home-link"
-            activeProps={{
-              style: {
-                color: "rgb(255, 0, 234)",
-              },
-            }}
-          >
-            Home
-          </Link>
-          <Link
-            to="/posts"
-            activeProps={{
-              style: {
-                color: "rgb(255, 0, 234)",
-              },
-            }}
-          >
-            Posts
-          </Link>
-          <Link
-            to="/login"
-            activeProps={{
-              style: {
-                color: "rgb(255, 0, 234)",
-              },
-            }}
-          >
-            Login
-          </Link>
-          <Link
-            to="/signup"
-            activeProps={{
-              style: {
-                color: "rgb(255, 0, 234)",
-              },
-            }}
-          >
-            Signup
-          </Link>
-          <button onClick={auth.logOut}>Logout</button>
+      <nav
+        className="d-flex justify-content-end align-items-center"
+        style={{
+          paddingRight: "2vw",
+          marginTop: "4vh",
+        }}
+      >
+        <button
+          className="btn btn-primary btn-register"
+          onClick={() => (window.location.href = "/signup")}
+        >
+          <i className="bi bi-people me-2"></i>
+          Rejestracja
+        </button>
+        <button
+          className="btn btn-primary btn-login"
+          onClick={() => (window.location.href = "/login")}
+        >
+          Zaloguj
+        </button>
+        <button onClick={auth.logOut}>Logout</button>
       </nav>
   );
 }
