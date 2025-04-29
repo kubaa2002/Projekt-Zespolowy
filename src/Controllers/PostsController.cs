@@ -138,22 +138,6 @@ namespace Projekt_Zespolowy.Controllers
             }
         }
 
-        [HttpGet("[action]")]
-        [ProducesResponseType(typeof(IEnumerable<PostDTO>), 200)]
-        public IActionResult GetAll()
-        {
-            var result = postsService.GetAll();
-            return Ok(result);
-        }
-
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(PostDTO), 200)]
-        public IActionResult GetById(int id)
-        {
-            var result = postsService.GetById(id);
-            return result != null ? Ok(result) : NotFound(); 
-        }
-
         [HttpDelete("{id}")]
         public IActionResult Delete([FromBody] PostDTO post)
         {

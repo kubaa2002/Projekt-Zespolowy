@@ -11,7 +11,7 @@ namespace Projekt_Zespolowy.Posts
 
             builder.HasKey(p => p.Id);
 
-            builder.Property(p => p.AuthorId)
+            builder.Property(p => p.authorId)
                 .HasColumnType("int")
                 .IsRequired();                
 
@@ -22,14 +22,14 @@ namespace Projekt_Zespolowy.Posts
                 .HasMaxLength(2000)
                 .IsRequired();
 
-            builder.Property(p => p.CreatedDatetime)
+            builder.Property(p => p.CreatedDateTime)
                 .HasColumnType("datetime2(0)")
                 .IsRequired();
-            builder.Property(p => p.UpdatedDateTime)
-                .HasColumnType("datetime2(0)")
-                .IsRequired();
+            //builder.Property(p => p.UpdatedDateTime)
+            //    .HasColumnType("datetime2(0)")
+            //    .IsRequired();
 
-            builder.Property(p => p.ParentId)
+            builder.Property(p => p.parentId)
                 .HasColumnType("int");                
         }
     }
