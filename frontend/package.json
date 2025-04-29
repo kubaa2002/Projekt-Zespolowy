@@ -13,8 +13,12 @@
     "@tanstack/react-router": "^1.117.1",
     "@tanstack/react-router-devtools": "^1.117.1",
     "axios": "^1.9.0",
+    "bootstrap": "^5.3.5",
+    "bootstrap-icons": "^1.11.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "sass": "^1.87.0",
+    "sass-migrator": "^2.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
