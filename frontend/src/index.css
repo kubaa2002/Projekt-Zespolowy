@@ -51,16 +51,4 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-nav{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1em;
-  font-size: 1.1rem;
-}
-.nav-link-list{
-  display: flex;
-  gap: 1em;
-  max-width: 300px;
-  margin-left: auto;
-}
+

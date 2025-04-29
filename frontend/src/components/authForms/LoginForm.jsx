@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import axios from "axios";
 import { Link } from "@tanstack/react-router";
+import { useAuth } from "../../contexts/authProvider";
 import "./authForm.css";
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -9,19 +9,12 @@ const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
+  const auth = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      // TODO: hardcoded url
-      const response = await axios.post("http://localhost:5192/user/login", {
-        email,
-        password,
-      });
-
-      const { token } = response.data;
-      localStorage.setItem("token", token); // Just for testing. TODO: use cookies or sessions in useAuth Hook
-      navigate({ to: "/" });
+      await auth.loginAction(email, password);
+      navigate({to: '/'});
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.errors?.error || "Login failed");
@@ -41,6 +34,7 @@ const LoginForm = () => {
           <input
             type="email"
             id="email"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -51,6 +45,7 @@ const LoginForm = () => {
           <input
             type="password"
             id="password"
+            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import axios from "axios";
+import { useAuth } from "../../contexts/authProvider";
 import "./authForm.css";
 
 const SignupForm = () => {
@@ -10,23 +10,21 @@ const SignupForm = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const passwordsMatch = () => password === confirmPassword;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-    // TODO: hardcoded url
-      const response = await axios.post("http://localhost:5192/user/register", {
-        email,
-        username,
-        password,
-      });
-      const { token } = response.data;
-      localStorage.setItem("token", token); // Just for testing. TODO: use cookies or sessions in useAuth Hook
-      navigate({ to: "/login" }); // TODO: after signup user should be already logged in
+    try{
+      await auth.registerAction(email, username, password);
+      navigate({to: '/'});
     } catch (error) {
-      setError(error.message);
+      if (error.response) {
+        setError(error.response.data.errors?.error || "Signup failed");
+      } else {
+        setError("Failed to connect to the server");
+      }
     }
   };
   return (
@@ -39,6 +37,7 @@ const SignupForm = () => {
           <input
             type="email"
             id="email"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -49,9 +48,9 @@ const SignupForm = () => {
           <input
             type="text"
             id="username"
+            name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            
           />
         </label>
         <label htmlFor="password">
@@ -59,6 +58,7 @@ const SignupForm = () => {
           <input
             type="password"
             id="password"
+            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
