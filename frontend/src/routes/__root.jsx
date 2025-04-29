@@ -1,54 +1,33 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+
 export const Route = createRootRoute({
   component: () => (
     <>
-      <nav>
-        <div className="nav-link-list">
-          <Link
-            to="/"
-            activeProps={{
-              style: {
-                color: "rgb(255, 0, 234)",
-              },
-            }}
-          >
-            Home
-          </Link>
-          <Link
-            to="/posts"
-            activeProps={{
-              style: {
-                color: "rgb(255, 0, 234)",
-              },
-            }}
-          >
-            Posts
-          </Link>
-          <Link
-            to="/login"
-            activeProps={{
-              style: {
-                color: "rgb(255, 0, 234)",
-              },
-            }}
-          >
-            Login
-          </Link>
-          <Link
-            to="/signup"
-            activeProps={{
-              style: {
-                color: "rgb(255, 0, 234)",
-              },
-            }}
-          >
-            Signup
-          </Link>
-        </div>
+      <nav
+        className="d-flex justify-content-end align-items-center"
+        style={{
+          paddingRight: "2vw",
+          marginTop: "4vh",
+        }}
+      >
+        <button
+          className="btn btn-primary btn-register"
+          onClick={() => (window.location.href = "/signup")}
+        >
+          <i className="bi bi-people me-2"></i>
+          Rejestracja
+        </button>
+        <button
+          className="btn btn-primary btn-login"
+          onClick={() => (window.location.href = "/login")}
+        >
+          Zaloguj
+        </button>
       </nav>
-      <hr />
-      <Outlet />
+      <main>
+        <Outlet/>
+      </main>
       <TanStackRouterDevtools />
     </>
   ),
