@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
 
 function getCssVariable(variableName) {
   return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();

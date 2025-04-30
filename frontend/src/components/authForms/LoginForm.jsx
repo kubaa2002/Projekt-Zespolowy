@@ -14,7 +14,7 @@ const LoginForm = () => {
     e.preventDefault();
     try {
       await auth.loginAction(email, password);
-      navigate({to: '/'});
+      navigate({to: '/posts'});
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.errors?.error || "Login failed");
