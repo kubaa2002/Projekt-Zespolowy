@@ -347,6 +347,18 @@ body {
 	background-color: map.get($key-colors, razacy-rozowy);
 	overflow:hidden;
 }
+
+.root-container {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	height: 100vh;
+}
+
+.centered-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
  
 .main-page {
 	background-color: map.get($key-colors, white);
