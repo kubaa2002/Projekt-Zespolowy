@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../../contexts/authProvider";
-import "./authForm.css";
+import { Link } from "@tanstack/react-router";
+import PasswordInput from "../../contexts/passwordInput";
 
 const SignupForm = () => {
   const [email, setEmail] = useState("");
@@ -27,57 +28,63 @@ const SignupForm = () => {
       }
     }
   };
+  const isFormValid = () => username.trim() !== "" && email.trim() !== "" && password.trim() !== "" && confirmPassword.trim() !== "" && passwordsMatch();
+
+
   return (
-    <div className="form-wrapper">
-      <h1>Sign Up</h1>
-      {error && <div className="error-message">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">
-          Email:
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        <label htmlFor="username">
-          Username:
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
-        <label htmlFor="password">
-          Password:
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        <label htmlFor="confirm-password">
-          Confirm Password:
-          <input
-            type="password"
-            id="confirm-password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit" disabled={!passwordsMatch()}>
-          Sign Up
-        </button>
-      </form>
+    <div className="form-container">
+      <div className="form-wrapper">
+      {/*{error && <div className="error-message">{error}</div>}*/}
+        <div className="login-register-header">
+          <h1 className="title-login-register-vibe-title">
+            <i className="bi bi-heart me-2"></i>Vibe
+          </h1>
+          <p className="title-login-register-password-subtitle">Stwórz konto</p>
+          <p className="welcome-text">Zacznijmy!</p>
+        </div>
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="mb-3">
+            <label htmlFor="username" className="form-label">
+              Nazwa użytkownika <span className="text-danger">*</span>
+            </label>
+            <input type="username" placeholder="Wpisz nazwę" className="form-control" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required/>
+            <div className="invalid-feedback">
+              Jakaś wiadomość o błędzie
+            </div>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              Email <span className="text-danger">*</span>
+            </label>
+            <input type="email" placeholder="Wpisz swój email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+            <div className="invalid-feedback">
+              Jakaś wiadomość o błędzie
+            </div>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              Hasło <span className="text-danger">*</span>
+            </label>
+            <PasswordInput placeholder="Hasło" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            <div className="invalid-feedback">
+              Jakaś wiadomość o błędzie
+            </div>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="confirm-password" className="form-label">
+              Powtórz hasło <span className="text-danger">*</span>
+            </label>
+            <PasswordInput placeholder="Powtórzone hasło" id="confirm-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required/>
+            <div className="invalid-feedback">
+              Jakaś wiadomość o błędzie
+            </div>
+          </div>
+          <button type="submit" className="btn btn-primary login-register-button register-button" disabled={!isFormValid()}>Zarejestruj</button>
+          <p className="doesnt-have-account">
+          Czy masz istniejące konto? <Link to="/login">Zaloguj się</Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };
