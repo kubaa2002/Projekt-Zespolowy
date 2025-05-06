@@ -2,6 +2,7 @@
 using Projekt_Zespolowy.Services;
 using Projekt_Zespolowy.Posts;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Projekt_Zespolowy.Authentication;
 
 namespace Projekt_Zespolowy.Controllers
 {
@@ -122,7 +123,41 @@ namespace Projekt_Zespolowy.Controllers
             {
                 return StatusCode(response.ResponseCode);
             }
-            
+        }
+
+        [HttpPost("/community/{community_id}")]
+        public IActionResult PostInCommunity(int community_id, [FromBody] PostDTO postDTO)
+        {
+            var response = postsService.AddInCommunity(community_id, postDTO);
+            if(response.ResponseCode == 404)
+            {
+                return NotFound("Dana społeczność nie istnieje!");
+            }
+            if (response.ResponseCode == 201)
+            {
+                return Created($"/posts/{postDTO.Id}", postDTO);
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
+        }
+        [HttpPost("/{parent_id}")]
+        public IActionResult PostAsComment(int parent_id, [FromBody] PostDTO postDTO)
+        {
+            var response = postsService.AddComment(parent_id, postDTO);
+            if (response.ResponseCode == 404)
+            {
+                return NotFound("Post na który próbujesz odpowiedzieć został usunięty lub nie istnieje!");
+            }
+            if (response.ResponseCode == 201)
+            {
+                return Created($"/posts/{postDTO.Id}", postDTO);
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
         }
         [HttpPut]
         public IActionResult Put([FromBody] PostDTO postDTO)
@@ -138,11 +173,40 @@ namespace Projekt_Zespolowy.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete([FromBody] PostDTO post)
+        [HttpPut("[action]/{id}")]
+        public IActionResult Delete(int id, [FromBody] PostDTO post)
         {
-            postsService.Remove(post);
-            return NoContent();
+            var response = postsService.Delete(id ,post);
+            if (response.ResponseCode == 200)
+            {
+                return NoContent();
+            }
+            if (response.ResponseCode == 404)
+            {
+                return NotFound("Post który próbujesz usunąć, nie istnieje!");
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
         }
+        [HttpPut("[action]/{id}")]
+        public IActionResult UndoDelete(int id, [FromBody] PostDTO post)
+        {
+            var response = postsService.UndoDelete(id, post);
+            if (response.ResponseCode == 200)
+            {
+                return NoContent();
+            }
+            if (response.ResponseCode == 404)
+            {
+                return NotFound("Post który próbujesz przywrócić, nigdy nie istniał!");
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
+        }
+
     }
 }

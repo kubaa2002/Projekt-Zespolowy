@@ -11,7 +11,7 @@ namespace Projekt_Zespolowy.Posts
 
             builder.HasKey(p => p.Id);
 
-            builder.Property(p => p.authorId)
+            builder.Property(p => p.AuthorId)
                 .HasColumnType("int")
                 .IsRequired();                
 
@@ -29,8 +29,10 @@ namespace Projekt_Zespolowy.Posts
             //    .HasColumnType("datetime2(0)")
             //    .IsRequired();
 
-            builder.Property(p => p.parentId)
-                .HasColumnType("int");                
+            builder.Property(p => p.ParentId)
+                .HasColumnType("int");
+            builder.Property(p => p.IsDeleted)
+                .HasColumnType("bit"); //potencjalnie typ do zmiany w zależności od bazy
         }
     }
 }
