@@ -88,7 +88,7 @@ public class UserController : ControllerBase
             errors.Errors["error"] = new List<string> { "Niepoprawna nazwa użytkownika lub hasło" };
             return Unauthorized(errors);
         }
-        return Unauthorized(ModelState);
+        return BadRequest(ModelState);
     }
 
     [HttpPost("logout")]
