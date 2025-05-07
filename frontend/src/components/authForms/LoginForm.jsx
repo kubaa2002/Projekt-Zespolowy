@@ -8,29 +8,42 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
 
   const auth = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setEmailError("");
+    setPasswordError("");
+    setErrorMessage("");
+  
     try {
       await auth.loginAction(email, password);
-      navigate({to: '/'});
+      if (response.status === 200) {
+        navigate({ to: "/posts" });
+      }
     } catch (error) {
       if (error.response) {
-        setErrorMessage(error.response.data.errors?.error || "Login failed");
+        const errors = error.response.data.errors || {};
+        setErrorMessage(errors.error?.[0] || "");
+        if (errors.error?.[0]) {
+          setEmailError(" ");
+          setPasswordError(" ");
+        } else {
+          setEmailError(errors.Email?.[0] || "");
+          setPasswordError(errors.Password?.[0] || "");
+        }
       } else {
         setErrorMessage("Failed to connect to the server");
       }
     }
   };
 
-  const isFormValid = () => email.trim() !== "" && password.trim() !== "";
-
   return (
     <div className="form-container">
       <div className="form-wrapper">
-        {/*{errorMessage && <div className="error-message">{errorMessage}</div>}*/}
         <div className="login-register-header">
           <h1 className="title-login-register-vibe-title">
             <i className="bi bi-heart me-2"></i>Vibe
@@ -38,24 +51,21 @@ const LoginForm = () => {
           <p className="title-login-register-password-subtitle">Zaloguj się na konto</p>
           <p className="welcome-text">Witaj ponownie w Vibe</p>
         </div>
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
         <form onSubmit={handleSubmit} noValidate>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
               Email <span className="text-danger">*</span>
             </label>
-            <input type="email" placeholder="Wpisz swój email" name="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
-            <div className="invalid-feedback">
-              Jakaś wiadomość o błędzie
-            </div>
+            <input className={`form-control ${emailError ? "is-invalid" : ""}`} type="email" placeholder="Wpisz swój email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+            {emailError && <div className="invalid-feedback">{emailError}</div>}
           </div>
+
           <div className="mb-3">
             <label htmlFor="password" className="form-label">
               Hasło <span className="text-danger">*</span>
             </label>
-            <PasswordInput placeholder="Hasło" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
-            <div className="invalid-feedback">
-              Jakaś wiadomość o błędzie
-            </div>
+            <PasswordInput className={passwordError ? "is-invalid" : ""} error={passwordError} placeholder="Hasło" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
           </div>
           <div className="mb-3 d-flex justify-content-between align-items-center">
             <div className="form-check">
@@ -68,7 +78,7 @@ const LoginForm = () => {
               Nie pamiętasz hasła?
             </Link>
           </div>
-          <button type="submit" className="btn btn-primary login-register-button" disabled={!isFormValid()}>Zaloguj</button>
+          <button type="submit" className="btn btn-primary login-register-button">Zaloguj</button>
           <p className="doesnt-have-account">
           Nie masz konta? <Link to="/signup">Zarejestruj się</Link>
           </p>
