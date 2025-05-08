@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import  {useState} from "react";
 
-const PasswordInput = ({ id, value, onChange, placeholder }) => {
+const PasswordInput = ({ id, value, onChange, placeholder, name }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -16,6 +16,7 @@ const PasswordInput = ({ id, value, onChange, placeholder }) => {
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        name={name}
         required
       />
       <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
