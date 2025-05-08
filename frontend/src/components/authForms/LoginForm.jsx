@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "../../contexts/authProvider";
-import PasswordInput from "../../contexts/passwordInput";
+import PasswordInput from "../primitives/PasswordInput";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +15,7 @@ const LoginForm = () => {
     e.preventDefault();
     try {
       await auth.loginAction(email, password);
-      navigate({to: '/posts'});
+      navigate({to: '/'});
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.errors?.error || "Login failed");
@@ -43,7 +43,7 @@ const LoginForm = () => {
             <label htmlFor="email" className="form-label">
               Email <span className="text-danger">*</span>
             </label>
-            <input type="email" placeholder="Wpisz swój email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+            <input type="email" placeholder="Wpisz swój email" name="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
             <div className="invalid-feedback">
               Jakaś wiadomość o błędzie
             </div>
@@ -52,7 +52,7 @@ const LoginForm = () => {
             <label htmlFor="password" className="form-label">
               Hasło <span className="text-danger">*</span>
             </label>
-            <PasswordInput placeholder="Hasło" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
+            <PasswordInput placeholder="Hasło" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
             <div className="invalid-feedback">
               Jakaś wiadomość o błędzie
             </div>
