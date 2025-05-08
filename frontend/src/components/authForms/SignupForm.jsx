@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../../contexts/authProvider";
 import { Link } from "@tanstack/react-router";
-import PasswordInput from "../../contexts/passwordInput";
+import PasswordInput from "../primitives/PasswordInput";
 
 const SignupForm = () => {
   const [email, setEmail] = useState("");
@@ -28,6 +28,7 @@ const SignupForm = () => {
       }
     }
   };
+
   const isFormValid = () => username.trim() !== "" && email.trim() !== "" && password.trim() !== "" && confirmPassword.trim() !== "" && passwordsMatch();
 
 
@@ -47,7 +48,7 @@ const SignupForm = () => {
             <label htmlFor="username" className="form-label">
               Nazwa użytkownika <span className="text-danger">*</span>
             </label>
-            <input type="username" placeholder="Wpisz nazwę" className="form-control" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required/>
+            <input type="username" placeholder="Wpisz nazwę" name="username" className="form-control" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required/>
             <div className="invalid-feedback">
               Jakaś wiadomość o błędzie
             </div>
@@ -56,7 +57,7 @@ const SignupForm = () => {
             <label htmlFor="email" className="form-label">
               Email <span className="text-danger">*</span>
             </label>
-            <input type="email" placeholder="Wpisz swój email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+            <input type="email" placeholder="Wpisz swój email" name="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
             <div className="invalid-feedback">
               Jakaś wiadomość o błędzie
             </div>
@@ -65,7 +66,7 @@ const SignupForm = () => {
             <label htmlFor="password" className="form-label">
               Hasło <span className="text-danger">*</span>
             </label>
-            <PasswordInput placeholder="Hasło" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            <PasswordInput placeholder="Hasło" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
             <div className="invalid-feedback">
               Jakaś wiadomość o błędzie
             </div>
