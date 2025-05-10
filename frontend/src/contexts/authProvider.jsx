@@ -15,6 +15,7 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem("token", token); // Just for testing. TODO: use cookies or sessions in useAuth Hook
     setUserName(userName);
     setToken(token);
+    return response;
   };
   const registerAction = async (email, username, password) => {
     const response = await axios.post("http://localhost:5192/user/register", {
@@ -26,6 +27,14 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem("token", token); // Just for testing. TODO: use cookies or sessions in useAuth Hook
     setUserName(userName);
     setToken(token);
+    return response;
+  }
+  const validateAction = async (email, username, password) => {
+    await axios.post("http://localhost:5192/user/validate", {
+      email,
+      username,
+      password,
+    });
   }
 
   const logOut = () => {
@@ -39,7 +48,7 @@ const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ token, userName, loginAction, registerAction, logOut, isAuthenticated }}>
+    <AuthContext.Provider value={{ token, userName, loginAction, registerAction, validateAction, logOut }}>
       {children}
     </AuthContext.Provider>
   );

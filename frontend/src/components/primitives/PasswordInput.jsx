@@ -1,6 +1,6 @@
 import  {useState} from "react";
 
-const PasswordInput = ({ id, value, onChange, placeholder, className, error }) => {
+const PasswordInput = ({ id, value, onChange, placeholder, className = "", error }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -11,7 +11,7 @@ const PasswordInput = ({ id, value, onChange, placeholder, className, error }) =
     <div className="input-group">
       <input
         type={isPasswordVisible ? "text" : "password"}
-        className={`form-control ${className} ${error ? "is-invalid" : ""}`}
+        className={className}
         id={id}
         value={value}
         onChange={onChange}

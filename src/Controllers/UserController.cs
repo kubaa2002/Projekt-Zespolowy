@@ -24,8 +24,8 @@ public class UserController : ControllerBase
         _dbContext = dbContext;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] AddOrUpdateAppUserModel model)
+    [HttpPost("validate")]
+    public async Task<IActionResult> Validate([FromBody] AddOrUpdateAppUserModel model)
     {
         if (ModelState.IsValid)
         {
@@ -33,7 +33,7 @@ public class UserController : ControllerBase
             var errors = new ErrorResponse { Status = 400 };
             if (existedUser != null)
             {
-                errors.Errors["UserName"] = new List<string> { "Pseudonim zajęty" };
+                errors.Errors["UserName"] = new List<string> { "Nazwa użytkownika zajęta" };
                 return BadRequest(errors);
             }
 
@@ -43,8 +43,20 @@ public class UserController : ControllerBase
                 errors.Errors["Email"] = new List<string> { "Nie można użyć tego adresu email" };
                 return BadRequest(errors);
             }
+        }
+        else if(!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        return Ok();
+    }
 
-            var user = new AppUser()
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] AddOrUpdateAppUserModel model)
+    {
+        if(ModelState.IsValid)
+        {
+            var user = new AppUser
             {
                 UserName = model.UserName,
                 Email = model.Email,
@@ -52,7 +64,6 @@ public class UserController : ControllerBase
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
-
             if (result.Succeeded)
             {
                 var token = GenerateToken(model.UserName);
@@ -64,7 +75,6 @@ public class UserController : ControllerBase
                 ModelState.AddModelError("", error.Description);
             }
         }
-   
         return BadRequest(ModelState);
     }
 
