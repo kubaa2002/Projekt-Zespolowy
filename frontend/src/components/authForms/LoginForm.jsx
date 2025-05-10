@@ -20,9 +20,9 @@ const LoginForm = () => {
     setErrorMessage("");
   
     try {
-      await auth.loginAction(email, password);
+      const response = await auth.loginAction(email, password);
       if (response.status === 200) {
-        navigate({ to: "/posts" });
+        navigate({ to: "/" });
       }
     } catch (error) {
       if (error.response) {
@@ -65,7 +65,7 @@ const LoginForm = () => {
             <label htmlFor="password" className="form-label">
               Hasło <span className="text-danger">*</span>
             </label>
-            <PasswordInput className={passwordError ? "is-invalid" : ""} error={passwordError} placeholder="Hasło" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            <PasswordInput className={`form-control ${passwordError ? " is-invalid" : ""}`} error={passwordError} placeholder="Hasło" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
           </div>
           <div className="mb-3 d-flex justify-content-between align-items-center">
             <div className="form-check">
