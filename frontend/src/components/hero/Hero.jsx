@@ -1,9 +1,8 @@
-
 function getCssVariable(variableName) {
   return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
 }
 
-function MainPage() {
+function Hero() {
     const circles = [
         { size: 800, backgroundColor: getCssVariable('--razacy-rozowy'), zIndex: -2 },
         { size: 1000, backgroundColor: getCssVariable('--ciemniejszy-rozowy'), zIndex: -3 },
@@ -63,4 +62,4 @@ function MainPage() {
       );
 }
 
-export default MainPage;
+export default Hero;

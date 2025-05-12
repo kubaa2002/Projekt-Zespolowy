@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "../../contexts/authProvider";

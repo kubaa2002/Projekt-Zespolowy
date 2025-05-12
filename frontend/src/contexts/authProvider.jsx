@@ -43,9 +43,26 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
   };
   // TODO IMPORTANT!!! We have to validate this token by sending a req to the server
-  const isAuthenticated = () => {
+  /*const isAuthenticated = () => {
     return !!token;
-  }
+  } */
+  // i dont kwow if this is correct
+  const isAuthenticated = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return false;
+    }
+    try {
+      await axios.get("http://localhost:5192/user/test", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return true;
+    } catch {
+      logOut();
+      return false;
+    }
+  };
+
 
   return (
     <AuthContext.Provider value={{ token, userName, loginAction, registerAction, validateAction, logOut }}>
