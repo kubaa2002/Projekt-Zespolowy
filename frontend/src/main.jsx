@@ -7,7 +7,7 @@ import { routeTree } from "./routeTree.gen";
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import './styles.scss'
+import './styles/styles.scss'
 import AuthProvider from "./contexts/authProvider";
 
 // Create a new router instance
