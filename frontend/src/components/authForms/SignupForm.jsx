@@ -76,7 +76,7 @@ const SignupForm = () => {
    try {
      const response = await auth.registerAction(email, username, password);
      if(response.status === 201) {
-       navigate({ to: "/login" });
+       navigate({ to: "/" });
      }
    } catch (error) {
      processErrors(error);
