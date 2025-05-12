@@ -39,20 +39,21 @@ const SignupForm = () => {
  };
 
  const validateSignup = async () => {
-   setErrorMessage("");
-   setEmailError("");
-   setUsernameError("");
-   setPasswordError("");
-   setConfirmPasswordError("");
    let valid = true;
    if (!passwordsMatch()) { //local validation
      setConfirmPasswordError("Hasła muszą być takie same");
      valid = false;
    }
+   else{
+     setConfirmPasswordError("");
+   }
    try {
       await auth.validateAction(email, username, password);
+      setUsernameError("");
       setIsUsernameValid(true);
+      setEmailError("");
       setIsEmailValid(true);
+      setPasswordError("");
       setIsPasswordValid(true);
    } catch (error) {
      processErrors(error);
