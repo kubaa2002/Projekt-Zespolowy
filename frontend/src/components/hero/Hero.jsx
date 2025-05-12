@@ -1,8 +1,11 @@
+import { useNavigate } from "@tanstack/react-router";
+
 function getCssVariable(variableName) {
   return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
 }
 
 function Hero() {
+    const navigate = useNavigate();
     const circles = [
         { size: 800, backgroundColor: getCssVariable('--razacy-rozowy'), zIndex: -2 },
         { size: 1000, backgroundColor: getCssVariable('--ciemniejszy-rozowy'), zIndex: -3 },
@@ -53,7 +56,7 @@ function Hero() {
           </div>
           <button
             className="btn btn-primary btn-welcome"
-            onClick={() => (window.location.href = "/login")}
+            onClick={() => navigate({to: "/login"})}
           >
             Bądź częścią naszej społeczności
             <i className="bi bi-arrow-up-right ms-2"></i>

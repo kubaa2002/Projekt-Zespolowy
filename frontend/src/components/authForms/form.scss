@@ -1,0 +1,88 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+@use "../../styles/fonts" as fonts;
+
+//login i register
+.form-container {
+	width: 52.08vw;
+	min-height: 68.89vh;
+	height: auto;
+	max-width: 1000px;
+	max-height: 744px;
+	border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.error-message{
+    color: red;
+    font-size: 1.1em;
+    margin: 10px 0;
+    font-weight: 500;
+    text-align: center;
+}
+.form-wrapper {
+	width: 30vw;
+	max-width: 576px;
+	max-height: 100%;
+	display: grid;
+	grid-auto-flow: row;
+}
+
+.doesnt-have-account {
+	margin-top: 32px;
+	text-align: center;
+	color: map.get(colors.$changed-text, input-gray-600);
+}
+
+.title-login-register-vibe-title {
+	@include fonts.title-login-register-vibe-title();
+	color: map.get(colors.$key-colors, black);
+}
+
+.title-login-register-password-subtitle {
+	@include fonts.title-login-register-password-subtitle();
+	color: map.get(colors.$key-colors, black);
+	margin-top: 16px;
+}
+
+.login-register-header {
+	margin-bottom: 16px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.welcome-text {
+	@include fonts.basic-text();
+	color: map.get(colors.$changed-text, input-gray-600);
+	margin-top: -4px;
+}
+.search-icon{
+	color: white;
+	background-color: black;
+	border: none;
+}
+
+.login-register-button {
+	@include fonts.basic-text();
+	width: 100%;
+	background-color: map.get(colors.$key-colors, razacy-rozowy);
+	color: map.get(colors.$key-colors, white);
+	border: 1px solid map.get(colors.$key-colors, black);
+	&:hover {
+		background-color: color.adjust(map.get(colors.$key-colors,razacy-rozowy), $lightness: -20%);
+	}
+	&.register-button {
+		margin-top: 16px;
+	}
+	&:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+		background-color: map.get(colors.$key-colors, razacy-rozowy);
+		color: map.get(colors.$key-colors, white);
+		border: 1px solid map.get(colors.$key-colors, black); 
+	}
+}

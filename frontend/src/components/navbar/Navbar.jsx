@@ -10,14 +10,14 @@ export default function Navbar() {
   // I think we should create 2 navbars. One for each state loggedin/loggedout. Now the add Post button is visible on the hero page
   // We have to decide whether main-page is at "/" and it's structure depends on login status, or at different endpoint eg. "/hero"
   useEffect(() => {
-    document.body.className = isHeroPage ? "" : "main-page";
+    document.body.className = isHeroPage ? "" : "hero-page";
   }, [isHeroPage]);
 
   useEffect(() => {
      (async () => {
        const ok = await isAuthenticated();
        if (!ok) {
-         navigate({ to: "/login" });
+         navigate({ to: "/hero" });
       }
     })();
   }, [isAuthenticated, navigate, token]);

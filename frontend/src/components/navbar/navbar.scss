@@ -1,0 +1,56 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+@use "../../styles/fonts" as fonts;
+//navbar
+.btn-register {
+	width: 190px;
+	height: 72px;
+	margin-right: 2vw;
+	background-color: map.get(colors.$key-colors, black);
+	color: map.get(colors.$key-colors, white);
+	border: 1px solid map.get(colors.$key-colors, white);
+	&:hover {
+		background-color: color.adjust(map.get(colors.$key-colors,black), $lightness: -20%);
+	}
+};
+  
+.btn-login {
+	width: 120px;
+	height: 72px;
+	background-color: map.get(colors.$key-colors, white);
+	color: map.get(colors.$key-colors, black);
+	border: 1px solid map.get(colors.$key-colors, black);
+	&:hover {
+		background-color: color.adjust(map.get(colors.$key-colors,white), $lightness: -20%);
+	}
+};
+
+.btn-register,
+.btn-login {
+	position: relative;
+	z-index:1
+};
+
+.navbar {
+	padding-right: 2vw;
+	background-color: transparent;
+};
+
+.navbar-main {
+	background-color: map.get(colors.$key-colors, razacy-rozowy);
+}
+
+.left-sidebar {
+	width: 27vw;
+	height: 100%;
+	color: map.get(colors.$key-colors, white);
+}
+
+.navbar-subtitle {
+	@include fonts.title-navbar-subtitle();
+}
+
+.headline-navbar-title {
+	@include fonts.headline-navbar-title();
+}
