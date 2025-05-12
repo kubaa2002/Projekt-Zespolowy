@@ -1,0 +1,25 @@
+@use "sass:color";
+@use "sass:map";
+@use "./colors.scss" as colors;
+//general
+body {
+    background-color: map.get(colors.$key-colors, razacy-rozowy);
+    overflow:hidden;
+}
+
+.root-container {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	height: 100vh;
+}
+
+.centered-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
+ 
+.hero-page {
+    background-color: map.get(colors.$key-colors, white);
+    overflow:auto;
+}
