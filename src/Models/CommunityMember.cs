@@ -6,10 +6,9 @@ namespace Projekt_Zespolowy.Models;
 
 public class CommunityMember
 {
-    public int Id { get; set; }
 
     [Required]
-    public string UserId { get; set; } = string.Empty;
+    public string AppUserId { get; set; } = string.Empty;
 
     [ForeignKey("UserId")]
     public AppUser? User { get; set; }
