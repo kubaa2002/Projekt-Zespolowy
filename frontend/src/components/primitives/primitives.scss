@@ -1,0 +1,23 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+@use "../../styles/fonts" as fonts;
+
+.search-icon{
+    color: map.get(colors.$navbar, unchanged-white);
+	background-color: map.get(colors.$navbar, unchanged-black);
+	border: 1px solid map.get(colors.$border,searchicon-border);
+}
+
+.search-group {
+    margin-right: 3.54vw;
+    width: 41.67vw;
+    .form-control {
+        @include fonts.basic-text();
+        background-color: map.get(colors.$navbar,searchbar-code-gray-300); // kolor tła inputa
+        border: 1px solid map.get(colors.$navbar,border-gray-400);
+    }
+    .form-control::placeholder {
+        color: map.get(colors.$text,unchanged-searchbar-gray-600); // kolor placeholdera;
+    }
+}
