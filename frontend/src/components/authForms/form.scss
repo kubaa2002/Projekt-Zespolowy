@@ -60,11 +60,6 @@
 	color: map.get(colors.$changed-text, input-gray-600);
 	margin-top: -4px;
 }
-.search-icon{
-	color: white;
-	background-color: black;
-	border: none;
-}
 
 .login-register-button {
 	@include fonts.basic-text();
