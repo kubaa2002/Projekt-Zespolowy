@@ -13,6 +13,11 @@
 	&:hover {
 		background-color: color.adjust(map.get(colors.$key-colors,black), $lightness: -20%);
 	}
+	&-post{
+		margin-right:4.83vw;
+	}
+
+	
 };
   
 .btn-login {
@@ -53,4 +58,35 @@
 
 .headline-navbar-title {
 	@include fonts.headline-navbar-title();
+}
+
+.profile {
+	height: 72px;
+	margin-right: 1.25vw;
+	width: 5.68vw;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.notification-icon {
+	position: relative;
+	display:flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 1.13vw;
+
+	i{
+		font-size: 32px;
+		position: relative;
+		color: map.get(colors.$navbar, unchanged-black);
+	}
+	.elipse {
+		position: absolute;
+		top: 21px;
+		right: 0px;
+		width: 16px;
+		height: 16px;
+		z-index: 2;
+	}
 }
