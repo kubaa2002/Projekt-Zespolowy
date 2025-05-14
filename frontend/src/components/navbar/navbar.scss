@@ -149,27 +149,40 @@
 .dropdown-menu-item-style {
   padding: 4px 16px;
   cursor: pointer;
+  @include fonts.basic-text();
 }
 
 .dropdown-menu-list-style{
 	list-style: none;
 	margin: 0;
-	padding: 4px 0;
+	padding: 0 0;
 }
 
 .dropdown-menu-style {
   position: absolute;
   right: 0;
   top: 100%;
-  min-width: 233px;
+  width: 233px;
   z-index: 3;
   display: block;
-  background: white;
-  border: 1px solid #ccc;
+  background: map.get(colors.$key-colors, white);
+  border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+  border-right: none;
+  border-radius: 0 ;
+  padding: 0;
+}
+
+.dropdown-menu-username{
+	@include fonts.button-welcome-button-user-name();
+	border-bottom: 1px solid map.get(colors.$key-colors, razacy-rozowy);
 }
 
 .menu-toggle-icon {
   font-size: 32px;
   cursor: pointer;
   margin-right: 1.25vw;
+}
+
+.dropdown-menu, .dropdown-menu-item, .profile, .notification-icon  {
+  user-select: none;
 }

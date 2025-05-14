@@ -7,11 +7,29 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 1600) setMobileMenuOpen(false);
+      if (window.innerWidth > 1600) {
+        setMobileMenuOpen(false);
+      } else {
+        setRotated(false);
+      }
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleProfileClick = () => {
+    setRotated((r) => {
+      if (!r) setMobileMenuOpen(false);
+      return !r;
+    });
+  };
+
+  const handleMobileMenuClick = () => {
+    setMobileMenuOpen((open) => {
+      if (!open) setRotated(false);
+      return !open;
+    });
+  };
 
   return (
     <nav className={`${isHeroPage ? "" : "navbar-main"}`}>
@@ -43,7 +61,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 color: "black",
                 cursor: "pointer",
               }} 
-              onClick={() => setRotated((r) => !r)}
+              onClick={handleProfileClick}
             ></i>
           </div>
         </div>
@@ -51,11 +69,12 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
         <div className="show-on-mobile">
           <i
             className={`${mobileMenuOpen ? "bi bi-x" : "bi bi-list"} menu-toggle-icon`}
-            onClick={() => setMobileMenuOpen((open) => !open)}
+            onClick={handleMobileMenuClick}
           ></i>
           {mobileMenuOpen && (
             <div className="dropdown-menu dropdown-menu-style">
               <ul className="dropdown-menu-list dropdown-menu-list-style">
+                <li className="dropdown-menu-item dropdown-menu-item-style dropdown-menu-username">Nazwa użytkownika</li>
                 <li className="dropdown-menu-item dropdown-menu-item-style">Profil</li>
                 <li className="dropdown-menu-item dropdown-menu-item-style">Nowy post</li>
                 <li className="dropdown-menu-item dropdown-menu-item-style">Notyfikacje</li>
@@ -78,6 +97,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
         {rotated && (
           <div className="dropdown-menu dropdown-menu-style">
             <ul className="dropdown-menu-list dropdown-menu-list-style">
+              <li className="dropdown-menu-item dropdown-menu-item-style dropdown-menu-username">Nazwa użytkownika</li>
               <li className="dropdown-menu-item dropdown-menu-item-style">Profil</li>
               <li className="dropdown-menu-item dropdown-menu-item-style">Ustawienia</li>
               <li className="dropdown-menu-item dropdown-menu-item-style">Ciemny motyw</li>
