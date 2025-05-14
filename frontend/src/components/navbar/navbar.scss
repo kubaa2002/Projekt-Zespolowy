@@ -2,6 +2,7 @@
 @use "sass:map";
 @use "../../styles/colors" as colors;
 @use "../../styles/fonts" as fonts;
+
 //navbar
 .btn-register {
 	width: 190px;
@@ -16,13 +17,12 @@
 	&-post{
 		margin-right:4.83vw;
 	}
-
-	
 };
   
 .btn-login {
 	width: 120px;
 	height: 72px;
+	margin-right:2vw;
 	background-color: map.get(colors.$key-colors, white);
 	color: map.get(colors.$key-colors, black);
 	border: 1px solid map.get(colors.$key-colors, black);
@@ -38,8 +38,14 @@
 };
 
 .navbar {
-	padding-right: 2vw;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	background-color: transparent;
+	position: relative;
+	&-logged{
+		border-bottom: 3px solid map.get(colors.$navbar,border-gray-400);
+	}
 };
 
 .navbar-main {
@@ -89,4 +95,81 @@
 		height: 16px;
 		z-index: 2;
 	}
+}
+
+.navbar-searchbar-absolute {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.navbar-nav {
+  @include fonts.button-general-followed-buttons();
+  height: 46px; //nieco zmienione jak w design
+  background-color: map.get(colors.$key-colors,razacy-rozowy);
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+
+	.nav-item {
+		padding-left: 16px;
+		padding-right: 16px;
+		&-active {
+			border-bottom: 2px solid map.get(colors.$navbar, unchanged-black);
+			border-radius: 0;
+		}
+	}
+
+	.nav-link.active {
+		color: map.get(colors.$navbar, unchanged-black);
+	}
+	.nav-link.disabled {
+		color: map.get(colors.$text, obserwowane-groupimage-gray-500);
+	}
+}
+
+.hide-on-mobile {
+  display: flex;
+}
+.show-on-mobile {
+  display: none;
+}
+
+@media (max-width: 1600px) {
+  .hide-on-mobile {
+    display: none;
+  }
+  .show-on-mobile {
+    display: flex;
+  }
+}
+
+.dropdown-menu-item-style {
+  padding: 4px 16px;
+  cursor: pointer;
+}
+
+.dropdown-menu-list-style{
+	list-style: none;
+	margin: 0;
+	padding: 4px 0;
+}
+
+.dropdown-menu-style {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  min-width: 233px;
+  z-index: 3;
+  display: block;
+  background: white;
+  border: 1px solid #ccc;
+}
+
+.menu-toggle-icon {
+  font-size: 32px;
+  cursor: pointer;
+  margin-right: 1.25vw;
 }
