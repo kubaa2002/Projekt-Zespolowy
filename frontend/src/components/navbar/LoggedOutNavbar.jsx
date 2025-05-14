@@ -1,6 +1,6 @@
 export default function LoggedOutNavbar({ navigate, isHeroPage }) {
   return (
-  <nav className={`d-flex justify-content-between align-items-center navbar ${isHeroPage ? "" : "navbar-main"}`}>
+  <nav className={`navbar ${isHeroPage ? "" : "navbar-main"}`}>
     <div className="left-sidebar" style={{ visibility: isHeroPage ? "hidden" : "visible" }}>
       <div className="headline-navbar-title">
         <i className="bi bi-heart me-2"></i>
