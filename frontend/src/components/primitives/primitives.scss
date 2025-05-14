@@ -10,8 +10,8 @@
 }
 
 .search-group {
-    margin-right: 3.54vw;
     width: 41.67vw;
+    height: 72px;
     .form-control {
         @include fonts.basic-text();
         background-color: map.get(colors.$navbar,searchbar-code-gray-300); // kolor tła inputa

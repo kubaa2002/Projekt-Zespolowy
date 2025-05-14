@@ -7,9 +7,11 @@ export const Route = createFileRoute("/")({
 function Index() {
   const auth = useAuth();
   return (
-    <div>
+    <div className="form-container">
+      <div className="form-wrapper">
       <h2>Welcome to Home Page!</h2>
       {auth.userName && <h3>Welcome {auth.userName}!</h3>}
     </div>
+  </div>
   );
 }
