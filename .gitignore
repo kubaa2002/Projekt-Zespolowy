@@ -5,6 +5,5 @@ src/bin/
 *.suo
 *.vsp
 *.vspx
-/.vs/Projekt-Zespolowy
-/.vs/ProjectEvaluation
+.vs
 /src/.vs/Projekt-Zespolowy
