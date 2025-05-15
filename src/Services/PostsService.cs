@@ -40,7 +40,7 @@ namespace Projekt_Zespolowy.Services
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,foundPosts.GetRange(start, length));
         }
         public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId)
-        {
+        
             List<Post> foundPosts = posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == commnityId).ToList();
             // When no posts
             if (start > foundPosts.Count)
@@ -76,7 +76,7 @@ namespace Projekt_Zespolowy.Services
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
         }
 
-        public ServiceResponse<IEnumerable<Post>> GetAll()
+    public ServiceResponse<IEnumerable<Post>> GetAll()
         {
             var result = context.Posts.ToList();
             if (result.Count == 0)

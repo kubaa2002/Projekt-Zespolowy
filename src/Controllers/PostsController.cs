@@ -94,7 +94,6 @@ namespace Projekt_Zespolowy.Controllers
             else
                 return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
         }
-
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<PostDTO>), 200)]
         public IActionResult GetAll()
