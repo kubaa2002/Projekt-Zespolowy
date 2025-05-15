@@ -1,5 +1,7 @@
 src/obj/
 src/bin/
+/obj/
+/bin/
 .vscode/
 *.user
 *.suo
