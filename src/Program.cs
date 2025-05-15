@@ -72,88 +72,20 @@ app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.EnsureCreated();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        context.Database.Migrate(); // Stosuje oczekuj¹ce migracje
 
-    if(!dbContext.Users.Any())
-    {
-        dbContext.Users.AddRange(
-        new AppUser
-        {
-            Id = "1",
-            Nickname = "alice",
-        },
-        new AppUser
-        {
-            Id = "2",
-            Nickname = "bob",
-        },
-        new AppUser
-        {
-            Id="3",
-            Nickname = "charlie",
-        }
-
-    );
-        dbContext.SaveChanges();
+        // Tutaj potencjalnie mo¿esz wywo³aæ metodê do seedingu danych,
+        // jeœli nie robisz tego wy³¹cznie przez HasData w OnModelCreating
+        // np. SeedData.Initialize(services);
     }
-    if (!dbContext.Communities.Any())
+    catch (Exception ex)
     {
-        dbContext.Communities.AddRange(
-            new Community
-            {
-                Name = "General",
-                Description = "General discussions",
-                CreatedDateTime = DateTimeOffset.UtcNow,
-            },
-            new Community
-            {
-                Name = "Technology",
-                Description = "Tech discussions",
-                CreatedDateTime = DateTimeOffset.UtcNow,
-            }
-        );
-        dbContext.SaveChanges();
-    }
-    if (!dbContext.Posts.Any())
-    {
-        dbContext.Posts.AddRange(
-            new Post
-            {
-                Content = "Welcome to the General community!",
-                CreatedDateTime = DateTimeOffset.UtcNow,
-                AppUserId = "1", 
-                CommunityId = 1 
-            },
-            new Post
-            {
-                Content = "Latest tech trends",
-                CreatedDateTime = DateTimeOffset.UtcNow,
-                AppUserId = "2", 
-                CommunityId = 2 
-            }
-        );
-        dbContext.SaveChanges();
-    }
-    if (!dbContext.Likes.Any())
-    {
-        dbContext.Likes.AddRange(
-            new Like
-            {
-                AppUserId = "1", 
-                PostId = 1002, 
-                ReactionType = ReactionType.Like,
-                CreatedDateTime = DateTimeOffset.UtcNow
-            },
-            new Like
-            {
-                AppUserId = "2", 
-                PostId = 1003, 
-                ReactionType = ReactionType.Love,
-            
-            }
-        );
-        dbContext.SaveChanges();
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas migracji lub seedingu bazy danych.");
     }
 }
 
