@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   const [rotated, setRotated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 1600) {
@@ -34,7 +33,8 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   return (
     <nav className={`${isHeroPage ? "" : "navbar-main"}`}>
       <div className="navbar navbar-logged">
-        <div className="left-sidebar" style={{ visibility: isHeroPage ? "hidden" : "visible" }}>
+        {/* navigate to / or /hero? */}
+        <div className="left-sidebar" style={{ visibility: isHeroPage ? "hidden" : "visible" }} onClick={() => navigate({to: '/'})}>
           <div className="headline-navbar-title">
             <i className="bi bi-heart me-2"></i>
             Vibe
@@ -49,19 +49,18 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             <i className="bi bi-plus-circle me-2"></i>
             Nowy post
           </button>
-          <div className="notification-icon">
-            <i className="bi bi-bell-fill"></i>
+          <div className="notification-icon" style={{userSelect: "none", cursor:"pointer"}}>
+            <i className="bi bi-bell-fill" ></i>
             <img src="elipse.svg" alt="Elipse" className="elipse"/>
           </div>
-          <div className="profile">
+          <div className="profile" style={{userSelect: "none", cursor:"pointer"}} onClick={handleProfileClick}>
             <img src="avatar.svg" alt="Avatar"/>
             <i className="bi bi-triangle-fill"
               style={{
                 transform: rotated ? "rotate(0deg)" : "rotate(180deg)",
                 color: "black",
                 cursor: "pointer",
-              }} 
-              onClick={handleProfileClick}
+              }}  
             ></i>
           </div>
         </div>
@@ -77,8 +76,13 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 <li className="dropdown-menu-item dropdown-menu-item-style dropdown-menu-username">Nazwa użytkownika</li>
                 <li className="dropdown-menu-item dropdown-menu-item-style">Profil</li>
                 <li className="dropdown-menu-item dropdown-menu-item-style">Nowy post</li>
-                <li className="dropdown-menu-item dropdown-menu-item-style">Notyfikacje</li>
-                <li className="dropdown-menu-item dropdown-menu-item-style">Ustawienia</li>
+                <li className="dropdown-menu-item dropdown-menu-item-style">Powiadomienia</li>
+                <li className="dropdown-menu-item dropdown-menu-item-style" 
+                 onClick={() => {
+                  navigate({ to: "/settings" });
+                  setMobileMenuOpen(false);
+                 }}
+                >Ustawienia</li>
                 <li className="dropdown-menu-item dropdown-menu-item-style">Ciemny motyw</li>
                 <li
                   className="dropdown-menu-item dropdown-menu-item-style"
@@ -99,7 +103,10 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             <ul className="dropdown-menu-list dropdown-menu-list-style">
               <li className="dropdown-menu-item dropdown-menu-item-style dropdown-menu-username">Nazwa użytkownika</li>
               <li className="dropdown-menu-item dropdown-menu-item-style">Profil</li>
-              <li className="dropdown-menu-item dropdown-menu-item-style">Ustawienia</li>
+              <li className="dropdown-menu-item dropdown-menu-item-style" onClick={() => {
+                  navigate({ to: "/settings" });
+                  setMobileMenuOpen(false);
+                 }}>Ustawienia</li>
               <li className="dropdown-menu-item dropdown-menu-item-style">Ciemny motyw</li>
               <li
                 className="dropdown-menu-item dropdown-menu-item-style"

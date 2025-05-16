@@ -55,6 +55,8 @@
 .left-sidebar {
 	width: 27vw;
 	height: 100%;
+	user-select: none;
+	cursor: pointer;
 	color: map.get(colors.$key-colors, white);
 }
 
@@ -172,11 +174,6 @@
   padding: 0;
 }
 
-.dropdown-menu-username{
-	@include fonts.button-welcome-button-user-name();
-	border-bottom: 1px solid map.get(colors.$key-colors, razacy-rozowy);
-}
-
 .menu-toggle-icon {
   font-size: 32px;
   cursor: pointer;
@@ -185,4 +182,14 @@
 
 .dropdown-menu, .dropdown-menu-item, .profile, .notification-icon  {
   user-select: none;
+}
+.dropdown-menu-username{
+	@include fonts.button-welcome-button-user-name();
+	border-bottom: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+	cursor: auto;
+	user-select: text;
+}
+.dropdown-menu-item:not(.dropdown-menu-username):hover {
+  background-color: map.get(colors.$key-colors, razacy-rozowy);
+  color: map.get(colors.$key-colors, white);
 }
