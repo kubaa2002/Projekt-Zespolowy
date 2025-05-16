@@ -4,7 +4,7 @@ import axios from "axios";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [userName, setUserName] = useState(null);
+  const [userName, setUserName] = useState(null); // userName won't be necessary in the future
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const loginAction = async (email, password) => {
     const response = await axios.post("http://localhost:5192/user/login", {
@@ -65,7 +65,7 @@ const AuthProvider = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{ token, userName, loginAction, registerAction, validateAction, logOut }}>
+    <AuthContext.Provider value={{ token, loginAction, registerAction, validateAction, logOut, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
