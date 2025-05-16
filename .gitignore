@@ -1,13 +1,11 @@
 src/obj/
 src/bin/
-/obj/
-/bin/
+docker/obj/
+docker/bin/
 .vscode/
+/src/.vs
+/.vs
 *.user
 *.suo
 *.vsp
 *.vspx
-/.vs/Projekt-Zespolowy
-/.vs/ProjectEvaluation
-/src/.vs/Projekt-Zespolowy
-/.vs
