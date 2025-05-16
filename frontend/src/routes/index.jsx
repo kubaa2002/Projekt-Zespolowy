@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useAuth } from "../contexts/authProvider";
 export const Route = createFileRoute("/")({
   component: Index,
@@ -9,9 +9,9 @@ function Index() {
   return (
     <div className="form-container">
       <div className="form-wrapper">
-      <h2>Welcome to Home Page!</h2>
-      {auth.userName && <h3>Welcome {auth.userName}!</h3>}
+        <h2>Welcome to Home Page!</h2>
+        {auth.userName && <h3>Welcome {auth.userName}!</h3>}
+      </div>
     </div>
-  </div>
   );
 }

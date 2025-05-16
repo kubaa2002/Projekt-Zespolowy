@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignupImport } from './routes/signup'
+import { Route as SettingsImport } from './routes/settings'
 import { Route as PostsImport } from './routes/posts'
 import { Route as LoginImport } from './routes/login'
 import { Route as HeroImport } from './routes/hero'
@@ -22,6 +23,12 @@ import { Route as IndexImport } from './routes/index'
 const SignupRoute = SignupImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SettingsRoute = SettingsImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,6 +88,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsImport
       parentRoute: typeof rootRoute
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsImport
+      parentRoute: typeof rootRoute
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -98,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/posts': typeof PostsRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
 }
 
@@ -106,6 +121,7 @@ export interface FileRoutesByTo {
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/posts': typeof PostsRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
 }
 
@@ -115,15 +131,16 @@ export interface FileRoutesById {
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/posts': typeof PostsRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/hero' | '/login' | '/posts' | '/signup'
+  fullPaths: '/' | '/hero' | '/login' | '/posts' | '/settings' | '/signup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/hero' | '/login' | '/posts' | '/signup'
-  id: '__root__' | '/' | '/hero' | '/login' | '/posts' | '/signup'
+  to: '/' | '/hero' | '/login' | '/posts' | '/settings' | '/signup'
+  id: '__root__' | '/' | '/hero' | '/login' | '/posts' | '/settings' | '/signup'
   fileRoutesById: FileRoutesById
 }
 
@@ -132,6 +149,7 @@ export interface RootRouteChildren {
   HeroRoute: typeof HeroRoute
   LoginRoute: typeof LoginRoute
   PostsRoute: typeof PostsRoute
+  SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
 }
 
@@ -140,6 +158,7 @@ const rootRouteChildren: RootRouteChildren = {
   HeroRoute: HeroRoute,
   LoginRoute: LoginRoute,
   PostsRoute: PostsRoute,
+  SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
 }
 
@@ -157,6 +176,7 @@ export const routeTree = rootRoute
         "/hero",
         "/login",
         "/posts",
+        "/settings",
         "/signup"
       ]
     },
@@ -171,6 +191,9 @@ export const routeTree = rootRoute
     },
     "/posts": {
       "filePath": "posts.jsx"
+    },
+    "/settings": {
+      "filePath": "settings.jsx"
     },
     "/signup": {
       "filePath": "signup.jsx"
