@@ -11,13 +11,15 @@ namespace Projekt_Zespolowy.Posts
         public DateTimeOffset CreatedDateTime { get; set; }
         public int? ParentId { get; set; }
         public bool IsDeleted { get; set; }
+
+        public ICollection<Like> Likes { get; set; }
         public static implicit operator PostDTO(Post? p)
         {
-            return new PostDTO() { Id = p.Id, Content = p.Content, CommunityId = p.CommunityId, AuthorId = p.AppUserId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId };
+            return new PostDTO() { Id = p.Id, Content = p.Content, CommunityId = p.CommunityId, AuthorId = p.AppUserId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId, Likes = p.Likes};
         }
         public static implicit operator Post(PostDTO? p)
         {
-            return new Post() { Id = p.Id, CommunityId = p.CommunityId, Content = p.Content, AppUserId = p.AuthorId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId };
+            return new Post() { Id = p.Id, CommunityId = p.CommunityId, Content = p.Content, AppUserId = p.AuthorId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId, Likes = p.Likes };
         }
     }
 }
