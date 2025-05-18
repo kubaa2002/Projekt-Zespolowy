@@ -39,7 +39,7 @@
 
 .btn-welcome {
 	@include fonts.button-welcome-button-user-name();
-	width: 393px;
+	max-width: 393px;
 	border-radius: 60px;
 	margin-top:31px;
 	background-color: map.get(colors.$key-colors, black);

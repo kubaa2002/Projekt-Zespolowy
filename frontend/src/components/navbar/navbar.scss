@@ -38,11 +38,7 @@
 };
 
 .navbar {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 	background-color: transparent;
-	position: relative;
 	&-logged{
 		border-bottom: 3px solid map.get(colors.$navbar,border-gray-400);
 	}
@@ -75,6 +71,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	user-select: none;
+	cursor: pointer;
 }
 
 .notification-icon {
@@ -83,6 +81,8 @@
 	align-items: center;
 	justify-content: center;
 	margin-right: 1.13vw;
+	user-select: none;
+	cursor: pointer;
 
 	i{
 		font-size: 32px;
@@ -148,19 +148,19 @@
   }
 }
 
-.dropdown-menu-item-style {
+.dropdown-menu-item {
   padding: 4px 16px;
   cursor: pointer;
   @include fonts.basic-text();
 }
 
-.dropdown-menu-list-style{
+.dropdown-menu-list{
 	list-style: none;
 	margin: 0;
 	padding: 0 0;
 }
 
-.dropdown-menu-style {
+.dropdown-menu {
   position: absolute;
   right: 0;
   top: 100%;
