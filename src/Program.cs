@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Models;
 using Projekt_Zespolowy.Services;
 using System.Text;
 
@@ -12,7 +14,9 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<RevokedTokenFilter>();
 });
 
-builder.Services.AddDbContext<AppDbContext>();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentityCore<AppUser>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -75,8 +79,43 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        
+        var context = services.GetRequiredService<AppDbContext>();
+        context.Database.CanConnect();
+        if(context.Database.HasPendingModelChanges())
+        {
+            foreach (var migration in context.Database.GetPendingMigrations()) 
+            {
+                Console.WriteLine(migration);
+            }
+            context.Database.Migrate(); // Stosuje oczekuj¹ce migracje
+        }
+
+
+        // Tutaj potencjalnie mo¿esz wywo³aæ metodê do seedingu danych,
+        // jeœli nie robisz tego wy³¹cznie przez HasData w OnModelCreating
+        // np. SeedData.Initialize(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas migracji lub seedingu bazy danych.");
+    }
+}
+
+
 
 app.MapGet("/", () => "Hello World!");
+
+app.MapGet("/posty", async (AppDbContext db) => await db.Posts.ToListAsync());
+app.MapGet("/reakcje", async (AppDbContext db) => await db.Likes.ToListAsync());
+
+
 app.MapControllers();
 
 app.Run();

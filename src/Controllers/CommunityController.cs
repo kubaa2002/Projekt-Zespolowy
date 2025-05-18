@@ -38,14 +38,14 @@ public class CommunityController : ControllerBase
         if (user == null) return Unauthorized();
 
         var alreadyMember = await _dbContext.CommunityMembers
-            .AnyAsync(cm => cm.CommunityId == communityId && cm.UserId == user.Id);
+            .AnyAsync(cm => cm.CommunityId == communityId && cm.AppUserId == user.Id);
 
         if (!alreadyMember)
         {
             _dbContext.CommunityMembers.Add(new CommunityMember
             {
                 CommunityId = communityId,
-                UserId = user.Id,
+                AppUserId = user.Id,
                 Role = "member",
                 JoinedDateTime = DateTimeOffset.UtcNow
             });
@@ -66,7 +66,7 @@ public class CommunityController : ControllerBase
         if (user == null) return Unauthorized();
 
         var membership = await _dbContext.CommunityMembers
-            .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.UserId == user.Id);
+            .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.AppUserId == user.Id);
 
         if (membership == null) return NotFound();
 
@@ -86,7 +86,7 @@ public class CommunityController : ControllerBase
         if (user == null) return Unauthorized();
 
         var member = await _dbContext.CommunityMembers
-            .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.UserId == user.Id);
+            .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.AppUserId == user.Id);
 
         return Ok(new
         {
@@ -111,7 +111,7 @@ public class CommunityController : ControllerBase
         if (user == null) return Unauthorized();
 
         var member = await _dbContext.CommunityMembers
-            .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.UserId == user.Id);
+            .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.AppUserId == user.Id);
 
         if (member == null || (member.Role != "owner" && member.Role != "moderator"))
             return Forbid();
@@ -149,7 +149,7 @@ public class CommunityController : ControllerBase
         _dbContext.CommunityMembers.Add(new CommunityMember
         {
             CommunityId = community.Id,
-            UserId = user.Id,
+            AppUserId = user.Id,
             Role = "owner",
             JoinedDateTime = DateTimeOffset.UtcNow
         });
