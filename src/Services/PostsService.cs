@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Posts;
+using Projekt_Zespolowy.Models;
 
 namespace Projekt_Zespolowy.Services
 {
@@ -13,15 +14,9 @@ namespace Projekt_Zespolowy.Services
     public class PostsService : Controller
     {
         AppDbContext context;
-        List<Post> posts;
         public PostsService(AppDbContext context)
         {
             this.context = context;
-            posts = new List<Post>();
-            for (int i = 0; i < 150; i++)
-            {
-                posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = i%12 >= 8 ? null : i/12, AuthorId = i%16, ParentId = i%4 == 0 ? null : i/4, CreatedDateTime = DateTime.UtcNow});
-            }
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
         {
@@ -29,7 +24,7 @@ namespace Projekt_Zespolowy.Services
             //ale jeśli jakieś posty zostałyby usunięte doprowadziłoby to do wyświetlenie mniejszej liczby postów niż length, nie sądzę,
             //żeby było to docelowe działanie
             //context.Posts.Where(x => x.Id >= start && x.Id < start + length); <--- to o czym myślę
-            List<Post> foundPosts = posts.Where(x => x.ParentId == null).ToList();
+            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
@@ -39,9 +34,9 @@ namespace Projekt_Zespolowy.Services
             // When ok
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,foundPosts.GetRange(start, length));
         }
-        public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId)
-        
-            List<Post> foundPosts = posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == commnityId).ToList();
+        public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId) 
+        { 
+            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == commnityId).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
@@ -51,9 +46,9 @@ namespace Projekt_Zespolowy.Services
             // When ok
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
         }
-        public ServiceResponse<List<Post>> GetPostsFromRangeFromUser(int start, int length, int authorId)
+        public ServiceResponse<List<Post>> GetPostsFromRangeFromUser(int start, int length, string authorId)
         {
-            List<Post> foundPosts = posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == null).Where(x => x.AuthorId == authorId).ToList();
+            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == null).Where(x => x.AppUserId == authorId).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
@@ -65,7 +60,7 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<List<Post>> GetCommentsFromRangeFromPost(int start, int length, int parentId)
         {
-            List<Post> foundPosts = posts.Where(x => x.ParentId == parentId).ToList();
+            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == parentId).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
@@ -101,6 +96,8 @@ namespace Projekt_Zespolowy.Services
         public ServiceResponse<Post> Add(PostDTO newPost)
         {
             Post post = newPost;
+            if (post.CreatedDateTime == default)
+                post.CreatedDateTime = DateTimeOffset.UtcNow;
             if (post.Content.Length > 2000)
             {
                 return new ServiceResponse<Post>(StatusCodes.Status413PayloadTooLarge, null);
@@ -118,21 +115,20 @@ namespace Projekt_Zespolowy.Services
             }
             else
             {
-                posts.Add(post); //do usunięcia po przejściu na bazę danych
                 context.Posts.Add(post);
-                //context.SaveChanges();
+                context.SaveChanges();
                 return new ServiceResponse<Post>(StatusCodes.Status201Created, post);
             }
         }
         public ServiceResponse<Post> AddInCommunity(int community_id, PostDTO newPost)
         {
-            //var result = context.Communities.SingleOrDefault(x => x.Id == community_id);
-            //if (result == default)
-            //{
-            //    Console.WriteLine("Community does not exist!");
-            //    return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
-            //}
-            //else
+            var result = context.Communities.SingleOrDefault(x => x.Id == community_id);
+            if (result == default)
+            {
+                Console.WriteLine("Community does not exist!");
+                return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
+            }
+            else
                 return Add(newPost);
         }
         public ServiceResponse<Post> AddComment(int parent_id, PostDTO newPost)
@@ -162,15 +158,9 @@ namespace Projekt_Zespolowy.Services
             {
                 return new ServiceResponse<Post>(StatusCodes.Status400BadRequest, null);
             }
-            else
-            {
-                int index = posts.FindIndex(c => c.Id == newPost.Id); //do usunięcia po przejściu na bazę danych
-                if (index != -1) posts[index] = post;
-
-                context.Posts.Update(post);
-                //context.SaveChanges();
-                return new ServiceResponse<Post>(StatusCodes.Status200OK, post);
-            }
+            context.Posts.Update(post);
+            context.SaveChanges();
+            return new ServiceResponse<Post>(StatusCodes.Status200OK, post);
         }
         /// <summary>
         /// Changes the value of IsDeleted property to True.
@@ -178,36 +168,24 @@ namespace Projekt_Zespolowy.Services
         /// <param name="newPost"> A DTO record that shall be deleted.</param>
         public ServiceResponse<Post> Delete(int id, PostDTO newPost)
         {
-            //var post = context.Posts.SingleOrDefault(x => x.Id == id);
-            //if (post == default)
-            //{
-            //    return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
-            //}
-            //else
-            //{ 
-            //    post.IsDeleted = true;
-            //    return Update(post); //można później zmienić aby nie dublować wywoływania metod
-            //}
-            Post post = newPost;
+            var post = context.Posts.SingleOrDefault(x => x.Id == id);
+            if (post == default)
+            {
+                return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
+            }
             post.IsDeleted = true;
-            return Update(post);
+            return Update(post); //można później zmienić aby nie dublować wywoływania metod
         }
 
         public ServiceResponse<Post> UndoDelete(int id, PostDTO newPost)
         {
-            //var post = context.Posts.SingleOrDefault(x => x.Id == id);
-            //if (post == default)
-            //{
-            //    return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
-            //}
-            //else
-            //{ 
-            //    post.IsDeleted = false;
-            //    return Update(post); //można później zmienić aby nie dublować wywoływania metod
-            //}
-            Post post = newPost;
+            var post = context.Posts.SingleOrDefault(x => x.Id == id);
+            if (post == default)
+            {
+                return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
+            }
             post.IsDeleted = false;
-            return Update(post);
+            return Update(post); //można później zmienić aby nie dublować wywoływania metod
         }
     }
 }

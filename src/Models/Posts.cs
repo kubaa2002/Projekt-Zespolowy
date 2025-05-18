@@ -22,6 +22,8 @@ namespace Projekt_Zespolowy.Models
 
         [Required]
         public string AppUserId { get; set; } = string.Empty;
+        [Required]
+        public bool IsDeleted { get; set; } = false;
         [ForeignKey("AppUserId")]
         public virtual AppUser? Author { get; set; }
 

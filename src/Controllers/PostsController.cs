@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt_Zespolowy.Services;
 using Projekt_Zespolowy.Posts;
+using Projekt_Zespolowy.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Projekt_Zespolowy.Authentication;
 
@@ -53,7 +54,7 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
         }
         [HttpGet("user/{authorId}")]
-        public IActionResult UserPosts(int authorId, int page, int pageSize)
+        public IActionResult UserPosts(string authorId, int page, int pageSize)
         {
             // Here should go a chech whether the user exists or not, but I am not sure what user it is supposed to be
             // as in newer files there showes up something called community user, and we already have app user
@@ -124,7 +125,7 @@ namespace Projekt_Zespolowy.Controllers
             }
         }
 
-        [HttpPost("/community/{community_id}")]
+        [HttpPost("community/{community_id}")]
         public IActionResult PostInCommunity(int community_id, [FromBody] PostDTO postDTO)
         {
             var response = postsService.AddInCommunity(community_id, postDTO);
@@ -141,7 +142,7 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(response.ResponseCode);
             }
         }
-        [HttpPost("/{parent_id}")]
+        [HttpPost("{parent_id}")]
         public IActionResult PostAsComment(int parent_id, [FromBody] PostDTO postDTO)
         {
             var response = postsService.AddComment(parent_id, postDTO);
