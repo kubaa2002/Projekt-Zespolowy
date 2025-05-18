@@ -14,8 +14,8 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<RevokedTokenFilter>();
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentityCore<AppUser>()
@@ -84,10 +84,18 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        
+        var count = DateTime.UtcNow;
         var context = services.GetRequiredService<AppDbContext>();
-        context.Database.CanConnect();
-        if(context.Database.HasPendingModelChanges())
+        while (context.Database.CanConnect() == false)
+        {
+            context = services.GetRequiredService<AppDbContext>();
+            //Console.WriteLine(context.Database.CanConnect());
+            if (DateTime.UtcNow - count > TimeSpan.FromSeconds(30))
+                throw new Exception("Database took too long");
+        }
+        Console.WriteLine(context.Database.CanConnect());
+        var c = await context.Database.GetPendingMigrationsAsync();
+        if (c.Any())
         {
             foreach (var migration in context.Database.GetPendingMigrations()) 
             {
