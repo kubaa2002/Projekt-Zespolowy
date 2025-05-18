@@ -15,6 +15,7 @@ builder.Services.AddControllers(options =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentityCore<AppUser>()
@@ -75,8 +76,18 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
+        
         var context = services.GetRequiredService<AppDbContext>();
-        context.Database.Migrate(); // Stosuje oczekuj¹ce migracje
+        context.Database.CanConnect();
+        if(context.Database.HasPendingModelChanges())
+        {
+            foreach (var migration in context.Database.GetPendingMigrations()) 
+            {
+                Console.WriteLine(migration);
+            }
+            context.Database.Migrate(); // Stosuje oczekuj¹ce migracje
+        }
+
 
         // Tutaj potencjalnie mo¿esz wywo³aæ metodê do seedingu danych,
         // jeœli nie robisz tego wy³¹cznie przez HasData w OnModelCreating
