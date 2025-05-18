@@ -24,8 +24,8 @@ public class UserController : ControllerBase
         _dbContext = dbContext;
     }
 
-    [HttpPost("validate")]
-    public async Task<IActionResult> Validate([FromBody] AddOrUpdateAppUserModel model)
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] AddOrUpdateAppUserModel model)
     {
         if (ModelState.IsValid)
         {
@@ -43,19 +43,7 @@ public class UserController : ControllerBase
                 errors.Errors["Email"] = new List<string> { "Nie można użyć tego adresu email" };
                 return BadRequest(errors);
             }
-        }
-        else if(!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        return Ok();
-    }
-
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] AddOrUpdateAppUserModel model)
-    {
-        if(ModelState.IsValid)
-        {
+            
             var user = new AppUser
             {
                 UserName = model.UserName,
@@ -64,6 +52,7 @@ public class UserController : ControllerBase
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
+            
             if (result.Succeeded)
             {
                 var token = GenerateToken(model.UserName);
@@ -75,9 +64,9 @@ public class UserController : ControllerBase
                 ModelState.AddModelError("", error.Description);
             }
         }
+
         return BadRequest(ModelState);
     }
-
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)

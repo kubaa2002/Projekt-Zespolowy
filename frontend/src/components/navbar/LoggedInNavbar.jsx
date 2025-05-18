@@ -49,11 +49,11 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             <i className="bi bi-plus-circle me-2"></i>
             Nowy post
           </button>
-          <div className="notification-icon" style={{userSelect: "none", cursor:"pointer"}}>
+          <div className="notification-icon">
             <i className="bi bi-bell-fill" ></i>
             <img src="elipse.svg" alt="Elipse" className="elipse"/>
           </div>
-          <div className="profile" style={{userSelect: "none", cursor:"pointer"}} onClick={handleProfileClick}>
+          <div className="profile" onClick={handleProfileClick}>
             <img src="avatar.svg" alt="Avatar"/>
             <i className="bi bi-triangle-fill"
               style={{
@@ -71,21 +71,21 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             onClick={handleMobileMenuClick}
           ></i>
           {mobileMenuOpen && (
-            <div className="dropdown-menu dropdown-menu-style">
-              <ul className="dropdown-menu-list dropdown-menu-list-style">
-                <li className="dropdown-menu-item dropdown-menu-item-style dropdown-menu-username">Nazwa użytkownika</li>
-                <li className="dropdown-menu-item dropdown-menu-item-style">Profil</li>
-                <li className="dropdown-menu-item dropdown-menu-item-style">Nowy post</li>
-                <li className="dropdown-menu-item dropdown-menu-item-style">Powiadomienia</li>
-                <li className="dropdown-menu-item dropdown-menu-item-style" 
+            <div className="dropdown-menu">
+              <ul className="dropdown-menu-list">
+                <li className="dropdown-menu-item dropdown-menu-username">Nazwa użytkownika</li>
+                <li className="dropdown-menu-item">Profil</li>
+                <li className="dropdown-menu-item">Nowy post</li>
+                <li className="dropdown-menu-item">Powiadomienia</li>
+                <li className="dropdown-menu-item" 
                  onClick={() => {
                   navigate({ to: "/settings" });
                   setMobileMenuOpen(false);
                  }}
                 >Ustawienia</li>
-                <li className="dropdown-menu-item dropdown-menu-item-style">Ciemny motyw</li>
+                <li className="dropdown-menu-item">Ciemny motyw</li>
                 <li
-                  className="dropdown-menu-item dropdown-menu-item-style"
+                  className="dropdown-menu-item"
                   onClick={() => {
                     logOut();
                     navigate({ to: "/login" });
@@ -99,17 +99,17 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
         </div>
         {/* Dropdown na desktopie */}
         {rotated && (
-          <div className="dropdown-menu dropdown-menu-style">
-            <ul className="dropdown-menu-list dropdown-menu-list-style">
-              <li className="dropdown-menu-item dropdown-menu-item-style dropdown-menu-username">Nazwa użytkownika</li>
-              <li className="dropdown-menu-item dropdown-menu-item-style">Profil</li>
-              <li className="dropdown-menu-item dropdown-menu-item-style" onClick={() => {
+          <div className="dropdown-menu">
+            <ul className="dropdown-menu-list">
+              <li className="dropdown-menu-item dropdown-menu-username">Nazwa użytkownika</li>
+              <li className="dropdown-menu-item">Profil</li>
+              <li className="dropdown-menu-item" onClick={() => {
                   navigate({ to: "/settings" });
                   setMobileMenuOpen(false);
                  }}>Ustawienia</li>
-              <li className="dropdown-menu-item dropdown-menu-item-style">Ciemny motyw</li>
+              <li className="dropdown-menu-item">Ciemny motyw</li>
               <li
-                className="dropdown-menu-item dropdown-menu-item-style"
+                className="dropdown-menu-item"
                 onClick={() => {
                   logOut();
                   navigate({ to: "/login" });
