@@ -76,12 +76,21 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        
+
+        var count = DateTime.UtcNow;
         var context = services.GetRequiredService<AppDbContext>();
-        context.Database.CanConnect();
-        if(context.Database.HasPendingModelChanges())
+        while (context.Database.CanConnect() == false)
         {
-            foreach (var migration in context.Database.GetPendingMigrations()) 
+            context = services.GetRequiredService<AppDbContext>();
+            //Console.WriteLine(context.Database.CanConnect());
+            if (DateTime.UtcNow - count > TimeSpan.FromSeconds(30))
+                throw new Exception("Database took too long");
+        }
+        Console.WriteLine(context.Database.CanConnect());
+        var c = await context.Database.GetPendingMigrationsAsync();
+        if (c.Any())
+        {
+            foreach (var migration in context.Database.GetPendingMigrations())
             {
                 Console.WriteLine(migration);
             }
