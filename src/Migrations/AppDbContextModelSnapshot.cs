@@ -237,7 +237,7 @@ namespace Projekt_Zespolowy.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RevokedTokens");
+                    b.ToTable("RevokedTokens", (string)null);
                 });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Community", b =>
