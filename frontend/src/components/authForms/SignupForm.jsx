@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../../contexts/authProvider";
 import { Link } from "@tanstack/react-router";
 import PasswordInput from "../primitives/PasswordInput";
+import { validateRegister } from "../../contexts/registerValidation";
 
 const SignupForm = () => {
   const [email, setEmail] = useState("");
@@ -21,68 +22,49 @@ const SignupForm = () => {
   const navigate = useNavigate();
   const auth = useAuth();
 
- const passwordsMatch = () => password === confirmPassword;
+  const validateRealtime = () => {
+    const errors = validateRegister({ username, email, password, confirmPassword });
 
- const processErrors = (error) => {
-   if(error.response){
-     const errors = error.response?.data?.errors || {};
-     setEmailError(errors.Email?.[0] || "");
-     setUsernameError(errors.UserName?.[0] || "");
-     setPasswordError(errors.Password?.[0] || "");
-     setIsPasswordValid(!errors.Password?.[0]);
-     setIsUsernameValid(false);
-     setIsEmailValid(false);
-   }
-   else{
-    setErrorMessage("Failed to connect to the server");
-   }
- };
+    setEmailError(errors.email || "");
+    setUsernameError(errors.username || "");
+    setPasswordError(errors.password || "");
+    setConfirmPasswordError(errors.confirmPassword || "");
 
- const validateSignup = async () => {
-   let valid = true;
-   if (!passwordsMatch()) { //local validation
-     setConfirmPasswordError("Hasła muszą być takie same");
-     valid = false;
-   }
-   else{
-     setConfirmPasswordError("");
-   }
-   try {
-      await auth.validateAction(email, username, password);
-      setUsernameError("");
-      setIsUsernameValid(true);
-      setEmailError("");
-      setIsEmailValid(true);
-      setPasswordError("");
-      setIsPasswordValid(true);
-   } catch (error) {
-     processErrors(error);
-     valid = false;
-   } finally {
-    setIsFormValid(valid);
-   }
- };
+    setIsEmailValid(!errors.email && !!email);
+    setIsUsernameValid(!errors.username && !!username);
+    setIsPasswordValid(!errors.password && !!password);
+    setIsFormValid(Object.keys(errors).length === 0);
+  }
 
- useEffect(() => {
+  useEffect(() => {
    const timer = setTimeout(async () => {
      if (username || email || password || confirmPassword) {
-       validateSignup();
+       validateRealtime();
      }
    }, 500);
    return () => clearTimeout(timer);
  }, [username, email, password, confirmPassword]);
 
  const handleSubmit = async (e) => {
-   e.preventDefault();
-   try {
-     const response = await auth.registerAction(email, username, password);
-     if(response.status === 201) {
-       navigate({ to: "/" });
-     }
-   } catch (error) {
-     processErrors(error);
-   }
- };
+    e.preventDefault();
+    try {
+      const response = await auth.registerAction(email, username, password);
+      if (response.status === 201) {
+        navigate({ to: "/" });
+      }
+    } catch (error) {
+      setIsFormValid(false);
+      if (error.response) {
+        const errors = error.response.data.errors || {};
+    
+        setEmailError(errors.Email?.[0]|| "");
+        setUsernameError(errors.UserName?.[0]|| "");
+        setPasswordError(errors.Password?.[0] || "");
+      } else {
+        setErrorMessage("Failed to connect to the server");
+      }
+    }
+  };
 
   return (
     <div className="form-container">

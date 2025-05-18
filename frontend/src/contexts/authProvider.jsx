@@ -28,15 +28,7 @@ const AuthProvider = ({ children }) => {
     setUserName(userName);
     setToken(token);
     return response;
-  }
-  const validateAction = async (email, username, password) => {
-    await axios.post("http://localhost:5192/user/validate", {
-      email,
-      username,
-      password,
-    });
-  }
-
+  };
   const logOut = () => {
     setUserName(null);
     setToken("");
@@ -65,7 +57,7 @@ const AuthProvider = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{ token, loginAction, registerAction, validateAction, logOut, isAuthenticated }}>
+    <AuthContext.Provider value={{ token, loginAction, registerAction, logOut, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
