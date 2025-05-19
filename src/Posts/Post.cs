@@ -1,4 +1,5 @@
 ﻿using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Models;
 
 namespace Projekt_Zespolowy.Posts
 {
