@@ -1,5 +1,16 @@
 import { useRef, useState } from "react";
 
+
+const SideNav = () => {
+    return (
+        <div className="side-wrapper">
+            <div className="side-list-wrapper">
+                <h2>Hello</h2>
+            </div>
+        </div>
+    );
+}
+
 export default function Main() {
     const [rotated, setRotated] = useState(false);
     const [showSort, setShowSort] = useState(false);
@@ -23,6 +34,7 @@ export default function Main() {
     return (
         <>
             <div className="main-container">
+                <SideNav />
                 <div className="main-wrapper">
                     <div className="main-think">
                         <img src="avatar.svg" alt="Avatar" className="avatar" />
