@@ -39,7 +39,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             <i className="bi bi-heart me-2"></i>
             Vibe
           </div>
-          <div className="navbar-subtitle">We absoluty do not copy reddit</div>
+          <div className="navbar-subtitle">We absolutely do not copy reddit</div>
         </div>
         <div className="navbar-searchbar-absolute">
           <SearchInput />
@@ -71,11 +71,12 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             onClick={handleMobileMenuClick}
           ></i>
           {mobileMenuOpen && (
-            <div className="dropdown-menu">
+            <div className="dropdown-menu-profile">
               <ul className="dropdown-menu-list">
                 <li className="dropdown-menu-item dropdown-menu-username">Nazwa użytkownika</li>
                 <li className="dropdown-menu-item">Profil</li>
                 <li className="dropdown-menu-item">Nowy post</li>
+                <li className="dropdown-menu-item">Stwórz społeczność</li>
                 <li className="dropdown-menu-item">Powiadomienia</li>
                 <li className="dropdown-menu-item" 
                  onClick={() => {
@@ -99,10 +100,11 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
         </div>
         {/* Dropdown na desktopie */}
         {rotated && (
-          <div className="dropdown-menu">
+          <div className="dropdown-menu-profile">
             <ul className="dropdown-menu-list">
               <li className="dropdown-menu-item dropdown-menu-username">Nazwa użytkownika</li>
               <li className="dropdown-menu-item">Profil</li>
+              <li className="dropdown-menu-item">Stwórz społeczność</li>
               <li className="dropdown-menu-item" onClick={() => {
                   navigate({ to: "/settings" });
                   setMobileMenuOpen(false);
@@ -123,7 +125,11 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
       </div>
       <ul className="navbar-nav">
         <li className="nav-item nav-item-active">
-          <button type="button" className="nav-link active">
+          <button
+            type="button"
+            className="nav-link active"
+            onClick={() => navigate({ to: "/" })}
+          >
             Ogólne
           </button>
         </li>
