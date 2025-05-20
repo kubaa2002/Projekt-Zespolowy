@@ -1,17 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useAuth } from "../contexts/authProvider";
+import Main from '../components/main/Main.jsx';
+
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
-  const auth = useAuth();
   return (
-    <div className="form-container">
-      <div className="form-wrapper">
-        <h2>Welcome to Home Page!</h2>
-        {auth.userName && <h3>Welcome {auth.userName}!</h3>}
-      </div>
-    </div>
+    <Main />
   );
 }

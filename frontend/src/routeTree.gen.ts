@@ -16,6 +16,7 @@ import { Route as SettingsImport } from './routes/settings'
 import { Route as PostsImport } from './routes/posts'
 import { Route as LoginImport } from './routes/login'
 import { Route as HeroImport } from './routes/hero'
+import { Route as CreateImport } from './routes/create'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
@@ -50,6 +51,12 @@ const HeroRoute = HeroImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CreateRoute = CreateImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
@@ -65,6 +72,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/create': {
+      id: '/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof CreateImport
       parentRoute: typeof rootRoute
     }
     '/hero': {
@@ -109,6 +123,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/posts': typeof PostsRoute
@@ -118,6 +133,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/posts': typeof PostsRoute
@@ -128,6 +144,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/posts': typeof PostsRoute
@@ -137,15 +154,31 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/hero' | '/login' | '/posts' | '/settings' | '/signup'
+  fullPaths:
+    | '/'
+    | '/create'
+    | '/hero'
+    | '/login'
+    | '/posts'
+    | '/settings'
+    | '/signup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/hero' | '/login' | '/posts' | '/settings' | '/signup'
-  id: '__root__' | '/' | '/hero' | '/login' | '/posts' | '/settings' | '/signup'
+  to: '/' | '/create' | '/hero' | '/login' | '/posts' | '/settings' | '/signup'
+  id:
+    | '__root__'
+    | '/'
+    | '/create'
+    | '/hero'
+    | '/login'
+    | '/posts'
+    | '/settings'
+    | '/signup'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreateRoute: typeof CreateRoute
   HeroRoute: typeof HeroRoute
   LoginRoute: typeof LoginRoute
   PostsRoute: typeof PostsRoute
@@ -155,6 +188,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreateRoute: CreateRoute,
   HeroRoute: HeroRoute,
   LoginRoute: LoginRoute,
   PostsRoute: PostsRoute,
@@ -173,6 +207,7 @@ export const routeTree = rootRoute
       "filePath": "__root.jsx",
       "children": [
         "/",
+        "/create",
         "/hero",
         "/login",
         "/posts",
@@ -182,6 +217,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.jsx"
+    },
+    "/create": {
+      "filePath": "create.jsx"
     },
     "/hero": {
       "filePath": "hero.jsx"
