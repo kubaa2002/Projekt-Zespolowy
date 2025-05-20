@@ -6,10 +6,9 @@ export const Route = createFileRoute('/settings')({
 
 function RouteComponent() {
   return (
-    <div className="form-container">
-      <div className="form-wrapper">
-        <h2>Settings page</h2>
-
+    <div className="centered-container">
+      <div className="form-container">
+          <h2>Settings page</h2>
       </div>
     </div>
   )

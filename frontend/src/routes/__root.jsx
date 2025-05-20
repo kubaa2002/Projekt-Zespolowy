@@ -19,9 +19,7 @@ function rootComponent() {
   return (
     <div className="root-container">
       <Navbar />
-      <div className="centered-container">
-        <Outlet />
-      </div>
+      <Outlet />
       <TanStackRouterDevtools />
     </div>
   );

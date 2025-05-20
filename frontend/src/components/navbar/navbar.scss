@@ -80,12 +80,12 @@
 	display:flex;
 	align-items: center;
 	justify-content: center;
-	margin-right: 1.13vw;
+	margin-right: 1.35vw;
 	user-select: none;
 	cursor: pointer;
 
 	i{
-		font-size: 32px;
+		font-size: 35px;
 		position: relative;
 		color: map.get(colors.$navbar, unchanged-black);
 	}
@@ -160,7 +160,7 @@
 	padding: 0 0;
 }
 
-.dropdown-menu {
+.dropdown-menu-profile {
   position: absolute;
   right: 0;
   top: 100%;
@@ -170,7 +170,7 @@
   background: map.get(colors.$key-colors, white);
   border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
   border-right: none;
-  border-radius: 0 ;
+  border-radius: 0;
   padding: 0;
 }
 
@@ -180,7 +180,7 @@
   margin-right: 1.25vw;
 }
 
-.dropdown-menu, .dropdown-menu-item, .profile, .notification-icon  {
+.dropdown-menu-profile, .dropdown-menu-item, .profile, .notification-icon  {
   user-select: none;
 }
 .dropdown-menu-username{

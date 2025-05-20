@@ -7,6 +7,8 @@
     color: map.get(colors.$navbar, unchanged-white);
 	background-color: map.get(colors.$navbar, unchanged-black);
 	border: 1px solid map.get(colors.$border,searchicon-border);
+    max-width: 42px;
+    justify-content: center;
 }
 
 .search-group {
