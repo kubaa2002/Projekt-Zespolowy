@@ -4,17 +4,30 @@
 @use "../../styles/fonts" as fonts;
 
 .main-container {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-.main-wrapper{
-    min-width:50.31vw;
+  display: flex;
+  gap: 50px;
+  margin-top: 40px;
+  justify-content: space-around;
+  .side-wrapper{
+    // min/max widths depending on cards
+    max-width: 400px;
+    flex-grow: 3;
+    min-width: 240px;
+    .side-list-wrapper{
+      // position sticky in the future
+    }
+  }
+  .main-wrapper{
+    max-width: 1200px;
+    flex-grow: 5;
+  }
+  & > div{
+    padding: 0 10px;
+  }
 }
 
 .main-think {
   height: 86px;
-  margin-top: 40px;
   background: map.get(colors.$key-colors, white);
   border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
   padding: 14px;

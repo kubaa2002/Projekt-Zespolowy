@@ -41,7 +41,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
           </div>
           <div className="navbar-subtitle">We absolutely do not copy reddit</div>
         </div>
-        <div className="navbar-searchbar-absolute">
+        <div className="navbar-searchbar">
           <SearchInput />
         </div>
         <div className="hide-on-mobile">
