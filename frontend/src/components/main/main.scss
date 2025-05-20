@@ -5,14 +5,14 @@
 
 .main-container {
   display: flex;
-  gap: 50px;
   margin-top: 40px;
   justify-content: space-around;
   .side-wrapper{
-    // min/max widths depending on cards
+    // min/max widths depending on cards size in the future
     max-width: 400px;
-    flex-grow: 3;
     min-width: 240px;
+    // flex-grow 2 or 3 works best. Adjust in the future to fit sidebar cards
+    flex-grow: 2;
     .side-list-wrapper{
       // position sticky in the future
     }
@@ -20,6 +20,11 @@
   .main-wrapper{
     max-width: 1200px;
     flex-grow: 5;
+    // At around 900px layout starts to break down and navbar is cramped
+    // Add  
+    // Possible media to remove searchbar and sidebar?
+    // margin can be replaced by flex-growing empty div
+    margin-right: 20%;
   }
   & > div{
     padding: 0 10px;
