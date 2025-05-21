@@ -67,7 +67,8 @@ builder.Services.AddScoped<CommunityService>();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+// We need to enable this when we will be deploying to a hosting
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
