@@ -15,6 +15,7 @@
     flex-grow: 2;
     .side-list-wrapper{
       // position sticky in the future
+      
     }
   }
   .main-wrapper{
@@ -30,7 +31,59 @@
     padding: 0 10px;
   }
 }
+.sidebar-card{
+  border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 15px;  
+  .sidebar-row{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;  
+    gap: 5px;
+    border:  1px solid map.get(colors.$key-colors, razacy-rozowy);
+    border-radius: 10px;
+    padding: 10px 5px;
+    cursor: pointer;
 
+    &:hover{
+      // maybe some other color will look better?
+      background-color: map.get(colors.$key-colors, light-gray);
+    }
+    &.selected{
+      background-color: map.get(colors.$key-colors, light-pink);
+    }
+    .sidebar-icon-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+      background-color: map.get(colors.$key-colors, razacy-rozowy);
+      min-height: 40px;
+      min-width: 40px;
+      font-size: 24px;
+    }
+    .info{
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .info-title{
+      @include fonts.body-main-buttons-title();
+      
+    }
+    .info-subtitle{
+      @include fonts.body-main-buttons-subtitle-and-follow-counter();
+      color: map.get(colors.$changed-text, subtitle-main-buttons);
+    }
+  }
+  .main-text{
+    @include fonts.basic-text();
+  }
+  
+}
 .main-think {
   height: 86px;
   background: map.get(colors.$key-colors, white);
@@ -171,5 +224,12 @@
 	}
 }
 
-
+@media screen and (max-width: 900px) {
+  .side-wrapper{
+    display: none;
+  }
+  .main-container .main-wrapper{
+    margin: 0;
+  }
+}
 
