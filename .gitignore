@@ -1,9 +1,14 @@
 src/obj/
 src/bin/
+docker/obj/
+docker/bin/
 .vscode/
+/src/.vs
+/.vs
 *.user
 *.suo
 *.vsp
 *.vspx
+*.cache
 .vs
 /src/.vs/Projekt-Zespolowy
