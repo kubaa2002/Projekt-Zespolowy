@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt_Zespolowy.Services;
 using Projekt_Zespolowy.Posts;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Projekt_Zespolowy.Authentication;
 
 namespace Projekt_Zespolowy.Controllers
 {
@@ -92,5 +94,118 @@ namespace Projekt_Zespolowy.Controllers
             else
                 return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
         }
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<PostDTO>), 200)]
+        public IActionResult GetAll()
+        {
+            var result = postsService.GetAll();
+            return result.ResponseBody != null ? Ok(result) : NoContent();
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(PostDTO), 200)]
+        public IActionResult GetById(int id)
+        {
+            var result = postsService.GetById(id);
+            return result.ResponseBody != null ? Ok(result) : NotFound(); 
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] PostDTO postDTO)
+        {
+            var response = postsService.Add(postDTO);
+            if (response.ResponseCode == 201)
+            {
+                return Created($"/posts/{postDTO.Id}", postDTO);
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
+        }
+
+        [HttpPost("/community/{community_id}")]
+        public IActionResult PostInCommunity(int community_id, [FromBody] PostDTO postDTO)
+        {
+            var response = postsService.AddInCommunity(community_id, postDTO);
+            if(response.ResponseCode == 404)
+            {
+                return NotFound("Dana społeczność nie istnieje!");
+            }
+            if (response.ResponseCode == 201)
+            {
+                return Created($"/posts/{postDTO.Id}", postDTO);
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
+        }
+        [HttpPost("/{parent_id}")]
+        public IActionResult PostAsComment(int parent_id, [FromBody] PostDTO postDTO)
+        {
+            var response = postsService.AddComment(parent_id, postDTO);
+            if (response.ResponseCode == 404)
+            {
+                return NotFound("Post na który próbujesz odpowiedzieć został usunięty lub nie istnieje!");
+            }
+            if (response.ResponseCode == 201)
+            {
+                return Created($"/posts/{postDTO.Id}", postDTO);
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
+        }
+        [HttpPut]
+        public IActionResult Put([FromBody] PostDTO postDTO)
+        {
+            var response = postsService.Update(postDTO);
+            if (response.ResponseCode == 200)
+            {
+                return Ok($"/posts/{postDTO.Id}");
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
+        }
+
+        [HttpPut("[action]/{id}")]
+        public IActionResult Delete(int id, [FromBody] PostDTO post)
+        {
+            var response = postsService.Delete(id ,post);
+            if (response.ResponseCode == 200)
+            {
+                return NoContent();
+            }
+            if (response.ResponseCode == 404)
+            {
+                return NotFound("Post który próbujesz usunąć, nie istnieje!");
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
+        }
+        [HttpPut("[action]/{id}")]
+        public IActionResult UndoDelete(int id, [FromBody] PostDTO post)
+        {
+            var response = postsService.UndoDelete(id, post);
+            if (response.ResponseCode == 200)
+            {
+                return NoContent();
+            }
+            if (response.ResponseCode == 404)
+            {
+                return NotFound("Post który próbujesz przywrócić, nigdy nie istniał!");
+            }
+            else
+            {
+                return StatusCode(response.ResponseCode);
+            }
+        }
+
     }
 }

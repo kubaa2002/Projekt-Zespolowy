@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Projekt_Zespolowy.Posts;
 using Projekt_Zespolowy.Models;
 
 namespace Projekt_Zespolowy.Authentication

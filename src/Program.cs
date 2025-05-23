@@ -95,18 +95,18 @@ using (var scope = app.Services.CreateScope())
             {
                 Console.WriteLine(migration);
             }
-            context.Database.Migrate(); // Stosuje oczekuj¹ce migracje
+            context.Database.Migrate(); // Stosuje oczekujï¿½ce migracje
         }
 
 
-        // Tutaj potencjalnie mo¿esz wywo³aæ metodê do seedingu danych,
-        // jeœli nie robisz tego wy³¹cznie przez HasData w OnModelCreating
+        // Tutaj potencjalnie moï¿½esz wywoï¿½aï¿½ metodï¿½ do seedingu danych,
+        // jeï¿½li nie robisz tego wyï¿½ï¿½cznie przez HasData w OnModelCreating
         // np. SeedData.Initialize(services);
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas migracji lub seedingu bazy danych.");
+        logger.LogError(ex, "Wystï¿½piï¿½ bï¿½ï¿½d podczas migracji lub seedingu bazy danych.");
     }
 }
 

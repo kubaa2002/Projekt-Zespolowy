@@ -10,3 +10,5 @@ docker/bin/
 *.vsp
 *.vspx
 *.cache
+.vs
+/src/.vs/Projekt-Zespolowy
