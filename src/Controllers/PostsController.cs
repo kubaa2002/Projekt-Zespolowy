@@ -3,6 +3,7 @@ using Projekt_Zespolowy.Services;
 using Projekt_Zespolowy.Posts;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Projekt_Zespolowy.Authentication;
+using System.Net;
 
 namespace Projekt_Zespolowy.Controllers
 {
@@ -12,10 +13,12 @@ namespace Projekt_Zespolowy.Controllers
     {
         PostsService postsService;
         CommunityService communityService;
-        public PostsController(PostsService postsService, CommunityService communityService) 
+        SharingService sharingService;
+        public PostsController(PostsService postsService, CommunityService communityService, SharingService sharingService) 
         {
             this.postsService = postsService;
             this.communityService = communityService;
+            this.sharingService = sharingService;
         }
         [HttpGet]
         [ProducesResponseType<List<PostDTO>>(StatusCodes.Status200OK)]
@@ -207,5 +210,45 @@ namespace Projekt_Zespolowy.Controllers
             }
         }
 
+        [HttpPost("/share")]
+        public IActionResult SharePost(int postId, string userId)
+        {
+            var response = sharingService.SharePost(postId, userId);
+
+            if (response == HttpStatusCode.Created)
+            {
+                return Created();
+            }
+            else
+            {
+                return NotFound("User or Post does not exist");
+            }
+        }
+
+        [HttpGet("/share/[action]")]
+        public IActionResult GetSharedPostsIds(string userId)
+        {
+            ICollection<int>? response = sharingService.GetSharedPostsIds(userId);
+            if (response == null) 
+                return NotFound("User does not exist!");
+
+            if (response.Count() == 0)
+                return NoContent();
+
+            else return Ok(response);
+        }
+
+        [HttpGet("/share/[action]")]
+        public IActionResult GetSharedPosts(string userId)
+        {
+            ICollection<int>? response = sharingService.GetSharedPostsIds(userId);
+            if (response == null) 
+                return NotFound("User does not exist!");
+
+            if (response.Count() == 0)
+                return NoContent();
+
+            else return Ok(response);
+        }
     }
 }

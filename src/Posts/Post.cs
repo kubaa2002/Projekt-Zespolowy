@@ -3,7 +3,6 @@ using Projekt_Zespolowy.Models;
 
 namespace Projekt_Zespolowy.Posts
 {
-    //PLACEHOLDER
     public class Post
     {
         public int Id { get; set; }

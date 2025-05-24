@@ -60,6 +60,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
+builder.Services.AddScoped<SharingService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
