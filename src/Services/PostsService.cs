@@ -8,8 +8,6 @@ using Projekt_Zespolowy.Posts;
 
 namespace Projekt_Zespolowy.Services
 {
-    //TODO: Add connection to database instead of hard coded objects
-    //WhyNotDoneAlready: no posts database, no knowledge what post like :(
     public class PostsService : Controller
     {
         AppDbContext context;
@@ -84,9 +82,7 @@ namespace Projekt_Zespolowy.Services
                 return new ServiceResponse<IEnumerable<Post>>(StatusCodes.Status204NoContent, null);
             }
             else
-            {
                 return new ServiceResponse<IEnumerable<Post>>(StatusCodes.Status200OK, result);
-            }
         }
         public ServiceResponse<Post> GetById(int id)
         {
