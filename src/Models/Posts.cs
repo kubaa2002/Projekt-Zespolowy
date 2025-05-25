@@ -16,6 +16,9 @@ namespace Projekt_Zespolowy.Models
         [Required]
         [MaxLength(2000)]
         public string Content { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(50)]
+        public string Title { get; set; } = string.Empty;
 
         [Required]
         public DateTimeOffset CreatedDateTime { get; set; } = DateTimeOffset.UtcNow;
@@ -32,6 +35,8 @@ namespace Projekt_Zespolowy.Models
         public int? ParentId { get; set; }
         [ForeignKey("ParentId")]
         public virtual Post? ParentPost { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
 
         public virtual ICollection<Post> Replies { get; set; } = new List<Post>();
         public virtual ICollection<Like> Likes { get; set; } = new List<Like>();

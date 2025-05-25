@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Projekt_Zespolowy.Posts;
 using Projekt_Zespolowy.Models;
 
 namespace Projekt_Zespolowy.Authentication
@@ -17,6 +16,8 @@ namespace Projekt_Zespolowy.Authentication
         public DbSet<CommunityMember> CommunityMembers { get; set; }
         public DbSet<Follower> Followers { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Share> Shares { get; set; }
+        public DbSet<Reaction> Reactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -25,7 +26,12 @@ namespace Projekt_Zespolowy.Authentication
             // Konfiguracja dla Community
             builder.Entity<Community>()
                 .HasIndex(c => c.Name)
-                .IsUnique(); 
+                .IsUnique();
+
+            // Konfiguracja dla Reaction
+            builder.Entity<Reaction>()
+                .HasIndex(r => r.ReactionId)
+                .IsUnique();
 
             // Klucze złożone dla tabel łączących
             builder.Entity<CommunityMember>()
@@ -35,7 +41,12 @@ namespace Projekt_Zespolowy.Authentication
                 .HasKey(f => new { f.FollowerId, f.FollowingId });
 
             builder.Entity<Like>()
-                .HasKey(l => new { l.AppUserId, l.PostId }); 
+                .HasKey(l => new { l.AppUserId, l.PostId });
+
+            builder.Entity<Share>()
+                .HasKey(s => new {s.AppUserId, s.PostId});
+
+            
 
             // Relacje dla CommunityMember
             builder.Entity<CommunityMember>()
@@ -89,11 +100,24 @@ namespace Projekt_Zespolowy.Authentication
                 .HasForeignKey(l => l.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            
-            // Dodaj inne konfiguracje, jeśli potrzebne (np. unikalne indeksy z Twojego skryptu)
-            // np. dla Users (teraz AppUser) Nickname i Email są konfigurowane przez Identity jako potencjalnie unikalne
-            // Jeśli potrzebujesz dodatkowych indeksów dla AppUser (np. Nickname), możesz je tu dodać:
-            // builder.Entity<AppUser>().HasIndex(u => u.Nickname).IsUnique(); (Pamiętaj, że Identity może już to robić dla UserName/Email)
-        }
+            builder.Entity<Like>()
+               .HasOne(r => r.Reaction)
+               .WithMany()
+               .HasForeignKey(r => r.ReactionId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            // Relacje dla Share
+            builder.Entity<Share>()
+               .HasOne(s => s.Post)
+               .WithMany()
+               .HasForeignKey(s => s.PostId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Share>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            }
     }
 }

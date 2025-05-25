@@ -19,20 +19,13 @@ namespace Projekt_Zespolowy.Models
         public virtual Post? Post { get; set; }
 
         [Required]
-        public ReactionType ReactionType { get; set; } 
+        public int ReactionId{ get; set; }
+        [ForeignKey("ReactionId")]
+        public virtual Reaction? Reaction { get; set; }
 
         [Required]
         public DateTimeOffset CreatedDateTime { get; set; } = DateTimeOffset.UtcNow;
         
     }
-    public enum ReactionType
-    {
-        
-        Like = 1,
-        Love = 2,
-        Haha = 3,
-        Wow = 4,
-        Sad = 5,
-        Angry = 6
-    }
+    
 }
