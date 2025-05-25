@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Models;
 using Projekt_Zespolowy.Posts;
 
 namespace Projekt_Zespolowy.Services
@@ -20,7 +21,7 @@ namespace Projekt_Zespolowy.Services
             posts = new List<Post>();
             for (int i = 0; i < 150; i++)
             {
-                posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = i%12 >= 8 ? null : i/12, AuthorId = i%16, ParentId = i%4 == 0 ? null : i/4, CreatedDateTime = DateTime.UtcNow});
+                posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = i%12 >= 8 ? null : i/12, AppUserId = (i%16).ToString(), ParentId = i%4 == 0 ? null : i/4, CreatedDateTime = DateTime.UtcNow});
             }
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
@@ -51,9 +52,9 @@ namespace Projekt_Zespolowy.Services
             // When ok
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
         }
-        public ServiceResponse<List<Post>> GetPostsFromRangeFromUser(int start, int length, int authorId)
+        public ServiceResponse<List<Post>> GetPostsFromRangeFromUser(int start, int length, string authorId)
         {
-            List<Post> foundPosts = posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == null).Where(x => x.AuthorId == authorId).ToList();
+            List<Post> foundPosts = posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == null).Where(x => x.AppUserId == authorId).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Projekt_Zespolowy.Models;
 
 namespace Projekt_Zespolowy.Posts
 {
@@ -11,7 +12,7 @@ namespace Projekt_Zespolowy.Posts
 
             builder.HasKey(p => p.Id);
 
-            builder.Property(p => p.AuthorId)
+            builder.Property(p => p.AppUserId)
                 .HasColumnType("int")
                 .IsRequired();                
 
