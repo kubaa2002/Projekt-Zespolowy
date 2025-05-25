@@ -171,13 +171,13 @@ public class UserController : ControllerBase
         var userName = User.FindFirst(ClaimTypes.Name)?.Value;
         if (string.IsNullOrEmpty(userName))
         {
-            return Unauthorized(new { message = "Nie udało się zidentyfikować użytkownika." });
+            return NotFound(new { message = "Nie udało się zidentyfikować użytkownika." });
         }
 
         var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
         {
-            return Unauthorized(new { message = "Użytkownik nie istnieje." });
+            return NotFound(new { message = "Użytkownik nie istnieje." });
         }
 
         var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
