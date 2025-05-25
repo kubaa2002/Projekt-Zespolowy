@@ -243,7 +243,7 @@ namespace Projekt_Zespolowy.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RevokedTokens", (string)null);
+                    b.ToTable("RevokedTokens");
                 });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Community", b =>
@@ -329,12 +329,14 @@ namespace Projekt_Zespolowy.Migrations
                     b.Property<DateTimeOffset>("CreatedDateTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("ReactionType")
+                    b.Property<int>("ReactionId")
                         .HasColumnType("int");
 
                     b.HasKey("AppUserId", "PostId");
 
                     b.HasIndex("PostId");
+
+                    b.HasIndex("ReactionId");
 
                     b.ToTable("Likes");
                 });
@@ -362,8 +364,16 @@ namespace Projekt_Zespolowy.Migrations
                     b.Property<DateTimeOffset>("CreatedDateTime")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -374,6 +384,45 @@ namespace Projekt_Zespolowy.Migrations
                     b.HasIndex("ParentId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("Projekt_Zespolowy.Models.Reaction", b =>
+                {
+                    b.Property<int>("ReactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReactionId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("ReactionId");
+
+                    b.HasIndex("ReactionId")
+                        .IsUnique();
+
+                    b.ToTable("Reactions");
+                });
+
+            modelBuilder.Entity("Projekt_Zespolowy.Models.Share", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("SharedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("AppUserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Shares");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -479,9 +528,17 @@ namespace Projekt_Zespolowy.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Projekt_Zespolowy.Models.Reaction", "Reaction")
+                        .WithMany()
+                        .HasForeignKey("ReactionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("AppUser");
 
                     b.Navigation("Post");
+
+                    b.Navigation("Reaction");
                 });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Post", b =>
@@ -506,6 +563,25 @@ namespace Projekt_Zespolowy.Migrations
                     b.Navigation("Community");
 
                     b.Navigation("ParentPost");
+                });
+
+            modelBuilder.Entity("Projekt_Zespolowy.Models.Share", b =>
+                {
+                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Projekt_Zespolowy.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Projekt_Zespolowy.Authentication.AppUser", b =>
