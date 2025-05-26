@@ -12,6 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<RevokedTokenFilter>();
+}).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -64,6 +67,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
+builder.Services.AddScoped<LikesService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

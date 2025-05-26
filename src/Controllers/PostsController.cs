@@ -13,10 +13,12 @@ namespace Projekt_Zespolowy.Controllers
     {
         PostsService postsService;
         CommunityService communityService;
-        public PostsController(PostsService postsService, CommunityService communityService) 
+        LikesService likesService;
+        public PostsController(PostsService postsService, CommunityService communityService, LikesService likesService) 
         {
             this.postsService = postsService;
             this.communityService = communityService;
+            this.likesService = likesService;
         }
         [HttpGet]
         [ProducesResponseType<List<PostDTO>>(StatusCodes.Status200OK)]
@@ -208,6 +210,17 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(response.ResponseCode);
             }
         }
-
+        [HttpPost("{postId}/Like")]
+        public IActionResult GiveReaction(int postId, [FromBody] Like like)
+        {
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
+            {
+                return NotFound("Post nie istnieje lub został usunięty");
+            }
+            like.PostId = postId;
+            var sr = likesService.Add(like);
+            return StatusCode(sr.ResponseCode, true);
+        }
     }
 }

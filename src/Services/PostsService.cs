@@ -86,7 +86,7 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<Post> GetById(int id)
         {
-            var result = context.Posts.SingleOrDefault(x => x.Id == id);
+            var result = context.Posts.Include(x => x.Likes).SingleOrDefault(x => x.Id == id);
             if (result == default) 
             {
                 return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
