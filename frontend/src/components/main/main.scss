@@ -5,11 +5,12 @@
 
 .main-container {
   display: flex;
-  margin-top: 40px;
   justify-content: space-around;
+  align-items: stretch;
   .main-wrapper{
-    max-width: 1200px;
+    max-width: 966px;
     flex-grow: 5;
+    margin-top: 40px;
     // At around 900px layout starts to break down and navbar is cramped
     // Add  
     // Possible media to remove searchbar and sidebar?
@@ -19,7 +20,24 @@
   & > div{
     padding: 0 10px;
   }
+  .side-wrapper{
+    // min/max widths depending on cards size in the future
+    max-width: 400px;
+    min-width: 240px;
+    // flex-grow 2 or 3 works best. Adjust in the future to fit sidebar cards
+    flex-grow: 2;
+    .side-list-wrapper{
+        // position sticky in the future
+        
+    }
+  }
 }
+
+.main-wrapper.main-wrapper-centered {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .main-think {
   height: 86px;
   background: map.get(colors.$key-colors, white);

@@ -3,11 +3,10 @@
 @use "../../styles/colors" as colors;
 @use "../../styles/fonts" as fonts;
 
-.create-container {
+.settings-container {
 	width: 52.08vw;
-	min-height: 71.4vh;
+	min-height: 68.89vh;
 	height: auto;
-	max-width: 1000px;
 	max-height: 744px;
 	border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
 	display: flex;

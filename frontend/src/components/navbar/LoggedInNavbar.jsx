@@ -45,7 +45,8 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
           <SearchInput />
         </div>
         <div className="hide-on-mobile">
-          <button className="btn btn-primary btn-register btn-register-post">
+          <button
+            className="btn btn-primary btn-register btn-register-post" onClick={() => navigate({ to: "/create?type=post" })}>
             <i className="bi bi-plus-circle me-2"></i>
             Nowy post
           </button>
@@ -75,18 +76,27 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
               <ul className="dropdown-menu-list">
                 <li className="dropdown-menu-item dropdown-menu-username">Nazwa użytkownika</li>
                 <li className="dropdown-menu-item">Profil</li>
-                <li className="dropdown-menu-item">Nowy post</li>
-                <li className="dropdown-menu-item">Stwórz społeczność</li>
+                <li className="dropdown-menu-item"
+                  onClick={() => {
+                    navigate({ to: "/create?type=post" });
+                    setMobileMenuOpen(false);
+                 }}
+                >Nowy post</li>
+                <li className="dropdown-menu-item"
+                  onClick={() => {
+                    navigate({ to: "/create?type=community" });
+                    setMobileMenuOpen(false);
+                 }}
+                >Stwórz społeczność</li>
                 <li className="dropdown-menu-item">Powiadomienia</li>
                 <li className="dropdown-menu-item" 
-                 onClick={() => {
-                  navigate({ to: "/settings" });
-                  setMobileMenuOpen(false);
+                  onClick={() => {
+                    navigate({ to: "/settings" });
+                    setMobileMenuOpen(false);
                  }}
                 >Ustawienia</li>
                 <li className="dropdown-menu-item">Ciemny motyw</li>
-                <li
-                  className="dropdown-menu-item"
+                <li className="dropdown-menu-item"
                   onClick={() => {
                     logOut();
                     navigate({ to: "/login" });
@@ -104,11 +114,17 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             <ul className="dropdown-menu-list">
               <li className="dropdown-menu-item dropdown-menu-username">Nazwa użytkownika</li>
               <li className="dropdown-menu-item">Profil</li>
-              <li className="dropdown-menu-item">Stwórz społeczność</li>
-              <li className="dropdown-menu-item" onClick={() => {
+              <li className="dropdown-menu-item"
+                onClick={() => {
+                  navigate({ to: "/create?type=community" });
+                  setMobileMenuOpen(false);
+                }}
+              >Stwórz społeczność</li>
+              <li className="dropdown-menu-item" 
+                onClick={() => {
                   navigate({ to: "/settings" });
                   setMobileMenuOpen(false);
-                 }}>Ustawienia</li>
+                }}>Ustawienia</li>
               <li className="dropdown-menu-item">Ciemny motyw</li>
               <li
                 className="dropdown-menu-item"

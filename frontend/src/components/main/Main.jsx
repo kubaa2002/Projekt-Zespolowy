@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import SideNav from "../sidenavbar/SideNav";
 import MainModal from "../modals/MainModal";
 import QuickModal from "../modals/QuickModal";
+import MainLayout from "./MainLayout";
 
 export default function Main() {
   const [rotated, setRotated] = useState(false);
@@ -24,51 +24,37 @@ export default function Main() {
   };
 
   return (
-    <>
-      <div className="main-container">
-        <SideNav />
-        <div className="main-wrapper">
-          <div className="main-think">
-            <img src="avatar.svg" alt="Avatar" className="avatar" />
-            <span className="text-think">
-              Podziej się tym, co masz na myśli
-            </span>
-            <div className="buttons-think">
-              <button
-                className="btn btn-plus"
-                type="button"
-                onClick={() => setShowModal((prev) => !prev)}
-                disabled={rotated}
-              >
-                <i className="bi bi-plus"></i>
-              </button>
-              <i
-                className="bi bi-chevron-up"
-                style={{
-                  transform: rotated ? "rotate(0deg)" : "rotate(180deg)",
-                  color: "black",
-                  cursor: showModal ? "not-allowed" : "pointer",
-                  pointerEvents: showModal ? "none" : "auto",
-                  opacity: showModal ? 0.5 : 1,
-                }}
-                onClick={() => setRotated((r) => !r)}
-              ></i>
-            </div>
-              <QuickModal
-              show={showModal}
-              onClose={() => setShowModal(false)}
-              maxLength={maxLength}
-              content={content}
-              setContent={setContent}
-              file={file}
-              handleFileChange={handleFileChange}
-              handleRemove={handleRemove}
-              fileInputRef={fileInputRef}
-            />
+    <MainLayout>
+      <div className="main-content-with-margin">
+        <div className="main-think">
+          <img src="avatar.svg" alt="Avatar" className="avatar" />
+          <span className="text-think">
+            Podziej się tym, co masz na myśli
+          </span>
+          <div className="buttons-think">
+            <button
+              className="btn btn-plus"
+              type="button"
+              onClick={() => setShowModal((prev) => !prev)}
+              disabled={rotated}
+            >
+              <i className="bi bi-plus"></i>
+            </button>
+            <i
+              className="bi bi-chevron-up"
+              style={{
+                transform: rotated ? "rotate(0deg)" : "rotate(180deg)",
+                color: "black",
+                cursor: showModal ? "not-allowed" : "pointer",
+                pointerEvents: showModal ? "none" : "auto",
+                opacity: showModal ? 0.5 : 1,
+              }}
+              onClick={() => setRotated((r) => !r)}
+            ></i>
           </div>
-          <MainModal
-            show={rotated}
-            onClose={() => setRotated(false)}
+            <QuickModal
+            show={showModal}
+            onClose={() => setShowModal(false)}
             maxLength={maxLength}
             content={content}
             setContent={setContent}
@@ -77,33 +63,44 @@ export default function Main() {
             handleRemove={handleRemove}
             fileInputRef={fileInputRef}
           />
-          <div className="dropdown-sort">
-            <button
-              className="btn btn-secondary dropdown-toggle btn-sort"
-              type="button"
-              onClick={() => setShowSort((o) => !o)}
-            >
-              Najnowsze
-            </button>
-            <ul
-              className="dropdown-menu dropdown-menu-custom"
-              style={{
-                display: showSort ? "block" : "none",
-                position: "absolute",
-              }}
-            >
-              <li className="dropdown-item dropdown-item-sort">
-                Sortuj według
-              </li>
-              <li className="dropdown-item">Najnowsze</li>
-              <li className="dropdown-item">Najbardziej likowane</li>
-            </ul>
-          </div>
-          <div className="no-more-posts">
-            Nie ma już więcej postów do załadowania
-          </div>
+        </div>
+        <MainModal
+          show={rotated}
+          onClose={() => setRotated(false)}
+          maxLength={maxLength}
+          content={content}
+          setContent={setContent}
+          file={file}
+          handleFileChange={handleFileChange}
+          handleRemove={handleRemove}
+          fileInputRef={fileInputRef}
+        />
+        <div className="dropdown-sort">
+          <button
+            className="btn btn-secondary dropdown-toggle btn-sort"
+            type="button"
+            onClick={() => setShowSort((o) => !o)}
+          >
+            Najnowsze
+          </button>
+          <ul
+            className="dropdown-menu dropdown-menu-custom"
+            style={{
+              display: showSort ? "block" : "none",
+              position: "absolute",
+            }}
+          >
+            <li className="dropdown-item dropdown-item-sort">
+              Sortuj według
+            </li>
+            <li className="dropdown-item">Najnowsze</li>
+            <li className="dropdown-item">Najbardziej likowane</li>
+          </ul>
+        </div>
+        <div className="no-more-posts">
+          Nie ma już więcej postów do załadowania
         </div>
       </div>
-    </>
+    </MainLayout>
   );
 }
