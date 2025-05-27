@@ -7,17 +7,6 @@
   display: flex;
   margin-top: 40px;
   justify-content: space-around;
-  .side-wrapper{
-    // min/max widths depending on cards size in the future
-    max-width: 400px;
-    min-width: 240px;
-    // flex-grow 2 or 3 works best. Adjust in the future to fit sidebar cards
-    flex-grow: 2;
-    .side-list-wrapper{
-      // position sticky in the future
-      
-    }
-  }
   .main-wrapper{
     max-width: 1200px;
     flex-grow: 5;
@@ -30,59 +19,6 @@
   & > div{
     padding: 0 10px;
   }
-}
-.sidebar-card{
-  border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 15px;  
-  .sidebar-row{
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;  
-    gap: 5px;
-    border:  1px solid map.get(colors.$key-colors, razacy-rozowy);
-    border-radius: 10px;
-    padding: 10px 5px;
-    cursor: pointer;
-
-    &:hover{
-      // maybe some other color will look better?
-      background-color: map.get(colors.$key-colors, light-gray);
-    }
-    &.selected{
-      background-color: map.get(colors.$key-colors, light-pink);
-    }
-    .sidebar-icon-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 8px;
-      border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
-      background-color: map.get(colors.$key-colors, razacy-rozowy);
-      min-height: 40px;
-      min-width: 40px;
-      font-size: 24px;
-    }
-    .info{
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .info-title{
-      @include fonts.body-main-buttons-title();
-      
-    }
-    .info-subtitle{
-      @include fonts.body-main-buttons-subtitle-and-follow-counter();
-      color: map.get(colors.$changed-text, subtitle-main-buttons);
-    }
-  }
-  .main-text{
-    @include fonts.basic-text();
-  }
-  
 }
 .main-think {
   height: 86px;
@@ -121,22 +57,6 @@
         background-color: map.get(colors.$key-colors, razacy-rozowy);
     }
   }
-.modal-custom {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  min-width: 26vw;
-  max-height: 764px;
-  overflow: visible;
-  z-index: 2;
-  display: block;
-  padding-top: 28px;
-
-  .modal-dialog.modal-dialog-custom {
-    margin: 0; 
-    margin-left: auto;
-  }
-}
 }
 
 .dropdown-menu-custom{
@@ -174,54 +94,11 @@
     user-select: none;
 }
 
-.create-post-container {
-    min-height: 771px;
-    background: map.get(colors.$key-colors, white);
-    border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
-    display: flex; 
-    flex-direction: column;
-    border-radius:0;
-    border-top:none;                  
-}
-.create-post-content {
-    width:100%;
-    padding: 16px;
-    flex: 1 1 auto;
-    border-bottom: 1px solid map.get(colors.$key-colors, razacy-rozowy);
-}
-
 .no-more-posts {
     text-align: center;
     margin: 47px 0;
     @include fonts.title-post-ended-modal-header();
     color: map.get(colors.$key-colors, razacy-rozowy);
-}
-
-.create-post-footer {
-    background: white;
-    width: 100%;
-    margin-top: auto;
-    display: flex;
-    justify-content: flex-end;
-    padding: 12px;
-}
-
-.btn-publish{
-  background-color: map.get(colors.$key-colors,razacy-rozowy);
-  color: map.get(colors.$key-colors, white);
-  border: 1px solid map.get(colors.$key-colors, black);
-  	&:hover {
-		background-color: color.adjust(map.get(colors.$key-colors,razacy-rozowy), $lightness: -20%);
-	}
-}
-
-.btn-deny{
-  background-color: map.get(colors.$key-colors,black);
-  color: map.get(colors.$key-colors, white);
-  border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
-  	&:hover {
-		background-color: color.adjust(map.get(colors.$key-colors,black), $lightness: -20%);
-	}
 }
 
 @media screen and (max-width: 900px) {

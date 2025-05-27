@@ -1,0 +1,73 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+@use "../../styles/fonts" as fonts;
+
+.side-wrapper{
+    // min/max widths depending on cards size in the future
+    max-width: 400px;
+    min-width: 240px;
+    // flex-grow 2 or 3 works best. Adjust in the future to fit sidebar cards
+    flex-grow: 2;
+    .side-list-wrapper{
+        // position sticky in the future
+        
+    }
+}
+
+.sidebar-card{
+  border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 15px;  
+  .sidebar-row{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;  
+    gap: 5px;
+    border:  1px solid map.get(colors.$key-colors, razacy-rozowy);
+    border-radius: 10px;
+    padding: 10px 5px;
+    cursor: pointer;
+
+    &:hover{
+      background-color: map.get(colors.$navbar, border-gray-400);
+    }
+    &.selected{
+      background-color: map.get(colors.$key-colors, razacy-rozowy);
+      .sidebar-icon-wrapper {
+        background-color: map.get(colors.$key-colors, black);
+        color: map.get(colors.$key-colors, razacy-rozowy); 
+      }
+    }
+    .sidebar-icon-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+      background-color: map.get(colors.$key-colors, razacy-rozowy);
+      min-height: 40px;
+      min-width: 40px;
+      font-size: 24px;
+    }
+    .info{
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .info-title{
+      @include fonts.body-main-buttons-title();
+      
+    }
+    .info-subtitle{
+      @include fonts.body-main-buttons-subtitle-and-follow-counter();
+      color: map.get(colors.$changed-text, subtitle-main-buttons);
+    }
+  }
+  .main-text{
+    @include fonts.basic-text();
+  }
+  
+}
