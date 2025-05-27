@@ -3,22 +3,11 @@
 @use "../../styles/colors" as colors;
 @use "../../styles/fonts" as fonts;
 
-.side-wrapper{
-    // min/max widths depending on cards size in the future
-    max-width: 400px;
-    min-width: 240px;
-    // flex-grow 2 or 3 works best. Adjust in the future to fit sidebar cards
-    flex-grow: 2;
-    .side-list-wrapper{
-        // position sticky in the future
-        
-    }
-}
-
 .sidebar-card{
   border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
   display: flex;
   flex-direction: column;
+  margin-top: 40px;
   gap: 15px;
   padding: 15px;  
   .sidebar-row{
