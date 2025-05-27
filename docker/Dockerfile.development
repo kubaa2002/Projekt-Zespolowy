@@ -1,0 +1,14 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+WORKDIR /app
+EXPOSE 8080
+
+COPY src/Projekt-Zespolowy.csproj ./
+RUN dotnet restore "./Projekt-Zespolowy.csproj"
+
+
+COPY src/. ./
+
+RUN dotnet tool install --global dotnet-watch
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+ENTRYPOINT ["dotnet", "watch", "--project", "Projekt-Zespolowy.csproj", "run", "--urls", "http://+:8080"]
