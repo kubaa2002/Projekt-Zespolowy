@@ -25,7 +25,7 @@ export default function Main() {
 
   return (
     <MainLayout>
-                <div className={`main-think${rotated ? " main-think-open" : ""}`}>
+        <div className={`main-think${rotated ? " main-think-open" : ""}`}>
           <img src="avatar.svg" alt="Avatar" className="avatar" />
           <span className="text-think">
             Podziej się tym, co masz na myśli
