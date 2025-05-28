@@ -4,12 +4,9 @@
 @use "../../styles/fonts" as fonts;
 
 .create-container {
-	width: 52.08vw;
-	min-height: 71.4vh;
 	height: auto;
-	max-width: 1000px;
-	max-height: 744px;
-	border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+    width: 100%;
+	max-height: 771px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
