@@ -12,9 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<RevokedTokenFilter>();
-}).AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
