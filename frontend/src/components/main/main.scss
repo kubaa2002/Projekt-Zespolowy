@@ -6,11 +6,10 @@
 .main-container {
   display: flex;
   justify-content: space-around;
-  align-items: stretch;
   .main-wrapper{
     max-width: 966px;
     flex-grow: 5;
-    margin-top: 40px;
+    margin-top:40px;
     // At around 900px layout starts to break down and navbar is cramped
     // Add  
     // Possible media to remove searchbar and sidebar?
@@ -46,6 +45,10 @@
   display: flex;
   align-items: center;
   position: relative;
+
+  &.main-think-open {
+    border-bottom: 0;
+  }
 
   .avatar {
     width: 58px;

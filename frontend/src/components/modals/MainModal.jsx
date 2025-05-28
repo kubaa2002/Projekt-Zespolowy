@@ -8,24 +8,27 @@ export default function MainModal({
   handleFileChange,
   handleRemove,
   fileInputRef,
+  hideSelect = false,
 }) {
   if (!show) return null;
 
   return (
      <div className="create-post-container">
       <div className="create-post-content">
-        <div className="mb-3">
-          <div className="form-item">
-            <label htmlFor="community" className="form-label">
-              Gdzie chcesz umieścić? <span className="text-danger">*</span>
-            </label>
-            <select className="form-control" id="community">
-              <option value="user">Nazwa użytkownika</option>
-              <option value="community1">Społeczność 1</option>
-              <option value="community2">Społeczność 2</option>
-            </select>
+        {!hideSelect && (
+          <div className="mb-3">
+            <div className="form-item">
+              <label htmlFor="community" className="form-label">
+                Gdzie chcesz umieścić? <span className="text-danger">*</span>
+              </label>
+              <select className="form-control" id="community">
+                <option value="user">Nazwa użytkownika</option>
+                <option value="community1">Społeczność 1</option>
+                <option value="community2">Społeczność 2</option>
+              </select>
+            </div>
           </div>
-        </div>
+        )}
         <div className="mb-3">
           <div className="form-item">
             <label htmlFor="title" className="form-label">

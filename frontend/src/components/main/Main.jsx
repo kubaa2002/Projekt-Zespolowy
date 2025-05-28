@@ -25,8 +25,7 @@ export default function Main() {
 
   return (
     <MainLayout>
-      <div className="main-content-with-margin">
-        <div className="main-think">
+                <div className={`main-think${rotated ? " main-think-open" : ""}`}>
           <img src="avatar.svg" alt="Avatar" className="avatar" />
           <span className="text-think">
             Podziej się tym, co masz na myśli
@@ -54,7 +53,7 @@ export default function Main() {
           </div>
             <QuickModal
             show={showModal}
-            onClose={() => setShowModal(false)}
+            onClose={() => {setShowModal(false); setContent(""); handleRemove();}}
             maxLength={maxLength}
             content={content}
             setContent={setContent}
@@ -64,17 +63,17 @@ export default function Main() {
             fileInputRef={fileInputRef}
           />
         </div>
-        <MainModal
-          show={rotated}
-          onClose={() => setRotated(false)}
-          maxLength={maxLength}
-          content={content}
-          setContent={setContent}
-          file={file}
-          handleFileChange={handleFileChange}
-          handleRemove={handleRemove}
-          fileInputRef={fileInputRef}
-        />
+          <MainModal
+            show={rotated}
+            onClose={() => {setRotated(false); setContent(""); handleRemove();}}
+            maxLength={maxLength}
+            content={content}
+            setContent={setContent}
+            file={file}
+            handleFileChange={handleFileChange}
+            handleRemove={handleRemove}
+            fileInputRef={fileInputRef}
+          />
         <div className="dropdown-sort">
           <button
             className="btn btn-secondary dropdown-toggle btn-sort"
@@ -100,7 +99,6 @@ export default function Main() {
         <div className="no-more-posts">
           Nie ma już więcej postów do załadowania
         </div>
-      </div>
     </MainLayout>
   );
 }
