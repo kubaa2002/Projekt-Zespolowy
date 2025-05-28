@@ -1,4 +1,5 @@
-﻿using Projekt_Zespolowy.Models;
+﻿using Projekt_Zespolowy.Likes;
+using Projekt_Zespolowy.Models;
 
 namespace Projekt_Zespolowy.Posts
 {
@@ -12,14 +13,14 @@ namespace Projekt_Zespolowy.Posts
         public int? ParentId { get; set; }
         public bool IsDeleted { get; set; }
 
-        public ICollection<Like> Likes { get; set; }
+        public ICollection<LikeDTO> Likes { get; set; }
         public static implicit operator PostDTO(Post? p)
         {
-            return new PostDTO() { Id = p.Id, Content = p.Content, CommunityId = p.CommunityId, AuthorId = p.AppUserId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId, Likes = p.Likes};
+            return new PostDTO() { Id = p.Id, Content = p.Content, CommunityId = p.CommunityId, AuthorId = p.AppUserId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId, Likes = p.Likes.Select(x => (LikeDTO)x).ToList()};
         }
         public static implicit operator Post(PostDTO? p)
         {
-            return new Post() { Id = p.Id, CommunityId = p.CommunityId, Content = p.Content, AppUserId = p.AuthorId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId, Likes = p.Likes };
+            return new Post() { Id = p.Id, CommunityId = p.CommunityId, Content = p.Content, AppUserId = p.AuthorId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId, Likes = p.Likes.Select(x => (Like)x).ToList() };
         }
     }
 }

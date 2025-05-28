@@ -14,5 +14,25 @@ namespace Projekt_Zespolowy.Likes
         public ReactionType ReactionType { get; set; }
 
         public DateTimeOffset CreatedDateTime { get; set; } = DateTimeOffset.UtcNow;
+        public static implicit operator LikeDTO(Like x)
+        {
+            return new LikeDTO()
+            {
+                AppUserId = x.AppUserId,
+                PostId = x.PostId,
+                ReactionType = x.ReactionType,
+                CreatedDateTime = x.CreatedDateTime
+            };
+        }
+        public static implicit operator Like(LikeDTO x)
+        {
+            return new Like()
+            {
+                AppUserId = x.AppUserId,
+                PostId = x.PostId,
+                ReactionType = x.ReactionType,
+                CreatedDateTime = x.CreatedDateTime
+            };
+        }
     }
 }
