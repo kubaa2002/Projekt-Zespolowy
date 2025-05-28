@@ -7,7 +7,7 @@
   top: 100%;
   right: 0;
   min-width: 26vw;
-  max-height: 764px;
+  height: 100%;
   overflow: visible;
   z-index: 2;
   display: block;
@@ -20,16 +20,14 @@
 }
 
 .create-post-container {
-    min-height: 771px;
     background: map.get(colors.$key-colors, white);
-    border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
     display: flex; 
     flex-direction: column;
-    border-radius:0;
-    border-top:none;                  
+    width: 100%;
+    border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+    border-radius:0;      
 }
 .create-post-content {
-    width:100%;
     padding: 16px;
     flex: 1 1 auto;
     border-bottom: 1px solid map.get(colors.$key-colors, razacy-rozowy);
