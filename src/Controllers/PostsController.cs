@@ -4,6 +4,7 @@ using Projekt_Zespolowy.Posts;
 using Projekt_Zespolowy.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Likes;
 
 namespace Projekt_Zespolowy.Controllers
 {
@@ -220,7 +221,47 @@ namespace Projekt_Zespolowy.Controllers
             }
             like.PostId = postId;
             var sr = likesService.Add(like);
-            return StatusCode(sr.ResponseCode, true);
+            return StatusCode(sr.ResponseCode);
+        }
+        [HttpGet("{postId}/{reactionType}/Nr")]
+        public IActionResult GetReactionCount(int postId, ReactionType reactionType)
+        {
+            if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
+            {
+                return NotFound();
+            }
+            var reactionCount = this.likesService.GetOfPostCountByType(postId, reactionType);
+            return StatusCode(reactionCount.ResponseCode, reactionCount.ResponseBody);
+        }
+        [HttpGet("{postId}/Reactions/Nr")]
+        public IActionResult GetReactionCount(int postId)
+        {
+            if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
+            {
+                return NotFound();
+            }
+            var reactionCount = this.likesService.GetOfPostCount(postId);
+            return StatusCode(reactionCount.ResponseCode, reactionCount.ResponseBody);
+        }
+        [HttpGet("{postId}/{reactionType}")]
+        public IActionResult GetReaction(int postId, ReactionType reactionType)
+        {
+            if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
+            {
+                return NotFound();
+            }
+            var likes = this.likesService.GetOfPostByType(postId, reactionType);
+            return StatusCode(likes.ResponseCode, likes.ResponseBody.Select(x => (LikeDTO)x));
+        }
+        [HttpGet("{postId}/Reactions")]
+        public IActionResult GetReaction(int postId)
+        {
+            if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
+            {
+                return NotFound();
+            }
+            var likes = this.likesService.GetOfPost(postId);
+            return StatusCode(likes.ResponseCode, likes.ResponseBody.Select(x=>(LikeDTO)x));
         }
     }
 }

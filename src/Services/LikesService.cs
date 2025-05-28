@@ -27,5 +27,33 @@ namespace Projekt_Zespolowy.Services
                 return new ServiceResponse<Like>(StatusCodes.Status200OK, like);
             }
         }
+        public ServiceResponse<List<Like>> GetOfPost(int postId)
+        {
+            List<Like> likes = context.Likes.Where(x => x.PostId == postId).ToList();
+            if (likes.Count == 0)
+            {
+                return new ServiceResponse<List<Like>>(StatusCodes.Status204NoContent, null);
+            }
+            return new ServiceResponse<List<Like>>(StatusCodes.Status200OK, likes);
+        }
+        public ServiceResponse<List<Like>> GetOfPostByType(int postId, ReactionType type)
+        {
+            List<Like> likes = context.Likes.Where(x => x.PostId == postId).Where(x=>x.ReactionType == type).ToList();
+            if (likes.Count == 0)
+            {
+                return new ServiceResponse<List<Like>>(StatusCodes.Status204NoContent, null);
+            }
+            return new ServiceResponse<List<Like>>(StatusCodes.Status200OK, likes);
+        }
+        public ServiceResponse<int> GetOfPostCountByType(int postId, ReactionType type)
+        {
+            List<Like> likes = context.Likes.Where(x => x.PostId == postId).Where(x=>x.ReactionType == type).ToList();
+            return new ServiceResponse<int>(StatusCodes.Status200OK, likes.Count);
+        }
+        public ServiceResponse<int> GetOfPostCount(int postId)
+        {
+            List<Like> likes = context.Likes.Where(x => x.PostId == postId).ToList();
+            return new ServiceResponse<int>(StatusCodes.Status200OK, likes.Count);
+        }
     }
 }
