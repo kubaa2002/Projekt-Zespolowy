@@ -39,6 +39,7 @@
 
 .navbar {
 	background-color: transparent;
+	padding: 0 15px;
 	&-logged{
 		border-bottom: 3px solid map.get(colors.$navbar,border-gray-400);
 	}
@@ -99,12 +100,6 @@
 	}
 }
 
-.navbar-searchbar-absolute {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
 
 .navbar-nav {
   @include fonts.button-general-followed-buttons();
@@ -137,15 +132,6 @@
 }
 .show-on-mobile {
   display: none;
-}
-
-@media (max-width: 1600px) {
-  .hide-on-mobile {
-    display: none;
-  }
-  .show-on-mobile {
-    display: flex;
-  }
 }
 
 .dropdown-menu-item {
@@ -192,4 +178,24 @@
 .dropdown-menu-item:not(.dropdown-menu-username):hover {
   background-color: map.get(colors.$key-colors, razacy-rozowy);
   color: map.get(colors.$key-colors, white);
+}
+
+@media screen and (max-width: 1600px) {
+	.navbar-main .btn {
+		width: 150px;
+		height: 70px;
+	}
+	.navbar-subtitle{
+		display: none;
+	}
+	.hide-on-mobile {
+		display: none;
+	  }
+	.show-on-mobile {
+		display: flex;
+	}
+	.navbar-searchbar{
+		margin-right: auto;
+		margin-left: 10px;
+	}
 }

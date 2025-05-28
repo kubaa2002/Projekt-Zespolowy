@@ -38,26 +38,9 @@ const AuthProvider = ({ children }) => {
   /*const isAuthenticated = () => {
     return !!token;
   } */
-  // i dont kwow if this is correct
-  const isAuthenticated = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return false;
-    }
-    try {
-      await axios.get("http://localhost:5192/user/test", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return true;
-    } catch {
-      logOut();
-      return false;
-    }
-  };
-
 
   return (
-    <AuthContext.Provider value={{ token, loginAction, registerAction, logOut, isAuthenticated }}>
+    <AuthContext.Provider value={{ token, loginAction, registerAction, logOut}}>
       {children}
     </AuthContext.Provider>
   );

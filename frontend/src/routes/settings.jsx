@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import Settings from '../components/settings/Settings'
 
 export const Route = createFileRoute('/settings')({
   component: RouteComponent,
@@ -6,10 +7,6 @@ export const Route = createFileRoute('/settings')({
 
 function RouteComponent() {
   return (
-    <div className="centered-container">
-      <div className="form-container">
-          <h2>Settings page</h2>
-      </div>
-    </div>
+    <Settings />
   )
 }

@@ -14,5 +14,6 @@ public class Community
 
     public DateTimeOffset CreatedDateTime { get; set; }
 
-    public ICollection<CommunityMember> Members { get; set; } = new List<CommunityMember>();
+    public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+    public virtual ICollection<CommunityMember> Members { get; set; } = new List<CommunityMember>();
 }

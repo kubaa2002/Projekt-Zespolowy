@@ -4,23 +4,51 @@
 @use "../../styles/fonts" as fonts;
 
 .main-container {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  display: flex;
+  justify-content: space-around;
+  .main-wrapper{
+    max-width: 966px;
+    flex-grow: 5;
+    margin-top:40px;
+    // At around 900px layout starts to break down and navbar is cramped
+    // Add  
+    // Possible media to remove searchbar and sidebar?
+    // margin can be replaced by flex-growing empty div
+    margin-right: 20%;
+  }
+  & > div{
+    padding: 0 10px;
+  }
+  .side-wrapper{
+    // min/max widths depending on cards size in the future
+    max-width: 400px;
+    min-width: 240px;
+    // flex-grow 2 or 3 works best. Adjust in the future to fit sidebar cards
+    flex-grow: 2;
+    .side-list-wrapper{
+        // position sticky in the future
+        
+    }
+  }
 }
-.main-wrapper{
-    min-width:50.31vw;
+
+.main-wrapper.main-wrapper-centered {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .main-think {
   height: 86px;
-  margin-top: 40px;
   background: map.get(colors.$key-colors, white);
   border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
   padding: 14px;
   display: flex;
   align-items: center;
   position: relative;
+
+  &.main-think-open {
+    border-bottom: 0;
+  }
 
   .avatar {
     width: 58px;
@@ -50,22 +78,6 @@
         background-color: map.get(colors.$key-colors, razacy-rozowy);
     }
   }
-.modal-custom {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  min-width: 26vw;
-  max-height: 764px;
-  overflow: visible;
-  z-index: 2;
-  display: block;
-  padding-top: 28px;
-
-  .modal-dialog.modal-dialog-custom {
-    margin: 0; 
-    margin-left: auto;
-  }
-}
 }
 
 .dropdown-menu-custom{
@@ -103,22 +115,6 @@
     user-select: none;
 }
 
-.create-post-container {
-    min-height: 771px;
-    background: map.get(colors.$key-colors, white);
-    border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
-    display: flex; 
-    flex-direction: column;
-    border-radius:0;
-    border-top:none;                  
-}
-.create-post-content {
-    width:100%;
-    padding: 16px;
-    flex: 1 1 auto;
-    border-bottom: 1px solid map.get(colors.$key-colors, razacy-rozowy);
-}
-
 .no-more-posts {
     text-align: center;
     margin: 47px 0;
@@ -126,32 +122,12 @@
     color: map.get(colors.$key-colors, razacy-rozowy);
 }
 
-.create-post-footer {
-    background: white;
-    width: 100%;
-    margin-top: auto;
-    display: flex;
-    justify-content: flex-end;
-    padding: 12px;
+@media screen and (max-width: 900px) {
+  .side-wrapper{
+    display: none;
+  }
+  .main-container .main-wrapper{
+    margin: 0;
+  }
 }
-
-.btn-publish{
-  background-color: map.get(colors.$key-colors,razacy-rozowy);
-  color: map.get(colors.$key-colors, white);
-  border: 1px solid map.get(colors.$key-colors, black);
-  	&:hover {
-		background-color: color.adjust(map.get(colors.$key-colors,razacy-rozowy), $lightness: -20%);
-	}
-}
-
-.btn-deny{
-  background-color: map.get(colors.$key-colors,black);
-  color: map.get(colors.$key-colors, white);
-  border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
-  	&:hover {
-		background-color: color.adjust(map.get(colors.$key-colors,black), $lightness: -20%);
-	}
-}
-
-
 
