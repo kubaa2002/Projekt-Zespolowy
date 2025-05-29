@@ -1,9 +1,11 @@
 import SearchInput from "../primitives/SearchInput";
 import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/authProvider";
 
 export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   const [rotated, setRotated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const auth = useAuth();
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 1600) {
@@ -74,7 +76,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
           {mobileMenuOpen && (
             <div className="dropdown-menu-profile">
               <ul className="dropdown-menu-list">
-                <li className="dropdown-menu-item dropdown-menu-username">Nazwa użytkownika</li>
+                <li className="dropdown-menu-item dropdown-menu-username">{auth.user.userName}</li>
                 <li className="dropdown-menu-item">Profil</li>
                 <li className="dropdown-menu-item"
                   onClick={() => {
@@ -112,7 +114,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
         {rotated && (
           <div className="dropdown-menu-profile">
             <ul className="dropdown-menu-list">
-              <li className="dropdown-menu-item dropdown-menu-username">Nazwa użytkownika</li>
+              <li className="dropdown-menu-item dropdown-menu-username">{auth.user.userName}</li>
               <li className="dropdown-menu-item">Profil</li>
               <li className="dropdown-menu-item"
                 onClick={() => {

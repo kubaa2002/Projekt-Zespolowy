@@ -8,19 +8,10 @@ export default function Navbar() {
   const location = useLocation();
   const isHeroPage = location.pathname === "/hero";
   const navigate = useNavigate();
-  const { logOut, token, isAuthenticated } = useAuth();
+  const { logOut, token } = useAuth();
   useEffect(() => {
     document.body.className = isHeroPage ? "" : "hero-page";
   }, [isHeroPage]);
-
-  // useEffect(() => {
-  //    (async () => {
-  //      const ok = await isAuthenticated();
-  //      if (!ok) {
-  //        navigate({ to: "/hero" });
-  //     }
-  //   })();
-  // }, [isAuthenticated, navigate, token]);
 
   return token ? (
     <LoggedInNavbar

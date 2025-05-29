@@ -1,3 +1,4 @@
+import { useAuth } from "../../contexts/authProvider";
 export default function QuickModal({
   show,
   onClose,
@@ -9,6 +10,7 @@ export default function QuickModal({
   handleRemove,
   fileInputRef,
 }) {
+  const auth = useAuth();
   if (!show) return null;
 
   return (
@@ -26,7 +28,7 @@ export default function QuickModal({
                   Gdzie chcesz umieścić? <span className="text-danger">*</span>
                 </label>
                 <select className="form-control" id="community">
-                  <option value="user">Nazwa użytkownika</option>
+                  <option value="user">Profil</option>
                   <option value="community1">Społeczność 1</option>
                   <option value="community2">Społeczność 2</option>
                 </select>
