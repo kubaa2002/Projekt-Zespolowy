@@ -1,0 +1,63 @@
+services:
+  frontend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend
+    image: projekt-zespolowy-frontend:development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - projekt-zespolowy
+    environment:
+      - VITE_APP_API_URL=http://projekt-zespolowy:8080
+    networks:
+      - projektzespolowynetwork
+    restart: on-failure
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      
+  projekt-zespolowy:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.development
+    image: projekt-zespolowy:development
+    ports:
+      - "8080:8080"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+    networks:
+      - projektzespolowynetwork
+    restart: on-failure
+    volumes:
+      - ../src:/app
+      - keys:/app/keys
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "BazaDanych123!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - projektzespolowynetwork
+    volumes:
+      - ./init.sql:/init-db/init.sql
+      - sqlvolume:/var/opt/mssql
+    command: >
+      bash -c "
+        /opt/mssql/bin/sqlservr & 
+        pid=$!;
+        sleep 20;
+        /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'BazaDanych123!' -i /init-db/init.sql -N -C;
+        wait $pid
+      "
+networks:
+  projektzespolowynetwork:
+volumes:
+  sqlvolume:
+  keys:
