@@ -21,7 +21,7 @@
     cursor: pointer;
 
     &:hover{
-      background-color: map.get(colors.$navbar, border-gray-400);
+      background-color: map.get(colors.$key-colors, light-pink);
     }
     &.selected{
       background-color: map.get(colors.$key-colors, razacy-rozowy);

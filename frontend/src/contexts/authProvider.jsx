@@ -1,50 +1,79 @@
-import { useContext, createContext, useState} from "react";
+import {
+  useContext,
+  createContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [userName, setUserName] = useState(null); // userName won't be necessary in the future
+  const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
-  const loginAction = async (email, password) => {
+
+  const loginAction = useCallback(async (email, password) => {
     const response = await axios.post("http://localhost:5192/user/login", {
       email,
       password,
     });
-    const { token, userName } = response.data;
-    localStorage.setItem("token", token); // Just for testing. TODO: use cookies or sessions in useAuth Hook
-    setUserName(userName);
-    setToken(token);
+    if (response.status === 200) {
+      const { token, userName } = response.data;
+      localStorage.setItem("token", token);
+      setUser({ userName, email });
+      setToken(token);
+    }
     return response;
-  };
-  const registerAction = async (email, username, password) => {
+  }, []);
+
+  const registerAction = useCallback(async (email, username, password) => {
     const response = await axios.post("http://localhost:5192/user/register", {
       email,
       username,
       password,
     });
     const { token, userName } = response.data;
-    localStorage.setItem("token", token); // Just for testing. TODO: use cookies or sessions in useAuth Hook
-    setUserName(userName);
-    setToken(token);
+    if (response.status === 201) {
+      localStorage.setItem("token", token);
+      setUser({ userName, email });
+      setToken(token);
+    }
     return response;
-  };
-  const logOut = () => {
-    setUserName(null);
+  }, []);
+
+  const logOut = useCallback(() => {
+    setUser(null);
     setToken("");
     localStorage.removeItem("token");
-  };
-  // TODO IMPORTANT!!! We have to validate this token by sending a req to the server
-  /*const isAuthenticated = () => {
-    return !!token;
-  } */
+  }, []);
 
+  useEffect(() => {
+    if (token) {
+      axios
+        .get("http://localhost:5192/user/test", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setUser({
+            userName: response.data.userName,
+            email: response.data.email,
+          });
+        })
+        .catch(() => {
+          logOut();
+        });
+    }
+  }, [token, logOut]);
   return (
-    <AuthContext.Provider value={{ token, loginAction, registerAction, logOut}}>
+    <AuthContext.Provider
+      value={{ token, user, loginAction, registerAction, logOut }}
+    >
       {children}
     </AuthContext.Provider>
   );
-
 };
 
 export default AuthProvider;

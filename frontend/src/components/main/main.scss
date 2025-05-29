@@ -35,7 +35,6 @@
 .main-wrapper.main-wrapper-centered {
   margin-top: auto;
   margin-bottom: auto;
-}
 
     &:hover{
       // maybe some other color will look better?
@@ -68,7 +67,6 @@
       @include fonts.body-main-buttons-subtitle-and-follow-counter();
       color: map.get(colors.$changed-text, subtitle-main-buttons);
     }
-  }
   .main-text{
     @include fonts.basic-text();
   }

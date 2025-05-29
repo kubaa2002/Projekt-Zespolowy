@@ -1,3 +1,4 @@
+import { useAuth } from "../../contexts/authProvider";
 export default function MainModal({
   show,
   onClose,
@@ -10,8 +11,9 @@ export default function MainModal({
   fileInputRef,
   hideSelect = false,
 }) {
+  
+  const auth = useAuth();
   if (!show) return null;
-
   return (
      <div className="create-post-container">
       <div className="create-post-content">
@@ -22,7 +24,7 @@ export default function MainModal({
                 Gdzie chcesz umieścić? <span className="text-danger">*</span>
               </label>
               <select className="form-control" id="community">
-                <option value="user">Nazwa użytkownika</option>
+                <option value="user">Profil</option>
                 <option value="community1">Społeczność 1</option>
                 <option value="community2">Społeczność 2</option>
               </select>
