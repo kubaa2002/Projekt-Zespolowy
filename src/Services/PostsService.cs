@@ -130,6 +130,7 @@ namespace Projekt_Zespolowy.Services
                 return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
             }
             else
+                newPost.CommunityId = community_id;
                 return Add(newPost);
         }
         public ServiceResponse<Post> AddComment(int parent_id, PostDTO newPost)
@@ -141,6 +142,7 @@ namespace Projekt_Zespolowy.Services
                 return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
             }
             else
+                newPost.ParentId = parent_id;
                 return Add(newPost);
         }
 

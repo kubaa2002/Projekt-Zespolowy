@@ -12,7 +12,7 @@ namespace Projekt_Zespolowy.Posts
         public DateTimeOffset CreatedDateTime { get; set; }
         public int? ParentId { get; set; }
         public int ReactionCount { get; set; }
-        public ICollection<LikeDTO> Likes { get; set; }
+        public ICollection<LikeDTO> Likes { get; set; } = new List<LikeDTO>();
         public static implicit operator PostDTO(Post? p)
         {
             return new PostDTO() { Id = p.Id, Content = p.Content, CommunityId = p.CommunityId, AuthorId = p.AppUserId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId, Likes = p.Likes.Select(x => (LikeDTO)x).ToList(), ReactionCount = p.Likes.Count};
