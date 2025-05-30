@@ -3,19 +3,28 @@
 @use "../../styles/colors" as colors;
 @use "../../styles/fonts" as fonts;
 
-.sidebar-card{
+.side-list-wrapper {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.sidebar-card {
   border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
   display: flex;
   flex-direction: column;
-  margin-top: 40px;
+  justify-content: space-between;
+  height: 330px;
   gap: 15px;
-  padding: 15px;  
-  .sidebar-row{
+  padding: 15px;
+
+  .sidebar-row {
     display: flex;
     justify-content: flex-start;
-    align-items: center;  
+    align-items: center;
     gap: 5px;
-    border:  1px solid map.get(colors.$key-colors, razacy-rozowy);
+    border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
     border-radius: 10px;
     padding: 10px 5px;
     cursor: pointer;
@@ -23,14 +32,17 @@
     &:hover{
       background-color: map.get(colors.$navbar, border-gray-400);
     }
-    &.selected{
+
+    &.selected {
       background-color: map.get(colors.$key-colors, razacy-rozowy);
+
       .sidebar-icon-wrapper {
         background-color: map.get(colors.$key-colors, black);
-        color: map.get(colors.$key-colors, razacy-rozowy); 
+        color: map.get(colors.$key-colors, razacy-rozowy);
       }
     }
-    .sidebar-icon-wrapper {
+
+    .navrow-icon-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -41,22 +53,68 @@
       min-width: 40px;
       font-size: 24px;
     }
-    .info{
+
+    .info {
       display: flex;
       flex-direction: column;
       gap: 3px;
     }
-    .info-title{
+
+    .info-title {
       @include fonts.body-main-buttons-title();
-      
+
     }
-    .info-subtitle{
+
+    .info-subtitle {
       @include fonts.body-main-buttons-subtitle-and-follow-counter();
       color: map.get(colors.$changed-text, subtitle-main-buttons);
     }
   }
-  .main-text{
+  .community-header{
+    @include fonts.body-followed-header();
+    color: black;
+  }
+  .community-list-wrapper{
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    
+    .community-row{
+      display: flex;
+      gap: 15px;
+      cursor: pointer;
+      &:hover, &.selected {
+        background-color: map.get(colors.$key-colors, light-gray);
+      }
+
+      .community-icon-wrapper{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 60px;
+        height: 60px;
+        font-size: 18px; 
+        color: white;
+      }
+      .community-info{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
+      }
+      .community-title{
+        @include fonts.body-communities-names();
+      }
+      .community-users{
+        @include fonts.body-members-counter();
+        color: map.get(colors.$changed-text, count-members);
+      }
+    }
+  }
+  .main-text {
     @include fonts.basic-text();
   }
-  
+
 }
