@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Settings from "../components/settings/Settings";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../utils/ProtectedRoute";
 export const Route = createFileRoute("/settings")({
   component: RouteComponent,
 });
