@@ -19,24 +19,22 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   }, []);
 
   const handleProfileClick = () => {
-    setRotated((r) => {
-      if (!r) setMobileMenuOpen(false);
-      return !r;
-    });
+    setRotated(rotated => !rotated);
   };
 
   const handleMobileMenuClick = () => {
-    setMobileMenuOpen((open) => {
-      if (!open) setRotated(false);
-      return !open;
-    });
+    setMobileMenuOpen(mobileMenuOpen => !mobileMenuOpen);
   };
 
   return (
     <nav className={`${isHeroPage ? "" : "navbar-main"}`}>
       <div className="navbar navbar-logged">
         {/* navigate to / or /hero? */}
-        <div className="left-sidebar" style={{ visibility: isHeroPage ? "hidden" : "visible" }} onClick={() => navigate({to: '/'})}>
+        <div className="left-sidebar" style={{ visibility: isHeroPage ? "hidden" : "visible" }} onClick={() => {
+          setMobileMenuOpen(false);
+          setRotated(false);
+          navigate({to: '/'})
+          }}>
           <div className="headline-navbar-title">
             <i className="bi bi-heart me-2"></i>
             Vibe
@@ -47,6 +45,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
           <SearchInput />
         </div>
         <div className="hide-on-mobile">
+          {/* change to community */}
           <button
             className="btn btn-primary btn-register btn-register-post" onClick={() => navigate({ to: "/create?type=post" })}>
             <i className="bi bi-plus-circle me-2"></i>
@@ -80,17 +79,10 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 <li className="dropdown-menu-item">Profil</li>
                 <li className="dropdown-menu-item"
                   onClick={() => {
-                    navigate({ to: "/create?type=post" });
-                    setMobileMenuOpen(false);
-                 }}
-                >Nowy post</li>
-                <li className="dropdown-menu-item"
-                  onClick={() => {
                     navigate({ to: "/create?type=community" });
                     setMobileMenuOpen(false);
                  }}
                 >Stwórz społeczność</li>
-                <li className="dropdown-menu-item">Powiadomienia</li>
                 <li className="dropdown-menu-item" 
                   onClick={() => {
                     navigate({ to: "/settings" });
