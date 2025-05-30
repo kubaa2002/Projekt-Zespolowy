@@ -164,4 +164,42 @@ public class UserController : ControllerBase
 
     }
 
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+    {
+        var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+        if (string.IsNullOrEmpty(userName))
+        {
+            return NotFound(new { message = "Nie udało się zidentyfikować użytkownika." });
+        }
+
+        var user = await _userManager.FindByNameAsync(userName);
+        if (user == null)
+        {
+            return NotFound(new { message = "Użytkownik nie istnieje." });
+        }
+
+        var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+        if (result.Succeeded)
+        {
+            return Ok(new { message = "Hasło zostało pomyślnie zmienione." });
+        }
+
+        var errors = new ErrorResponse { Status = 400 };
+        var errorList = new List<string>();
+        foreach (var error in result.Errors)
+        {
+            errorList.Add(error.Description);
+        }
+        errors.Errors["PasswordError"] = errorList;
+
+        if (result.Errors.Any(e => e.Code == "PasswordMismatch"))
+        {
+            return Unauthorized(errors); // Zwracamy 401 
+        }
+
+    return BadRequest(errors); // Zwracamy 400 dla innych błędów 
+    }
 }

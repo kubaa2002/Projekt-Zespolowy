@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Models;
 using Projekt_Zespolowy.Services;
 using System.Text;
 
@@ -12,7 +14,9 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<RevokedTokenFilter>();
 });
 
-builder.Services.AddDbContext<AppDbContext>();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentityCore<AppUser>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -60,24 +64,60 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
-builder.Services.AddScoped<SharingService>();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
+// We need to enable this when we will be deploying to a hosting
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+
+        var count = DateTime.UtcNow;
+        var context = services.GetRequiredService<AppDbContext>();
+        while (context.Database.CanConnect() == false)
+        {
+            context = services.GetRequiredService<AppDbContext>();
+            //Console.WriteLine(context.Database.CanConnect());
+            if (DateTime.UtcNow - count > TimeSpan.FromSeconds(30))
+                throw new Exception("Database took too long");
+        }
+        Console.WriteLine(context.Database.CanConnect());
+        var c = await context.Database.GetPendingMigrationsAsync();
+        if (c.Any())
+        {
+            foreach (var migration in context.Database.GetPendingMigrations())
+            {
+                Console.WriteLine(migration);
+            }
+            context.Database.Migrate(); // Stosuje oczekuj�ce migracje
+        }
+
+
+        // Tutaj potencjalnie mo�esz wywo�a� metod� do seedingu danych,
+        // je�li nie robisz tego wy��cznie przez HasData w OnModelCreating
+        // np. SeedData.Initialize(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Wyst�pi� b��d podczas migracji lub seedingu bazy danych.");
+    }
+}
+
+
 
 app.MapGet("/", () => "Hello World!");
+
+app.MapGet("/posty", async (AppDbContext db) => await db.Posts.ToListAsync());
+app.MapGet("/reakcje", async (AppDbContext db) => await db.Likes.ToListAsync());
+
+
 app.MapControllers();
 
 app.Run();

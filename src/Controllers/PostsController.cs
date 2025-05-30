@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt_Zespolowy.Services;
 using Projekt_Zespolowy.Posts;
+using Projekt_Zespolowy.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Projekt_Zespolowy.Authentication;
 using System.Net;
@@ -66,7 +67,7 @@ namespace Projekt_Zespolowy.Controllers
             //    return NotFound();
             //}
             int startPoint = (page - 1) * pageSize;
-            ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromUser(startPoint, pageSize, authorId);
+            ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromUser(startPoint, pageSize, authorId.ToString());
             if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
             List<Post> posts = response.ResponseBody;
