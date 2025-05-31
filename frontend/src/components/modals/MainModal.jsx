@@ -1,4 +1,5 @@
-import { useAuth } from "../../contexts/authProvider";
+import TextEditor from "./TextEditor";
+
 export default function MainModal({
   show,
   onClose,
@@ -10,10 +11,10 @@ export default function MainModal({
   handleRemove,
   fileInputRef,
   hideSelect = false,
+  handlePublish
 }) {
-  
-  const auth = useAuth();
   if (!show) return null;
+
   return (
      <div className="create-post-container">
       <div className="create-post-content">
@@ -24,7 +25,7 @@ export default function MainModal({
                 Gdzie chcesz umieścić? <span className="text-danger">*</span>
               </label>
               <select className="form-control" id="community">
-                <option value="user">Profil</option>
+                <option value="user">Nazwa użytkownika</option>
                 <option value="community1">Społeczność 1</option>
                 <option value="community2">Społeczność 2</option>
               </select>
@@ -49,15 +50,7 @@ export default function MainModal({
             <label htmlFor="content" className="form-label">
               Opis posta <span className="text-danger">*</span>
             </label>
-            <textarea
-              className="form-control"
-              id="content"
-              rows={10}
-              placeholder="Tutaj możesz dodać więcej szczegółów"
-              maxLength={maxLength}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
+            <TextEditor onContentChange={setContent} content={content} />
             <div
               style={{
                 textAlign: "right",
@@ -130,7 +123,7 @@ export default function MainModal({
           <button
             type="button"
             className="btn btn-primary w-100 btn-publish"
-            // onClick={handlePublish}
+             onClick={()=>handlePublish(onClose)}
           >
             Publikuj
           </button>

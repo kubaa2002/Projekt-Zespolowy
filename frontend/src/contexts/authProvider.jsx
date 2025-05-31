@@ -14,7 +14,7 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
 
   const loginAction = useCallback(async (email, password) => {
-    const response = await axios.post("http://localhost:5192/user/login", {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/login`, {
       email,
       password,
     });
@@ -28,7 +28,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const registerAction = useCallback(async (email, username, password) => {
-    const response = await axios.post("http://localhost:5192/user/register", {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/register`, {
       email,
       username,
       password,
@@ -51,7 +51,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios
-        .get("http://localhost:5192/user/test", {
+        .get(`${import.meta.env.VITE_API_URL}/user/test`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

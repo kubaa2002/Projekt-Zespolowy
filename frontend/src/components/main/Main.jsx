@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import MainModal from "../modals/MainModal";
 import QuickModal from "../modals/QuickModal";
 import MainLayout from "./MainLayout";
+import PostsList from "../../PostsList";
+import { usePosts } from "../../contexts/PostsContext";
 
 export default function Main() {
   const [rotated, setRotated] = useState(false);
@@ -11,6 +13,7 @@ export default function Main() {
   const maxLength = 2000;
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
+  const {createPost} = usePosts();
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -20,6 +23,42 @@ export default function Main() {
     setFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+  };
+
+  const handlePublish = async (onClose) => {
+    if (!content.trim()) {
+      alert("Uzupełnij treść posta.");
+      return;
+    }
+  
+    const postData = {
+      id: 0, // zakładamy, że backend sam nadaje ID
+      authorId: "123", // zakładamy, że masz dostęp do aktualnego użytkownika
+      content: content.trim(),
+      communityId: null, // możesz zmienić na wartość z selecta, jeśli potrzebujesz
+      createdDateTime: new Date().toISOString(),
+      parentId: null,
+      isDeleted: false,
+    };
+  
+    try {
+      const createdPost = await createPost(postData);
+  
+      // Jeśli chcesz dodać logikę dla pliku:
+      /*if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("postId", createdPost.id);
+        await axios.post(`${import.meta.env.VITE_API_URL}/posts/${createdPost.id}/image`, formData, getAuthConfig());
+      }*/
+      console.log("Post opublikowany:", createdPost);
+      // Resetowanie stanu po publikacji
+      setContent("");
+      handleRemove(); // usuń załączony plik
+      onClose(); // zamknij modal
+    } catch (err) {
+      console.error("Błąd podczas publikacji posta:", err);
     }
   };
 
@@ -61,6 +100,7 @@ export default function Main() {
             handleFileChange={handleFileChange}
             handleRemove={handleRemove}
             fileInputRef={fileInputRef}
+            handlePublish={handlePublish}
           />
         </div>
           <MainModal
@@ -73,32 +113,11 @@ export default function Main() {
             handleFileChange={handleFileChange}
             handleRemove={handleRemove}
             fileInputRef={fileInputRef}
+            handlePublish={handlePublish}
           />
-        <div className="dropdown-sort">
-          <button
-            className="btn btn-secondary dropdown-toggle btn-sort"
-            type="button"
-            onClick={() => setShowSort((o) => !o)}
-          >
-            Najnowsze
-          </button>
-          <ul
-            className="dropdown-menu dropdown-menu-custom"
-            style={{
-              display: showSort ? "block" : "none",
-              position: "absolute",
-            }}
-          >
-            <li className="dropdown-item dropdown-item-sort">
-              Sortuj według
-            </li>
-            <li className="dropdown-item">Najnowsze</li>
-            <li className="dropdown-item">Najbardziej likowane</li>
-          </ul>
-        </div>
-        <div className="no-more-posts">
-          Nie ma już więcej postów do załadowania
-        </div>
+        
+        <PostsList showSort={showSort} setShowSort={setShowSort} />
+        
     </MainLayout>
   );
 }
