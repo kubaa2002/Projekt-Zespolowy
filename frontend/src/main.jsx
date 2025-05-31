@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import './styles/general.scss'
 import AuthProvider from "./contexts/authProvider";
-
+import PostsProvider from "./contexts/PostsContext";
 // Create a new router instance
 const router = createRouter({ routeTree });
 
@@ -19,7 +19,9 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+    <PostsProvider>
+         <RouterProvider router={router} />
+      </PostsProvider>
     </AuthProvider>
   </StrictMode>
 );
