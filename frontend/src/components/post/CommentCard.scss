@@ -1,0 +1,91 @@
+.comment-card2 {
+  border: 1px solid #ff80ff;
+
+  margin-bottom: 20px;
+  font-family: sans-serif;
+  .box {
+    padding: 15px;
+  }
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ff80ff;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  background-image: url('avatar.svg');
+  background-size: cover;
+  border-radius: 50%;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+
+
+
+.comment-date {
+  color: #888;
+  font-size: 11px;
+}
+
+.options-icon {
+  cursor: pointer;
+  color: #333;
+}
+
+.comment-text {
+  margin: 15px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.comment-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  font-size: 13px;
+}
+
+.reactions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #444;
+}
+
+.icon {
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actions a {
+  color: #0056d2;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.actions a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,89 @@
+
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px 4px 0 0;
+  }
+  
+  .toolbar button {
+    padding: 0.5rem;
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .toolbar button.active {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+  }
+  
+  .toolbar button:hover {
+    background: #e9ecef;
+  }
+  
+  .color-picker {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .color-picker input[type="color"] {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .color-picker input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 2px;
+  }
+  
+  .color-picker .color-preview {
+    font-weight: bold;
+    font-size: 18px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .editor-wrapper {
+    border: 1px solid #e1e1e1;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+  }
+  
+  .ProseMirror {
+    min-height: 200px;
+    padding: 1rem;
+    font-size: 16px;
+  }
+  
+  .ProseMirror img {
+    max-width: 100%;
+    height: auto;
+    margin: 0.5rem 0;
+  }
+  
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: #999;
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+  
+  

@@ -1,0 +1,57 @@
+.post-container22 {
+  padding-left: 2rem;
+  border: 1px solid #FD2FD9;
+  background: #FD2FD9;
+}
+
+.post-card2 {
+
+  padding: 1rem 1.5rem;
+  background-color: #ffffff;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  background-color: lightgray;
+  border-radius: 50%;
+}
+
+.user-info {
+  flex-grow: 1;
+  margin-left: 1rem;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: gray;
+}
+
+.menu {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.post-content22 {
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.post-footer {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #444;
+}
