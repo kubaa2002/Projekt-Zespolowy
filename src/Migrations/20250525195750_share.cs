@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Projekt_Zespolowy.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class share : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -65,6 +65,19 @@ namespace Projekt_Zespolowy.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Communities", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reactions",
+                columns: table => new
+                {
+                    ReactionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reactions", x => x.ReactionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -246,10 +259,12 @@ namespace Projekt_Zespolowy.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedDateTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CommunityId = table.Column<int>(type: "int", nullable: true),
-                    ParentId = table.Column<int>(type: "int", nullable: true)
+                    ParentId = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -278,7 +293,7 @@ namespace Projekt_Zespolowy.Migrations
                 {
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false),
-                    ReactionType = table.Column<int>(type: "int", nullable: false),
+                    ReactionId = table.Column<int>(type: "int", nullable: false),
                     CreatedDateTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
@@ -292,6 +307,37 @@ namespace Projekt_Zespolowy.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Likes_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Likes_Reactions_ReactionId",
+                        column: x => x.ReactionId,
+                        principalTable: "Reactions",
+                        principalColumn: "ReactionId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Shares",
+                columns: table => new
+                {
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SharedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shares", x => new { x.AppUserId, x.PostId });
+                    table.ForeignKey(
+                        name: "FK_Shares_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Shares_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
@@ -359,6 +405,11 @@ namespace Projekt_Zespolowy.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Likes_ReactionId",
+                table: "Likes",
+                column: "ReactionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_AppUserId",
                 table: "Posts",
                 column: "AppUserId");
@@ -372,6 +423,17 @@ namespace Projekt_Zespolowy.Migrations
                 name: "IX_Posts_ParentId",
                 table: "Posts",
                 column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reactions_ReactionId",
+                table: "Reactions",
+                column: "ReactionId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shares_PostId",
+                table: "Shares",
+                column: "PostId");
         }
 
         /// <inheritdoc />
@@ -405,7 +467,13 @@ namespace Projekt_Zespolowy.Migrations
                 name: "RevokedTokens");
 
             migrationBuilder.DropTable(
+                name: "Shares");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Reactions");
 
             migrationBuilder.DropTable(
                 name: "Posts");

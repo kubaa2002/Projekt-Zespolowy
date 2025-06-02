@@ -1,6 +1,11 @@
 Projekt zespołowy
 
-To use docker container you first need to make sure the %APPDATA%/ASP.NET/Https/ path exists and then create dev certificate in the right fodlder with this command
+Aby włączyć docker razem z front-end
 ```
-dotnet dev-certs https -ep %APPDATA%/ASP.NET/Https/cert.pfx -p Password
+docker compose -f docker-compose.dev2.yml up --build
+```
+
+Aby włączyć docker bez front-end
+```
+docker compose -f docker-compose.development.yml up --build
 ```

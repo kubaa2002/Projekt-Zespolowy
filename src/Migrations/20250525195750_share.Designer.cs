@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projekt_Zespolowy.Authentication;
 
@@ -11,9 +12,16 @@ using Projekt_Zespolowy.Authentication;
 namespace Projekt_Zespolowy.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
+    [Migration("20250513203951_Initial")]
+    partial class Initial
+========
+    [Migration("20250525195750_share")]
+    partial class share
+>>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -329,15 +337,22 @@ namespace Projekt_Zespolowy.Migrations
                     b.Property<DateTimeOffset>("CreatedDateTime")
                         .HasColumnType("datetimeoffset");
 
+<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
+                    b.Property<int>("ReactionType")
+========
                     b.Property<int>("ReactionId")
+>>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
                         .HasColumnType("int");
 
                     b.HasKey("AppUserId", "PostId");
 
                     b.HasIndex("PostId");
 
+<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
+========
                     b.HasIndex("ReactionId");
 
+>>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
                     b.ToTable("Likes");
                 });
 
@@ -364,6 +379,11 @@ namespace Projekt_Zespolowy.Migrations
                     b.Property<DateTimeOffset>("CreatedDateTime")
                         .HasColumnType("datetimeoffset");
 
+<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+========
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -375,6 +395,7 @@ namespace Projekt_Zespolowy.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+>>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
@@ -386,6 +407,8 @@ namespace Projekt_Zespolowy.Migrations
                     b.ToTable("Posts");
                 });
 
+<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
+========
             modelBuilder.Entity("Projekt_Zespolowy.Models.Reaction", b =>
                 {
                     b.Property<int>("ReactionId")
@@ -425,6 +448,7 @@ namespace Projekt_Zespolowy.Migrations
                     b.ToTable("Shares");
                 });
 
+>>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -528,6 +552,11 @@ namespace Projekt_Zespolowy.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Post");
+========
                     b.HasOne("Projekt_Zespolowy.Models.Reaction", "Reaction")
                         .WithMany()
                         .HasForeignKey("ReactionId")
@@ -539,6 +568,7 @@ namespace Projekt_Zespolowy.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("Reaction");
+>>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
                 });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Post", b =>
@@ -565,6 +595,8 @@ namespace Projekt_Zespolowy.Migrations
                     b.Navigation("ParentPost");
                 });
 
+<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
+========
             modelBuilder.Entity("Projekt_Zespolowy.Models.Share", b =>
                 {
                     b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "User")
@@ -584,6 +616,7 @@ namespace Projekt_Zespolowy.Migrations
                     b.Navigation("User");
                 });
 
+>>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
             modelBuilder.Entity("Projekt_Zespolowy.Authentication.AppUser", b =>
                 {
                     b.Navigation("CommunityMemberships");

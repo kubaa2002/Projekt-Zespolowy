@@ -67,7 +67,7 @@ namespace Projekt_Zespolowy.Controllers
             //    return NotFound();
             //}
             int startPoint = (page - 1) * pageSize;
-            ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromUser(startPoint, pageSize, authorId);
+            ServiceResponse<List<Post>> response = postsService.GetPostsFromRangeFromUser(startPoint, pageSize, authorId.ToString());
             if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
             List<Post> posts = response.ResponseBody;

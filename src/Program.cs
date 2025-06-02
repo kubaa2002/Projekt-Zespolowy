@@ -14,8 +14,8 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<RevokedTokenFilter>();
 });
 
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentityCore<AppUser>()
@@ -66,17 +66,10 @@ builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<LikesService>();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
+// We need to enable this when we will be deploying to a hosting
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -85,6 +78,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
+
         var count = DateTime.UtcNow;
         var context = services.GetRequiredService<AppDbContext>();
         while (context.Database.CanConnect() == false)
@@ -98,22 +92,22 @@ using (var scope = app.Services.CreateScope())
         var c = await context.Database.GetPendingMigrationsAsync();
         if (c.Any())
         {
-            foreach (var migration in context.Database.GetPendingMigrations()) 
+            foreach (var migration in context.Database.GetPendingMigrations())
             {
                 Console.WriteLine(migration);
             }
-            context.Database.Migrate(); // Stosuje oczekuj¹ce migracje
+            context.Database.Migrate(); // Stosuje oczekujï¿½ce migracje
         }
 
 
-        // Tutaj potencjalnie mo¿esz wywo³aæ metodê do seedingu danych,
-        // jeœli nie robisz tego wy³¹cznie przez HasData w OnModelCreating
+        // Tutaj potencjalnie moï¿½esz wywoï¿½aï¿½ metodï¿½ do seedingu danych,
+        // jeï¿½li nie robisz tego wyï¿½ï¿½cznie przez HasData w OnModelCreating
         // np. SeedData.Initialize(services);
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas migracji lub seedingu bazy danych.");
+        logger.LogError(ex, "Wystï¿½piï¿½ bï¿½ï¿½d podczas migracji lub seedingu bazy danych.");
     }
 }
 

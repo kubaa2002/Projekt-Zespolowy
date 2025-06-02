@@ -1,0 +1,5 @@
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'PZ')
+BEGIN
+    CREATE DATABASE PZ;
+END
+GO
