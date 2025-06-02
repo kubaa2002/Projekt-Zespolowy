@@ -1,4 +1,5 @@
 ﻿using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Likes;
 using Projekt_Zespolowy.Models;
 
 namespace Projekt_Zespolowy.Services
@@ -11,7 +12,7 @@ namespace Projekt_Zespolowy.Services
         {
             this.context = context;
         }
-        public ServiceResponse<Like> Add(Like like)
+        public ServiceResponse<Like> Add(LikeDTO like)
         {
             if (like.CreatedDateTime == default)
                 like.CreatedDateTime = DateTimeOffset.UtcNow;
@@ -22,7 +23,7 @@ namespace Projekt_Zespolowy.Services
             }
             else
             {
-                context.Likes.Add(like);
+                context.Likes.Add((Like)like);
                 context.SaveChanges();
                 return new ServiceResponse<Like>(StatusCodes.Status200OK, like);
             }
@@ -36,18 +37,18 @@ namespace Projekt_Zespolowy.Services
             }
             return new ServiceResponse<List<Like>>(StatusCodes.Status200OK, likes);
         }
-        public ServiceResponse<List<Like>> GetOfPostByType(int postId, ReactionType type)
+        public ServiceResponse<List<Like>> GetOfPostByType(int postId, int type)
         {
-            List<Like> likes = context.Likes.Where(x => x.PostId == postId).Where(x=>x.ReactionType == type).ToList();
+            List<Like> likes = context.Likes.Where(x => x.PostId == postId).Where(x=>x.ReactionId == type).ToList();
             if (likes.Count == 0)
             {
                 return new ServiceResponse<List<Like>>(StatusCodes.Status204NoContent, null);
             }
             return new ServiceResponse<List<Like>>(StatusCodes.Status200OK, likes);
         }
-        public ServiceResponse<int> GetOfPostCountByType(int postId, ReactionType type)
+        public ServiceResponse<int> GetOfPostCountByType(int postId, int type)
         {
-            List<Like> likes = context.Likes.Where(x => x.PostId == postId).Where(x=>x.ReactionType == type).ToList();
+            List<Like> likes = context.Likes.Where(x => x.PostId == postId).Where(x=>x.ReactionId == type).ToList();
             return new ServiceResponse<int>(StatusCodes.Status200OK, likes.Count);
         }
         public ServiceResponse<int> GetOfPostCount(int postId)

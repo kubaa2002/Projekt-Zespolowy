@@ -224,13 +224,13 @@ namespace Projekt_Zespolowy.Controllers
             return StatusCode(sr.ResponseCode);
         }
         [HttpGet("{postId}/{reactionType}/Nr")]
-        public IActionResult GetReactionCount(int postId, ReactionType reactionType)
+        public IActionResult GetReactionCount(int postId, int reactionId)
         {
             if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
             {
                 return NotFound();
             }
-            var reactionCount = this.likesService.GetOfPostCountByType(postId, reactionType);
+            var reactionCount = this.likesService.GetOfPostCountByType(postId, reactionId);
             return StatusCode(reactionCount.ResponseCode, reactionCount.ResponseBody);
         }
         [HttpGet("{postId}/Reactions/Nr")]
@@ -244,13 +244,13 @@ namespace Projekt_Zespolowy.Controllers
             return StatusCode(reactionCount.ResponseCode, reactionCount.ResponseBody);
         }
         [HttpGet("{postId}/{reactionType}")]
-        public IActionResult GetReaction(int postId, ReactionType reactionType)
+        public IActionResult GetReaction(int postId, int reactionId)
         {
             if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
             {
                 return NotFound();
             }
-            var likes = this.likesService.GetOfPostByType(postId, reactionType);
+            var likes = this.likesService.GetOfPostByType(postId, reactionId);
             return StatusCode(likes.ResponseCode, likes.ResponseBody.Select(x => (LikeDTO)x));
         }
         [HttpGet("{postId}/Reactions")]

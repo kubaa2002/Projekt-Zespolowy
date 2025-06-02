@@ -12,13 +12,8 @@ using Projekt_Zespolowy.Authentication;
 namespace Projekt_Zespolowy.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
-    [Migration("20250513203951_Initial")]
-    partial class Initial
-========
     [Migration("20250525195750_share")]
     partial class share
->>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,618 +26,593 @@ namespace Projekt_Zespolowy.Migrations
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+            {
+                b.Property<string>("Id")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ConcurrencyStamp")
+                    .IsConcurrencyToken()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                b.Property<string>("Name")
+                    .HasMaxLength(256)
+                    .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                b.Property<string>("NormalizedName")
+                    .HasMaxLength(256)
+                    .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                b.HasIndex("NormalizedName")
+                    .IsUnique()
+                    .HasDatabaseName("RoleNameIndex")
+                    .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
-                });
+                b.ToTable("AspNetRoles", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ClaimType")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ClaimValue")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("RoleId")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
+                b.ToTable("AspNetRoleClaims", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ClaimType")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ClaimValue")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("UserId")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
-                });
+                b.ToTable("AspNetUserClaims", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+            {
+                b.Property<string>("LoginProvider")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("ProviderKey")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ProviderDisplayName")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("UserId")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("LoginProvider", "ProviderKey");
+                b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.HasIndex("UserId");
+                b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
-                });
+                b.ToTable("AspNetUserLogins", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+            {
+                b.Property<string>("UserId")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("RoleId")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId", "RoleId");
+                b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("RoleId");
+                b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
+                b.ToTable("AspNetUserRoles", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+            {
+                b.Property<string>("UserId")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("LoginProvider")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("Name")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Value")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId", "LoginProvider", "Name");
+                b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
-                });
+                b.ToTable("AspNetUserTokens", (string)null);
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Authentication.AppUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+            {
+                b.Property<string>("Id")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                b.Property<int>("AccessFailedCount")
+                    .HasColumnType("int");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ConcurrencyStamp")
+                    .IsConcurrencyToken()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                b.Property<string>("Email")
+                    .HasMaxLength(256)
+                    .HasColumnType("nvarchar(256)");
 
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                b.Property<bool>("EmailConfirmed")
+                    .HasColumnType("bit");
 
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
+                b.Property<bool>("LockoutEnabled")
+                    .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                b.Property<DateTimeOffset?>("LockoutEnd")
+                    .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Nickname")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Nickname")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                b.Property<string>("NormalizedEmail")
+                    .HasMaxLength(256)
+                    .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                b.Property<string>("NormalizedUserName")
+                    .HasMaxLength(256)
+                    .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("PasswordHash")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("PhoneNumber")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                b.Property<bool>("PhoneNumberConfirmed")
+                    .HasColumnType("bit");
 
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("SecurityStamp")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                b.Property<bool>("TwoFactorEnabled")
+                    .HasColumnType("bit");
 
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                b.Property<string>("UserName")
+                    .HasMaxLength(256)
+                    .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
+                b.HasIndex("NormalizedEmail")
+                    .HasDatabaseName("EmailIndex");
 
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                b.HasIndex("NormalizedUserName")
+                    .IsUnique()
+                    .HasDatabaseName("UserNameIndex")
+                    .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
-                });
+                b.ToTable("AspNetUsers", (string)null);
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Authentication.RevokedToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("RevokedAt")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("RevokedAt")
+                    .HasColumnType("datetime2");
 
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Token")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("RevokedTokens");
-                });
+                b.ToTable("RevokedTokens");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Community", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedDateTime")
-                        .HasColumnType("datetimeoffset");
+                b.Property<DateTimeOffset>("CreatedDateTime")
+                    .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                b.Property<string>("Description")
+                    .HasMaxLength(500)
+                    .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
+                b.HasIndex("Name")
+                    .IsUnique();
 
-                    b.ToTable("Communities");
-                });
+                b.ToTable("Communities");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.CommunityMember", b =>
-                {
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
+            {
+                b.Property<string>("AppUserId")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CommunityId")
-                        .HasColumnType("int");
+                b.Property<int>("CommunityId")
+                    .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("JoinedDateTime")
-                        .HasColumnType("datetimeoffset");
+                b.Property<DateTimeOffset>("JoinedDateTime")
+                    .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                b.Property<string>("Role")
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("UserId")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("AppUserId", "CommunityId");
+                b.HasKey("AppUserId", "CommunityId");
 
-                    b.HasIndex("CommunityId");
+                b.HasIndex("CommunityId");
 
-                    b.ToTable("CommunityMembers");
-                });
+                b.ToTable("CommunityMembers");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Follower", b =>
-                {
-                    b.Property<string>("FollowerId")
-                        .HasColumnType("nvarchar(450)");
+            {
+                b.Property<string>("FollowerId")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("FollowingId")
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("FollowingId")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTimeOffset>("CreatedDateTime")
-                        .HasColumnType("datetimeoffset");
+                b.Property<DateTimeOffset>("CreatedDateTime")
+                    .HasColumnType("datetimeoffset");
 
-                    b.HasKey("FollowerId", "FollowingId");
+                b.HasKey("FollowerId", "FollowingId");
 
-                    b.HasIndex("FollowingId");
+                b.HasIndex("FollowingId");
 
-                    b.ToTable("Followers");
-                });
+                b.ToTable("Followers");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Like", b =>
-                {
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
+            {
+                b.Property<string>("AppUserId")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
+                b.Property<int>("PostId")
+                    .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("CreatedDateTime")
-                        .HasColumnType("datetimeoffset");
+                b.Property<DateTimeOffset>("CreatedDateTime")
+                    .HasColumnType("datetimeoffset");
 
-<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
-                    b.Property<int>("ReactionType")
-========
-                    b.Property<int>("ReactionId")
->>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
-                        .HasColumnType("int");
+                b.Property<int>("ReactionId")
+                    .HasColumnType("int");
 
-                    b.HasKey("AppUserId", "PostId");
+                b.HasKey("AppUserId", "PostId");
 
-                    b.HasIndex("PostId");
+                b.HasIndex("PostId");
 
-<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
-========
-                    b.HasIndex("ReactionId");
+                b.HasIndex("ReactionId");
 
->>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
-                    b.ToTable("Likes");
-                });
+                b.ToTable("Likes");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Post", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("AppUserId")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("CommunityId")
-                        .HasColumnType("int");
+                b.Property<int?>("CommunityId")
+                    .HasColumnType("int");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                b.Property<string>("Content")
+                    .IsRequired()
+                    .HasMaxLength(2000)
+                    .HasColumnType("nvarchar(2000)");
 
-                    b.Property<DateTimeOffset>("CreatedDateTime")
-                        .HasColumnType("datetimeoffset");
+                b.Property<DateTimeOffset>("CreatedDateTime")
+                    .HasColumnType("datetimeoffset");
 
-<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("bit");
 
-========
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                b.Property<int?>("ParentId")
+                    .HasColumnType("int");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.HasKey("Id");
 
->>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
-                    b.HasKey("Id");
+                b.HasIndex("AppUserId");
 
-                    b.HasIndex("AppUserId");
+                b.HasIndex("CommunityId");
 
-                    b.HasIndex("CommunityId");
+                b.HasIndex("ParentId");
 
-                    b.HasIndex("ParentId");
+                b.ToTable("Posts");
+            });
 
-                    b.ToTable("Posts");
-                });
-
-<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
-========
             modelBuilder.Entity("Projekt_Zespolowy.Models.Reaction", b =>
-                {
-                    b.Property<int>("ReactionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("ReactionId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReactionId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReactionId"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("ReactionId");
+                b.HasKey("ReactionId");
 
-                    b.HasIndex("ReactionId")
-                        .IsUnique();
+                b.HasIndex("ReactionId")
+                    .IsUnique();
 
-                    b.ToTable("Reactions");
-                });
+                b.ToTable("Reactions");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Share", b =>
-                {
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
+            {
+                b.Property<string>("AppUserId")
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
+                b.Property<int>("PostId")
+                    .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("SharedAt")
-                        .HasColumnType("datetimeoffset");
+                b.Property<DateTimeOffset>("SharedAt")
+                    .HasColumnType("datetimeoffset");
 
-                    b.HasKey("AppUserId", "PostId");
+                b.HasKey("AppUserId", "PostId");
 
-                    b.HasIndex("PostId");
+                b.HasIndex("PostId");
 
-                    b.ToTable("Shares");
-                });
+                b.ToTable("Shares");
+            });
 
->>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    .WithMany()
+                    .HasForeignKey("RoleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", null)
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", null)
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    .WithMany()
+                    .HasForeignKey("RoleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", null)
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", null)
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.CommunityMember", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "User")
-                        .WithMany("CommunityMemberships")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "User")
+                    .WithMany("CommunityMemberships")
+                    .HasForeignKey("AppUserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("Projekt_Zespolowy.Models.Community", "Community")
-                        .WithMany("Members")
-                        .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("Projekt_Zespolowy.Models.Community", "Community")
+                    .WithMany("Members")
+                    .HasForeignKey("CommunityId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Community");
+                b.Navigation("Community");
 
-                    b.Navigation("User");
-                });
+                b.Navigation("User");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Follower", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "FollowerUser")
-                        .WithMany("Following")
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+            {
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "FollowerUser")
+                    .WithMany("Following")
+                    .HasForeignKey("FollowerId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
 
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "FollowingUser")
-                        .WithMany("Followers")
-                        .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "FollowingUser")
+                    .WithMany("Followers")
+                    .HasForeignKey("FollowingId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
 
-                    b.Navigation("FollowerUser");
+                b.Navigation("FollowerUser");
 
-                    b.Navigation("FollowingUser");
-                });
+                b.Navigation("FollowingUser");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Like", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "AppUser")
-                        .WithMany("LikesGiven")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "AppUser")
+                    .WithMany("LikesGiven")
+                    .HasForeignKey("AppUserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("Projekt_Zespolowy.Models.Post", "Post")
-                        .WithMany("Likes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("Projekt_Zespolowy.Models.Post", "Post")
+                    .WithMany("Likes")
+                    .HasForeignKey("PostId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
-                    b.Navigation("AppUser");
+                b.HasOne("Projekt_Zespolowy.Models.Reaction", "Reaction")
+                    .WithMany()
+                    .HasForeignKey("ReactionId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
 
-                    b.Navigation("Post");
-========
-                    b.HasOne("Projekt_Zespolowy.Models.Reaction", "Reaction")
-                        .WithMany()
-                        .HasForeignKey("ReactionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                b.Navigation("AppUser");
 
-                    b.Navigation("AppUser");
+                b.Navigation("Post");
 
-                    b.Navigation("Post");
-
-                    b.Navigation("Reaction");
->>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
-                });
+                b.Navigation("Reaction");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Post", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "Author")
-                        .WithMany("PostsAuthored")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+            {
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "Author")
+                    .WithMany("PostsAuthored")
+                    .HasForeignKey("AppUserId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
 
-                    b.HasOne("Projekt_Zespolowy.Models.Community", "Community")
-                        .WithMany("Posts")
-                        .HasForeignKey("CommunityId");
+                b.HasOne("Projekt_Zespolowy.Models.Community", "Community")
+                    .WithMany("Posts")
+                    .HasForeignKey("CommunityId");
 
-                    b.HasOne("Projekt_Zespolowy.Models.Post", "ParentPost")
-                        .WithMany("Replies")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                b.HasOne("Projekt_Zespolowy.Models.Post", "ParentPost")
+                    .WithMany("Replies")
+                    .HasForeignKey("ParentId")
+                    .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Author");
+                b.Navigation("Author");
 
-                    b.Navigation("Community");
+                b.Navigation("Community");
 
-                    b.Navigation("ParentPost");
-                });
+                b.Navigation("ParentPost");
+            });
 
-<<<<<<<< HEAD:src/Migrations/20250513203951_Initial.Designer.cs
-========
             modelBuilder.Entity("Projekt_Zespolowy.Models.Share", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Projekt_Zespolowy.Authentication.AppUser", "User")
+                    .WithMany()
+                    .HasForeignKey("AppUserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("Projekt_Zespolowy.Models.Post", "Post")
-                        .WithMany()
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("Projekt_Zespolowy.Models.Post", "Post")
+                    .WithMany()
+                    .HasForeignKey("PostId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Post");
+                b.Navigation("Post");
 
-                    b.Navigation("User");
-                });
+                b.Navigation("User");
+            });
 
->>>>>>>> main:src/Migrations/20250525195750_share.Designer.cs
             modelBuilder.Entity("Projekt_Zespolowy.Authentication.AppUser", b =>
-                {
-                    b.Navigation("CommunityMemberships");
+            {
+                b.Navigation("CommunityMemberships");
 
-                    b.Navigation("Followers");
+                b.Navigation("Followers");
 
-                    b.Navigation("Following");
+                b.Navigation("Following");
 
-                    b.Navigation("LikesGiven");
+                b.Navigation("LikesGiven");
 
-                    b.Navigation("PostsAuthored");
-                });
+                b.Navigation("PostsAuthored");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Community", b =>
-                {
-                    b.Navigation("Members");
+            {
+                b.Navigation("Members");
 
-                    b.Navigation("Posts");
-                });
+                b.Navigation("Posts");
+            });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.Post", b =>
-                {
-                    b.Navigation("Likes");
+            {
+                b.Navigation("Likes");
 
-                    b.Navigation("Replies");
-                });
+                b.Navigation("Replies");
+            });
 #pragma warning restore 612, 618
         }
     }
