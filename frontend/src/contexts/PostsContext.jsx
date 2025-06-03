@@ -270,7 +270,6 @@ const PostsProvider = ({ children }) => {
         fetchAllPosts,
         fetchPostById,
         createPost,
-        posts,
         createPostInCommunity,
         createComment,
         updatePost,

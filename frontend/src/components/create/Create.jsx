@@ -11,7 +11,7 @@ export default function Create() {
     const [postContent, setPostContent] = useState("");
     const [communityContent, setCommunityContent] = useState("");
     const [postFile, setPostFile] = useState(null);
-    const [rotated, setRotated] = useState(false);
+    const [_, setRotated] = useState(false); // no idea why it's here
     const [communityFile, setCommunityFile] = useState(null);
     const fileInputRef = useRef(null);
     const type = params.get("type");

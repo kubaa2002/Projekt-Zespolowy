@@ -22,6 +22,10 @@ const SignupForm = () => {
   const navigate = useNavigate();
   const auth = useAuth();
 
+
+
+  useEffect(() => {
+
   const validateRealtime = () => {
     const errors = validateRegister({ username, email, password, confirmPassword });
 
@@ -36,7 +40,6 @@ const SignupForm = () => {
     setIsFormValid(Object.keys(errors).length === 0);
   }
 
-  useEffect(() => {
    const timer = setTimeout(async () => {
      if (username || email || password || confirmPassword) {
        validateRealtime();

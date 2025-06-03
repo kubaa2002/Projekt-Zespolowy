@@ -14,6 +14,7 @@
     "@tanstack/react-router-devtools": "^1.117.1",
     "@tiptap/extension-color": "^2.12.0",
     "@tiptap/extension-image": "^2.12.0",
+    "@tiptap/extension-placeholder": "^2.12.0",
     "@tiptap/extension-text-align": "^2.12.0",
     "@tiptap/extension-text-style": "^2.12.0",
     "@tiptap/react": "^2.12.0",
