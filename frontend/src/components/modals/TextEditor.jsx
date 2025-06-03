@@ -5,6 +5,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import Image from '@tiptap/extension-image';
+import Placeholder from '@tiptap/extension-placeholder'
 import { useCallback, useRef, useState, useEffect } from 'react';
 import {
   FaBold,
@@ -34,8 +35,11 @@ const TextEditor = ({ onContentChange, content }) => {
         inline: true,
         allowBase64: true,
       }),
+      Placeholder.configure({
+        placeholder: 'Zacznij pisać...',
+      }),
     ],
-    content: content || '<p>Zacznij pisać...</p>', // Initialize with content prop
+    content: content, // Initialize with content prop
     onUpdate: ({ editor }) => {
       if (onContentChange && typeof onContentChange === 'function') {
         onContentChange(editor.getHTML()); // Call onContentChange with HTML

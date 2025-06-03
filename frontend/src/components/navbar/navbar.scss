@@ -71,33 +71,10 @@
 	width: 5.68vw;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: flex-start;
+	gap: 15px;
 	user-select: none;
 	cursor: pointer;
-}
-
-.notification-icon {
-	position: relative;
-	display:flex;
-	align-items: center;
-	justify-content: center;
-	margin-right: 1.35vw;
-	user-select: none;
-	cursor: pointer;
-
-	i{
-		font-size: 35px;
-		position: relative;
-		color: map.get(colors.$navbar, unchanged-black);
-	}
-	.elipse {
-		position: absolute;
-		top: 21px;
-		right: 0px;
-		width: 16px;
-		height: 16px;
-		z-index: 2;
-	}
 }
 
 

@@ -17,6 +17,8 @@ import { Route as LoginImport } from './routes/login'
 import { Route as HeroImport } from './routes/hero'
 import { Route as CreateImport } from './routes/create'
 import { Route as IndexImport } from './routes/index'
+import { Route as CommunitesIndexImport } from './routes/communites/index'
+import { Route as CommunitesNewImport } from './routes/communites/new'
 
 // Create/Update Routes
 
@@ -53,6 +55,18 @@ const CreateRoute = CreateImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CommunitesIndexRoute = CommunitesIndexImport.update({
+  id: '/communites/',
+  path: '/communites/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CommunitesNewRoute = CommunitesNewImport.update({
+  id: '/communites/new',
+  path: '/communites/new',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,6 +116,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupImport
       parentRoute: typeof rootRoute
     }
+    '/communites/new': {
+      id: '/communites/new'
+      path: '/communites/new'
+      fullPath: '/communites/new'
+      preLoaderRoute: typeof CommunitesNewImport
+      parentRoute: typeof rootRoute
+    }
+    '/communites/': {
+      id: '/communites/'
+      path: '/communites'
+      fullPath: '/communites'
+      preLoaderRoute: typeof CommunitesIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -114,6 +142,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/communites/new': typeof CommunitesNewRoute
+  '/communites': typeof CommunitesIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -123,6 +153,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/communites/new': typeof CommunitesNewRoute
+  '/communites': typeof CommunitesIndexRoute
 }
 
 export interface FileRoutesById {
@@ -133,13 +165,31 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/communites/new': typeof CommunitesNewRoute
+  '/communites/': typeof CommunitesIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/create' | '/hero' | '/login' | '/settings' | '/signup'
+  fullPaths:
+    | '/'
+    | '/create'
+    | '/hero'
+    | '/login'
+    | '/settings'
+    | '/signup'
+    | '/communites/new'
+    | '/communites'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/create' | '/hero' | '/login' | '/settings' | '/signup'
+  to:
+    | '/'
+    | '/create'
+    | '/hero'
+    | '/login'
+    | '/settings'
+    | '/signup'
+    | '/communites/new'
+    | '/communites'
   id:
     | '__root__'
     | '/'
@@ -148,6 +198,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/signup'
+    | '/communites/new'
+    | '/communites/'
   fileRoutesById: FileRoutesById
 }
 
@@ -158,6 +210,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
+  CommunitesNewRoute: typeof CommunitesNewRoute
+  CommunitesIndexRoute: typeof CommunitesIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -167,6 +221,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
+  CommunitesNewRoute: CommunitesNewRoute,
+  CommunitesIndexRoute: CommunitesIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -184,7 +240,9 @@ export const routeTree = rootRoute
         "/hero",
         "/login",
         "/settings",
-        "/signup"
+        "/signup",
+        "/communites/new",
+        "/communites/"
       ]
     },
     "/": {
@@ -204,6 +262,12 @@ export const routeTree = rootRoute
     },
     "/signup": {
       "filePath": "signup.jsx"
+    },
+    "/communites/new": {
+      "filePath": "communites/new.jsx"
+    },
+    "/communites/": {
+      "filePath": "communites/index.jsx"
     }
   }
 }

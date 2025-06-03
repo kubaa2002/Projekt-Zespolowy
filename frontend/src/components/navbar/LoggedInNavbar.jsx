@@ -47,14 +47,14 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
         <div className="hide-on-mobile">
           {/* change to community */}
           <button
-            className="btn btn-primary btn-register btn-register-post" onClick={() => navigate({ to: "/create?type=post" })}>
+            className="btn btn-primary btn-register btn-register-post" onClick={() => {
+              navigate({ to: "/communites/new" })
+              setRotated(false);
+              setMobileMenuOpen(false);
+              }}>
             <i className="bi bi-plus-circle me-2"></i>
-            Nowy post
+            Stwórz społeczność
           </button>
-          <div className="notification-icon">
-            <i className="bi bi-bell-fill" ></i>
-            <img src="elipse.svg" alt="Elipse" className="elipse"/>
-          </div>
           <div className="profile" onClick={handleProfileClick}>
             <img src="avatar.svg" alt="Avatar"/>
             <i className="bi bi-triangle-fill"
