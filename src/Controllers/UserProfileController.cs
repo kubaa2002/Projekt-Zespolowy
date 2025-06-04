@@ -8,7 +8,7 @@ using System.Linq;
 using System;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
-using Projekt_Zespolowy.ProfileUser;
+using Projekt_Zespolowy.UserProfile;
 
 namespace Projekt_Zespolowy.Controllers;
 
@@ -35,8 +35,11 @@ public class UserProfileController : ControllerBase
 
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        bool isFollowing = await _dbContext.Followers.AnyAsync(f =>
-            f.FollowerId == currentUserId && f.FollowingId == user.Id);
+        var isFollowing = await _dbContext.Followers.AnyAsync(f =>
+                f.FollowerId == currentUserId && f.FollowingId == user.Id);
+
+        var isFollower = await _dbContext.Followers.AnyAsync(f =>
+                f.FollowerId == user.Id && f.FollowingId == currentUserId);
 
         var profile = new UserProfileDto
         {
@@ -45,6 +48,7 @@ public class UserProfileController : ControllerBase
             CreatedAt = user.LockoutEnd ?? DateTimeOffset.UtcNow,
             IsMe = currentUserId == user.Id,
             IsFollowing = isFollowing,
+            IsFollower = isFollower,
             FollowersCount = await _dbContext.Followers.CountAsync(f => f.FollowingId == user.Id),
             FollowingCount = await _dbContext.Followers.CountAsync(f => f.FollowerId == user.Id),
             CommunitiesCount = await _dbContext.CommunityMembers.CountAsync(cm => cm.UserId == user.Id)
