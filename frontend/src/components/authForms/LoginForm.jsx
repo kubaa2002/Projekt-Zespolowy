@@ -74,7 +74,7 @@ const LoginForm = () => {
                   Zapamiętaj mnie
                 </label>
               </div>
-              <Link to="#" className="forgot-password-link">
+              <Link to="/reset" className="forgot-password-link">
                 Nie pamiętasz hasła?
               </Link>
             </div>

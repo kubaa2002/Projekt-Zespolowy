@@ -13,6 +13,8 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignupImport } from './routes/signup'
 import { Route as SettingsImport } from './routes/settings'
+import { Route as ResetconfirmImport } from './routes/resetconfirm'
+import { Route as ResetImport } from './routes/reset'
 import { Route as LoginImport } from './routes/login'
 import { Route as HeroImport } from './routes/hero'
 import { Route as CreateImport } from './routes/create'
@@ -31,6 +33,18 @@ const SignupRoute = SignupImport.update({
 const SettingsRoute = SettingsImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ResetconfirmRoute = ResetconfirmImport.update({
+  id: '/resetconfirm',
+  path: '/resetconfirm',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ResetRoute = ResetImport.update({
+  id: '/reset',
+  path: '/reset',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,6 +116,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/reset': {
+      id: '/reset'
+      path: '/reset'
+      fullPath: '/reset'
+      preLoaderRoute: typeof ResetImport
+      parentRoute: typeof rootRoute
+    }
+    '/resetconfirm': {
+      id: '/resetconfirm'
+      path: '/resetconfirm'
+      fullPath: '/resetconfirm'
+      preLoaderRoute: typeof ResetconfirmImport
+      parentRoute: typeof rootRoute
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -140,6 +168,8 @@ export interface FileRoutesByFullPath {
   '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
+  '/reset': typeof ResetRoute
+  '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/communites/new': typeof CommunitesNewRoute
@@ -151,6 +181,8 @@ export interface FileRoutesByTo {
   '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
+  '/reset': typeof ResetRoute
+  '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/communites/new': typeof CommunitesNewRoute
@@ -163,6 +195,8 @@ export interface FileRoutesById {
   '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
+  '/reset': typeof ResetRoute
+  '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/communites/new': typeof CommunitesNewRoute
@@ -176,6 +210,8 @@ export interface FileRouteTypes {
     | '/create'
     | '/hero'
     | '/login'
+    | '/reset'
+    | '/resetconfirm'
     | '/settings'
     | '/signup'
     | '/communites/new'
@@ -186,6 +222,8 @@ export interface FileRouteTypes {
     | '/create'
     | '/hero'
     | '/login'
+    | '/reset'
+    | '/resetconfirm'
     | '/settings'
     | '/signup'
     | '/communites/new'
@@ -196,6 +234,8 @@ export interface FileRouteTypes {
     | '/create'
     | '/hero'
     | '/login'
+    | '/reset'
+    | '/resetconfirm'
     | '/settings'
     | '/signup'
     | '/communites/new'
@@ -208,6 +248,8 @@ export interface RootRouteChildren {
   CreateRoute: typeof CreateRoute
   HeroRoute: typeof HeroRoute
   LoginRoute: typeof LoginRoute
+  ResetRoute: typeof ResetRoute
+  ResetconfirmRoute: typeof ResetconfirmRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   CommunitesNewRoute: typeof CommunitesNewRoute
@@ -219,6 +261,8 @@ const rootRouteChildren: RootRouteChildren = {
   CreateRoute: CreateRoute,
   HeroRoute: HeroRoute,
   LoginRoute: LoginRoute,
+  ResetRoute: ResetRoute,
+  ResetconfirmRoute: ResetconfirmRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   CommunitesNewRoute: CommunitesNewRoute,
@@ -239,6 +283,8 @@ export const routeTree = rootRoute
         "/create",
         "/hero",
         "/login",
+        "/reset",
+        "/resetconfirm",
         "/settings",
         "/signup",
         "/communites/new",
@@ -256,6 +302,12 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.jsx"
+    },
+    "/reset": {
+      "filePath": "reset.jsx"
+    },
+    "/resetconfirm": {
+      "filePath": "resetconfirm.jsx"
     },
     "/settings": {
       "filePath": "settings.jsx"

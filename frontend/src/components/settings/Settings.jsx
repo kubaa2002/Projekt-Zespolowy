@@ -1,11 +1,13 @@
 import MainLayout from "../main/MainLayout";
+import AccountForm from "./AccountForm";
 
 export default function Settings() {
   return (
     <MainLayout>
         <div className="centered-container">
             <div className="settings-container">
-                <h2>Ustawienia</h2>
+                
+                <AccountForm />
             </div>
         </div>
     </MainLayout>
