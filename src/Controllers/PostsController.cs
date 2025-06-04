@@ -212,7 +212,7 @@ namespace Projekt_Zespolowy.Controllers
             }
         }
         [HttpPost("{postId}/Like")]
-        public IActionResult GiveReaction(int postId, [FromBody] Like like)
+        public IActionResult GiveReaction(int postId, [FromBody] LikeDTO like)
         {
             var post = this.postsService.GetById(postId);
             if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
@@ -223,7 +223,7 @@ namespace Projekt_Zespolowy.Controllers
             var sr = likesService.Add(like);
             return StatusCode(sr.ResponseCode);
         }
-        [HttpGet("{postId}/{reactionType}/Nr")]
+        [HttpGet("{postId}/{reactionId}/Nr")]
         public IActionResult GetReactionCount(int postId, int reactionId)
         {
             if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
@@ -243,7 +243,7 @@ namespace Projekt_Zespolowy.Controllers
             var reactionCount = this.likesService.GetOfPostCount(postId);
             return StatusCode(reactionCount.ResponseCode, reactionCount.ResponseBody);
         }
-        [HttpGet("{postId}/{reactionType}")]
+        [HttpGet("{postId}/{reactionId}")]
         public IActionResult GetReaction(int postId, int reactionId)
         {
             if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
