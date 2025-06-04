@@ -170,26 +170,29 @@ namespace Projekt_Zespolowy.Services
         /// Changes the value of IsDeleted property to True.
         /// </summary>
         /// <param name="newPost"> A DTO record that shall be deleted.</param>
-        public ServiceResponse<Post> Delete(int id, PostDTO newPost)
+        public ServiceResponse<string?> Delete(int id, PostDTO newPost)
         {
             var post = context.Posts.SingleOrDefault(x => x.Id == id);
             if (post == default)
             {
-                return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
+                return new ServiceResponse<string?>(StatusCodes.Status404NotFound, null);
             }
             post.IsDeleted = true;
-            return Update(post); //można później zmienić aby nie dublować wywoływania metod
+            var temp = Update(post);
+
+            return new ServiceResponse<string?>(temp.ResponseCode, "deleted"); //można później zmienić aby nie dublować wywoływania metod
         }
 
-        public ServiceResponse<Post> UndoDelete(int id, PostDTO newPost)
+        public ServiceResponse<string?> UndoDelete(int id, PostDTO newPost)
         {
             var post = context.Posts.SingleOrDefault(x => x.Id == id);
             if (post == default)
             {
-                return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
+                return new ServiceResponse<string?>(StatusCodes.Status404NotFound, null);
             }
             post.IsDeleted = false;
-            return Update(post); //można później zmienić aby nie dublować wywoływania metod
+            var temp = Update(post);
+            return new ServiceResponse<string?>(temp.ResponseCode, "undone deletetion"); //można później zmienić aby nie dublować wywoływania metod
         }
     }
 }
