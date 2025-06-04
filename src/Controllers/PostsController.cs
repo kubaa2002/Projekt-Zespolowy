@@ -226,7 +226,8 @@ namespace Projekt_Zespolowy.Controllers
         [HttpGet("{postId}/{reactionId}/Nr")]
         public IActionResult GetReactionCount(int postId, int reactionId)
         {
-            if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
             {
                 return NotFound();
             }
@@ -236,7 +237,8 @@ namespace Projekt_Zespolowy.Controllers
         [HttpGet("{postId}/Reactions/Nr")]
         public IActionResult GetReactionCount(int postId)
         {
-            if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
             {
                 return NotFound();
             }
@@ -246,7 +248,8 @@ namespace Projekt_Zespolowy.Controllers
         [HttpGet("{postId}/{reactionId}")]
         public IActionResult GetReaction(int postId, int reactionId)
         {
-            if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
             {
                 return NotFound();
             }
@@ -256,7 +259,8 @@ namespace Projekt_Zespolowy.Controllers
         [HttpGet("{postId}/Reactions")]
         public IActionResult GetReaction(int postId)
         {
-            if(this.postsService.GetById(postId).ResponseCode == StatusCodes.Status404NotFound)
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
             {
                 return NotFound();
             }
