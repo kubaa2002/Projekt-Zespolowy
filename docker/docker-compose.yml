@@ -13,7 +13,7 @@ services:
        - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true 
       networks:
        - projektzespolowynetwork
-      restart: on-failure
+      restart: always
 
     sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
@@ -35,6 +35,23 @@ services:
             /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'BazaDanych123!' -i /init-db/init.sql -N -C;
             wait $pid
           "
+        restart: always
+
+
+    frontend:
+        build:
+          context: ../
+          dockerfile: docker/Dockerfile.frontend.prod
+        container_name: projekt-zespolowy-frontend
+        ports:
+          - "5173:80"
+        depends_on:
+          - projekt-zespolowy
+        environment:
+          - VITE_APP_API_URL=/api
+        networks:
+          - projektzespolowynetwork
+        restart: always
 
 networks:
   projektzespolowynetwork:
