@@ -17,8 +17,10 @@ import { Route as LoginImport } from './routes/login'
 import { Route as HeroImport } from './routes/hero'
 import { Route as CreateImport } from './routes/create'
 import { Route as IndexImport } from './routes/index'
-import { Route as CommunitesIndexImport } from './routes/communites/index'
-import { Route as CommunitesNewImport } from './routes/communites/new'
+import { Route as UsersIndexImport } from './routes/users/index'
+import { Route as CommunitiesIndexImport } from './routes/communities/index'
+import { Route as CommunitiesNewImport } from './routes/communities/new'
+import { Route as CommunitiesCommunityIdImport } from './routes/communities/$communityId'
 
 // Create/Update Routes
 
@@ -58,15 +60,27 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const CommunitesIndexRoute = CommunitesIndexImport.update({
-  id: '/communites/',
-  path: '/communites/',
+const UsersIndexRoute = UsersIndexImport.update({
+  id: '/users/',
+  path: '/users/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const CommunitesNewRoute = CommunitesNewImport.update({
-  id: '/communites/new',
-  path: '/communites/new',
+const CommunitiesIndexRoute = CommunitiesIndexImport.update({
+  id: '/communities/',
+  path: '/communities/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CommunitiesNewRoute = CommunitiesNewImport.update({
+  id: '/communities/new',
+  path: '/communities/new',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CommunitiesCommunityIdRoute = CommunitiesCommunityIdImport.update({
+  id: '/communities/$communityId',
+  path: '/communities/$communityId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -116,18 +130,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupImport
       parentRoute: typeof rootRoute
     }
-    '/communites/new': {
-      id: '/communites/new'
-      path: '/communites/new'
-      fullPath: '/communites/new'
-      preLoaderRoute: typeof CommunitesNewImport
+    '/communities/$communityId': {
+      id: '/communities/$communityId'
+      path: '/communities/$communityId'
+      fullPath: '/communities/$communityId'
+      preLoaderRoute: typeof CommunitiesCommunityIdImport
       parentRoute: typeof rootRoute
     }
-    '/communites/': {
-      id: '/communites/'
-      path: '/communites'
-      fullPath: '/communites'
-      preLoaderRoute: typeof CommunitesIndexImport
+    '/communities/new': {
+      id: '/communities/new'
+      path: '/communities/new'
+      fullPath: '/communities/new'
+      preLoaderRoute: typeof CommunitiesNewImport
+      parentRoute: typeof rootRoute
+    }
+    '/communities/': {
+      id: '/communities/'
+      path: '/communities'
+      fullPath: '/communities'
+      preLoaderRoute: typeof CommunitiesIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/users/': {
+      id: '/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof UsersIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -142,8 +170,10 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
-  '/communites/new': typeof CommunitesNewRoute
-  '/communites': typeof CommunitesIndexRoute
+  '/communities/$communityId': typeof CommunitiesCommunityIdRoute
+  '/communities/new': typeof CommunitiesNewRoute
+  '/communities': typeof CommunitiesIndexRoute
+  '/users': typeof UsersIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -153,8 +183,10 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
-  '/communites/new': typeof CommunitesNewRoute
-  '/communites': typeof CommunitesIndexRoute
+  '/communities/$communityId': typeof CommunitiesCommunityIdRoute
+  '/communities/new': typeof CommunitiesNewRoute
+  '/communities': typeof CommunitiesIndexRoute
+  '/users': typeof UsersIndexRoute
 }
 
 export interface FileRoutesById {
@@ -165,8 +197,10 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
-  '/communites/new': typeof CommunitesNewRoute
-  '/communites/': typeof CommunitesIndexRoute
+  '/communities/$communityId': typeof CommunitiesCommunityIdRoute
+  '/communities/new': typeof CommunitiesNewRoute
+  '/communities/': typeof CommunitiesIndexRoute
+  '/users/': typeof UsersIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -178,8 +212,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/signup'
-    | '/communites/new'
-    | '/communites'
+    | '/communities/$communityId'
+    | '/communities/new'
+    | '/communities'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -188,8 +224,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/signup'
-    | '/communites/new'
-    | '/communites'
+    | '/communities/$communityId'
+    | '/communities/new'
+    | '/communities'
+    | '/users'
   id:
     | '__root__'
     | '/'
@@ -198,8 +236,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/signup'
-    | '/communites/new'
-    | '/communites/'
+    | '/communities/$communityId'
+    | '/communities/new'
+    | '/communities/'
+    | '/users/'
   fileRoutesById: FileRoutesById
 }
 
@@ -210,8 +250,10 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
-  CommunitesNewRoute: typeof CommunitesNewRoute
-  CommunitesIndexRoute: typeof CommunitesIndexRoute
+  CommunitiesCommunityIdRoute: typeof CommunitiesCommunityIdRoute
+  CommunitiesNewRoute: typeof CommunitiesNewRoute
+  CommunitiesIndexRoute: typeof CommunitiesIndexRoute
+  UsersIndexRoute: typeof UsersIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -221,8 +263,10 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
-  CommunitesNewRoute: CommunitesNewRoute,
-  CommunitesIndexRoute: CommunitesIndexRoute,
+  CommunitiesCommunityIdRoute: CommunitiesCommunityIdRoute,
+  CommunitiesNewRoute: CommunitiesNewRoute,
+  CommunitiesIndexRoute: CommunitiesIndexRoute,
+  UsersIndexRoute: UsersIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -241,8 +285,10 @@ export const routeTree = rootRoute
         "/login",
         "/settings",
         "/signup",
-        "/communites/new",
-        "/communites/"
+        "/communities/$communityId",
+        "/communities/new",
+        "/communities/",
+        "/users/"
       ]
     },
     "/": {
@@ -263,11 +309,17 @@ export const routeTree = rootRoute
     "/signup": {
       "filePath": "signup.jsx"
     },
-    "/communites/new": {
-      "filePath": "communites/new.jsx"
+    "/communities/$communityId": {
+      "filePath": "communities/$communityId.jsx"
     },
-    "/communites/": {
-      "filePath": "communites/index.jsx"
+    "/communities/new": {
+      "filePath": "communities/new.jsx"
+    },
+    "/communities/": {
+      "filePath": "communities/index.jsx"
+    },
+    "/users/": {
+      "filePath": "users/index.jsx"
     }
   }
 }

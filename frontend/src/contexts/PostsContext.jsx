@@ -5,19 +5,17 @@ import { useAuth } from "./authProvider";
 const PostsContext = createContext();
 
 const PostsProvider = ({ children }) => {
-  const { token } = useAuth(); 
+  const { token } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [comments, setComments] = useState({})
+  const [comments, setComments] = useState({});
 
- 
   const getAuthConfig = () => ({
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-
 
   const fetchPosts = async (page = 1, pageSize = 10) => {
     setLoading(true);
@@ -27,7 +25,7 @@ const PostsProvider = ({ children }) => {
         getAuthConfig()
       );
       setPosts(response.data);
-      console.log("pobiermam posty")
+      console.log("pobiermam posty");
       setError(null);
       return response.data;
     } catch (err) {
@@ -37,7 +35,6 @@ const PostsProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
 
   const fetchCommunityPosts = async (communityId, page = 1, pageSize = 10) => {
     setLoading(true);
@@ -57,7 +54,6 @@ const PostsProvider = ({ children }) => {
     }
   };
 
- 
   const fetchUserPosts = async (authorId, page = 1, pageSize = 10) => {
     setLoading(true);
     try {
@@ -286,5 +282,9 @@ const PostsProvider = ({ children }) => {
 export default PostsProvider;
 
 export const usePosts = () => {
-  return useContext(PostsContext);
+  const context = useContext(PostsContext);
+  if (!context) {
+    throw new Error("useSearch must be used within a SearchProvider");
+  }
+  return context;
 };
