@@ -5,6 +5,7 @@ import MainLayout from "../../components/main/MainLayout.jsx";
 import ProtectedRoute from "../../utils/ProtectedRoute.jsx";
 import mergeUniqueById from "../../utils/mergeUniqueById.js";
 import axios from "axios";
+import SearchCommunity from "../../components/communitiesLayouts/SearchCommunity.jsx";
 export const Route = createFileRoute("/communities/")({
   component: RouteComponent,
 });
@@ -73,9 +74,12 @@ const Communities = () => {
       {loading && data.length === 0 && <p>Ładowanie...</p>}
 
       {data.map((community) => (
-        <div key={community.id} className="community-card">
-          <h2>{community.name}</h2>
-          <p>{community.description}</p>
+        <div className="community-card"
+          key={community.id}
+          //onClick={() => handleCommunityClick(community.id)}
+          style={{ cursor: "pointer" }}
+          >
+          <SearchCommunity community={community} />
         </div>
       ))}
 

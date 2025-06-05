@@ -79,7 +79,7 @@ const Users = () => {
       {loading && data.length === 0 && <p>Ładowanie...</p>}
 
       {data.map((user) => (
-        <div
+        <div className="profile-card"
           key={user.id}
           onClick={() => handleProfileClick(user.id)}
           style={{ cursor: "pointer" }}
