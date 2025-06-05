@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Models;
 using Projekt_Zespolowy.Posts;
 using Projekt_Zespolowy.Sharing;
 
@@ -20,12 +21,11 @@ namespace Projekt_Zespolowy.Services
             if (context.Posts.FirstOrDefault(p => p.Id == postId) != default
                 && context.Users.FirstOrDefault(u => u.Id == userId) != default)
             {
-                context.SharedPosts.Add(
-                    new SharedPost
+                context.Shares.Add(
+                    new Share
                     {
-                        UserId = userId,
+                        AppUserId = userId,
                         PostId = postId,
-                        ShareDateTime = DateTime.UtcNow
                     });
                 context.SaveChanges();
                 return HttpStatusCode.Created;
@@ -42,8 +42,8 @@ namespace Projekt_Zespolowy.Services
             
             if (context.Users.FirstOrDefault(u => u.Id == userId) != default)
             {
-                return context.SharedPosts
-                    .Where(sp => sp.UserId == userId)
+                return context.Shares
+                    .Where(sp => sp.AppUserId == userId)
                     .Select(sp => sp.PostId)
                     .ToList();
             }
@@ -58,12 +58,21 @@ namespace Projekt_Zespolowy.Services
         {
             if (context.Users.FirstOrDefault(u => u.Id == userId) != default)
             {
-                return (ICollection<PostDTO>)context.SharedPosts
-                .Where(sp => sp.UserId == userId)
-                .Select(sp => sp.PostNavigation)
+                return (ICollection<PostDTO>)context.Shares
+                .Where(sp => sp.AppUserId == userId)
+                .Select(sp => sp.Post)
                 .ToList();
             }
             else return null;
+        }
+
+        public ServiceResponse<string> DeleteShare(int postId, string userId)
+        {
+            if(context.Shares.FirstOrDefault(s => s.AppUserId == userId && s.PostId==postId) == default)
+                {
+                    return new ServiceResponse<string>(404, "Użytkownik nie udostępnił danego postu!");
+                }
+            return new ServiceResponse<string>(200, "Usunięto udostępnienie posta");
         }
     }
 }

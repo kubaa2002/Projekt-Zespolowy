@@ -78,7 +78,7 @@ namespace Projekt_Zespolowy.Services
     public ServiceResponse<IEnumerable<Post>> GetAll()
         {
             var result = context.Posts.ToList();
-            if (result.Count == 0)
+            if (result.Count() == 0)
             {
                 return new ServiceResponse<IEnumerable<Post>>(StatusCodes.Status204NoContent, null);
             }
@@ -115,7 +115,7 @@ namespace Projekt_Zespolowy.Services
             }
             else
             {
-                posts.Add(post); //do usunięcia po przejściu na bazę danych
+                //posts.Add(post); //do usunięcia po przejściu na bazę danych
                 context.Posts.Add(post);
                 //context.SaveChanges();
                 return new ServiceResponse<Post>(StatusCodes.Status201Created, post);

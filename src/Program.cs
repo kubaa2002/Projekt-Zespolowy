@@ -64,8 +64,18 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
+builder.Services.AddScoped<SharingService>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 // We need to enable this when we will be deploying to a hosting
 //app.UseHttpsRedirection();
