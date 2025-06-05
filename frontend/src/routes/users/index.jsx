@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import ProtectedRoute from "../../utils/ProtectedRoute";
 import { useState, useCallback, useEffect } from "react";
@@ -5,6 +6,7 @@ import mergeUniqueById from "../../utils/mergeUniqueById.js";
 import MainLayout from "../../components/main/MainLayout.jsx";
 import axios from "axios";
 import { useAuth } from "../../contexts/authProvider.jsx";
+import SearchProfile from "../../components/profilesLayouts/SearchProfile.jsx";
 export const Route = createFileRoute("/users/")({
   component: RouteComponent,
 });
@@ -21,12 +23,17 @@ function RouteComponent() {
 
 const Users = () => {
   const query = Route.useSearch();
+  const navigate = useNavigate(); 
   const pageSize = 10;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const { token } = useAuth();
+
+  const handleProfileClick = (userId) => {
+    navigate({ to: `/users/${userId}` });
+  };
 
   const searchUsers = useCallback(
     async (query = "", start = 0, amount = 10) => {
@@ -72,9 +79,12 @@ const Users = () => {
       {loading && data.length === 0 && <p>Ładowanie...</p>}
 
       {data.map((user) => (
-        <div key={user.id} className="user-card">
-          <h2>{user.username}</h2>
-          <p>{user.email}</p>
+        <div
+          key={user.id}
+          onClick={() => handleProfileClick(user.id)}
+          style={{ cursor: "pointer" }}
+        >
+          <SearchProfile user={user} />
         </div>
       ))}
 
