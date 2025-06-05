@@ -41,7 +41,7 @@ public class UserProfileController : ControllerBase
         var isFollower = await _dbContext.Followers.AnyAsync(f =>
                 f.FollowerId == user.Id && f.FollowingId == currentUserId);
 
-        var profile = new UserProfileDto
+        var profile = new UserProfileDTo
         {
             Id = user.Id,
             UserName = user.UserName ?? "",
@@ -51,7 +51,7 @@ public class UserProfileController : ControllerBase
             IsFollower = isFollower,
             FollowersCount = await _dbContext.Followers.CountAsync(f => f.FollowingId == user.Id),
             FollowingCount = await _dbContext.Followers.CountAsync(f => f.FollowerId == user.Id),
-            CommunitiesCount = await _dbContext.CommunityMembers.CountAsync(cm => cm.UserId == user.Id)
+            CommunitiesCount = await _dbContext.CommunityMembers.CountAsync(cm => cm.AppUserId == user.Id)
         };
 
         return Ok(profile);
@@ -111,7 +111,7 @@ public class UserProfileController : ControllerBase
         if (user == null) return NotFound();
 
         var communityIds = await _dbContext.CommunityMembers
-            .Where(cm => cm.UserId == userId)
+            .Where(cm => cm.AppUserId == userId)
             .Select(cm => cm.CommunityId)
             .ToListAsync();
 
