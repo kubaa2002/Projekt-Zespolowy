@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Projekt_Zespolowy.Posts;
 
 namespace Projekt_Zespolowy.Sharing
 {

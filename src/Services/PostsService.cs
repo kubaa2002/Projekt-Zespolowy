@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
-using Projekt_Zespolowy.Posts;
-using Projekt_Zespolowy.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Projekt_Zespolowy.Services
@@ -24,18 +22,18 @@ namespace Projekt_Zespolowy.Services
             //ale jeśli jakieś posty zostałyby usunięte doprowadziłoby to do wyświetlenie mniejszej liczby postów niż length, nie sądzę,
             //żeby było to docelowe działanie
             //context.Posts.Where(x => x.Id >= start && x.Id < start + length); <--- to o czym myślę
-            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Include(x=>x.Likes).ToList();
+            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Include(x => x.Likes).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
             // When only partial content
             if (start + length > foundPosts.Count)
-                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent,foundPosts.Skip(start).ToList());
+                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent, foundPosts.Skip(start).ToList());
             // When ok
-            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,foundPosts.GetRange(start, length));
+            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
         }
-        public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId) 
-        { 
+        public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId)
+        {
             List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == commnityId).Include(x => x.Likes).ToList();
             // When no posts
             if (start > foundPosts.Count)
@@ -71,7 +69,7 @@ namespace Projekt_Zespolowy.Services
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
         }
 
-    public ServiceResponse<IEnumerable<Post>> GetAll()
+        public ServiceResponse<IEnumerable<Post>> GetAll()
         {
             var result = context.Posts.ToList();
             if (result.Count() == 0)
@@ -84,7 +82,7 @@ namespace Projekt_Zespolowy.Services
         public ServiceResponse<Post> GetById(int id)
         {
             var result = context.Posts.Include(x => x.Likes).SingleOrDefault(x => x.Id == id);
-            if (result == default) 
+            if (result == default)
             {
                 return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
             }
@@ -93,9 +91,10 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<Post> Add(PostDTO newPost)
         {
+            if (newPost.CreatedDateTime == default)
+                newPost.CreatedDateTime = DateTimeOffset.UtcNow;
+
             Post post = newPost;
-            if (post.CreatedDateTime == default)
-                post.CreatedDateTime = DateTimeOffset.UtcNow;
             if (post.Content.Length > 2000)
             {
                 return new ServiceResponse<Post>(StatusCodes.Status413PayloadTooLarge, null);
@@ -104,8 +103,10 @@ namespace Projekt_Zespolowy.Services
             {
                 return new ServiceResponse<Post>(StatusCodes.Status400BadRequest, null);
             }
-            //czy mogę tak wywołać metodę? czy to stworzy zbyt wiele zapytań i jest nieefektywne?
-            //jako ciało można rozważyć zwracanie istniejącego rekordu, jest to w controllers
+            if (context.Users.SingleOrDefault(u => u.Id == post.AppUserId) == default)
+            {
+                return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
+            }
             var result = context.Posts.SingleOrDefault(x => x.Id == post.Id);
             if (result != default)
             {
@@ -115,6 +116,11 @@ namespace Projekt_Zespolowy.Services
             {
                 context.Posts.Add(post);
                 context.SaveChanges();
+                //context.Posts.Last().Id = post.Id;
+                // Błąd - jeśli w body nie zostanie podane Id (a afaik nie powinno, bo baza danych krzyczy),
+                // to zwraca id posta  =0, zarówno w ścieżce jak i w body odpowiedzi.
+                // Pytanie, czy np chcemy aby (już po zapisaniu posta w bazie) pobrało id (lub całego posta)
+                // i dopiero to zwracało w ciele.
                 return new ServiceResponse<Post>(StatusCodes.Status201Created, post);
             }
         }

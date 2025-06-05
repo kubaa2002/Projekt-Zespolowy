@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt_Zespolowy.Services;
-using Projekt_Zespolowy.Posts;
 using Projekt_Zespolowy.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Projekt_Zespolowy.Authentication;
@@ -17,13 +16,10 @@ namespace Projekt_Zespolowy.Controllers
         CommunityService communityService;
         LikesService likesService;
         public PostsController(PostsService postsService, CommunityService communityService, LikesService likesService) 
-        SharingService sharingService;
-        public PostsController(PostsService postsService, CommunityService communityService, SharingService sharingService) 
         {
             this.postsService = postsService;
             this.communityService = communityService;
             this.likesService = likesService;
-            this.sharingService = sharingService;
         }
         [HttpGet]
         [ProducesResponseType<List<PostDTO>>(StatusCodes.Status200OK)]
@@ -107,7 +103,7 @@ namespace Projekt_Zespolowy.Controllers
         public IActionResult GetAll()
         {
             var result = postsService.GetAll();
-            return result.ResponseBody != null ? Ok(result) : NoContent();
+            return result.ResponseBody != null ? Ok(result.ResponseBody) : NoContent();
         }
 
         [HttpGet("{id}")]
@@ -126,6 +122,22 @@ namespace Projekt_Zespolowy.Controllers
             if (response.ResponseCode == 201)
             {
                 return Created($"/posts/{postDTO.Id}", postDTO);
+            }
+            if (response.ResponseCode == 413)
+            {
+                return StatusCode(response.ResponseCode);
+            }
+            if (response.ResponseCode == 400)
+            {
+                return BadRequest("Post nie możebyć pusty!");
+            }
+            if (response.ResponseCode == 404)
+            {
+                return NotFound("Użytkownik nie istnieje!");
+            }
+            if (response.ResponseCode == 409)
+            {
+                return Conflict("Dany post już istnieje!");
             }
             else
             {
@@ -270,48 +282,6 @@ namespace Projekt_Zespolowy.Controllers
             }
             var likes = this.likesService.GetOfPost(postId);
             return StatusCode(likes.ResponseCode, likes.ResponseBody.Select(x=>(LikeDTO)x));
-        }
-        }
-
-        [HttpPost("/share")]
-        public IActionResult SharePost(int postId, string userId)
-        {
-            var response = sharingService.SharePost(postId, userId);
-
-            if (response == HttpStatusCode.Created)
-            {
-                return Created();
-            }
-            else
-            {
-                return NotFound("User or Post does not exist");
-            }
-        }
-
-        [HttpGet("/share/[action]")]
-        public IActionResult GetSharedPostsIds(string userId)
-        {
-            ICollection<int>? response = sharingService.GetSharedPostsIds(userId);
-            if (response == null) 
-                return NotFound("User does not exist!");
-
-            if (response.Count() == 0)
-                return NoContent();
-
-            else return Ok(response);
-        }
-
-        [HttpGet("/share/[action]")]
-        public IActionResult GetSharedPosts(string userId)
-        {
-            ICollection<int>? response = sharingService.GetSharedPostsIds(userId);
-            if (response == null) 
-                return NotFound("User does not exist!");
-
-            if (response.Count() == 0)
-                return NoContent();
-
-            else return Ok(response);
         }
     }
 }

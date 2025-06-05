@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
-using Projekt_Zespolowy.Posts;
 
 namespace Projekt_Zespolowy.Sharing
 {

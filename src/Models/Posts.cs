@@ -6,8 +6,6 @@ using Projekt_Zespolowy.Authentication;
 
 namespace Projekt_Zespolowy.Models
 {
-   
-
     public class Post
     {
         [Key]
