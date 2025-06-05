@@ -18,6 +18,10 @@
   height: 330px;
   gap: 15px;
   padding: 15px;
+  a{
+    text-decoration: none;
+    color: black;
+  }
 
   .sidebar-row {
     display: flex;
@@ -28,6 +32,7 @@
     border-radius: 10px;
     padding: 10px 5px;
     cursor: pointer;
+
 
     &:hover{
       background-color: map.get(colors.$navbar, border-gray-400);
@@ -86,7 +91,7 @@
       gap: 15px;
       cursor: pointer;
       &:hover, &.selected {
-        background-color: map.get(colors.$key-colors, light-gray);
+        background-color: map.get(colors.$navbar, border-gray-400);
       }
 
       .community-icon-wrapper{

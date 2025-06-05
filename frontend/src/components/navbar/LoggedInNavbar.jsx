@@ -1,67 +1,85 @@
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/authProvider";
 import { useNavigate } from "@tanstack/react-router";
 import { useLocation } from "@tanstack/react-router";
-const SearchInput = ({ value, setValue }) => {
+const SearchInput = () => {
+  const [searchType, setSearchType] = useState("users");
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
+
+  function handleSearch() {
+    return navigate({ to: `/${searchType}?q=${searchValue}` });
+  }
+
   return (
     <div className="input-group search-group">
       <input
         type="text"
         className="form-control form-control-lg"
-        placeholder="Wpisz tutaj, aby wyszukać..."
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        placeholder={`Wpisz tutaj, aby wyszukać...`}
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
       />
+      <select
+        name="searchType"
+        id="searchType"
+        className="form-control"
+        onChange={(e) => setSearchType(e.currentTarget.value)}
+      >
+        <option value="users">Użytkownicy</option>
+        <option value="communities">Społeczności</option>
+      </select>
+      <span className="input-group-text search-icon" onClick={handleSearch}>
+        <i className="bi bi-search p-2" style={{ cursor: "pointer" }}></i>
+      </span>
     </div>
   );
 };
-const SearchSections = ({ value, isSearchingPosts }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  return (
-    <ul className="navbar-nav">
-      {isSearchingPosts && (
-        <li className="nav-item nav-item-active">
-          <button
-            type="button"
-            className="nav-link active"
-            onClick={() => navigate({ to: "/" })}
-          >
-            Posty w wątku
-          </button>
-        </li>
-      )}
-      <li
-        className={`nav-item ${location.pathname === "/users" ? "nav-item-active" : ""}`}
-      >
-        <button
-          type="button"
-          className="nav-link active"
-          onClick={() => navigate({ to: `/users?q=${value}` })}
-        >
-          Użytkownicy
-        </button>
-      </li>
-      <li
-        className={`nav-item ${location.pathname === "/communities" ? "nav-item-active" : ""}`}
-      >
-        <button
-          type="button"
-          className="nav-link active"
-          onClick={() => navigate({ to: `/communities?q=${value}` })}
-        >
-          Społeczności
-        </button>
-      </li>
-    </ul>
-  );
-};
+// const SearchSections = ({ value, isSearchingPosts }) => {
+//   const navigate = useNavigate();
+//   const location = useLocation();
+//   return (
+//     <ul className="navbar-nav">
+//       {isSearchingPosts && (
+//         <li className="nav-item nav-item-active">
+//           <button
+//             type="button"
+//             className="nav-link active"
+//             onClick={() => navigate({ to: "/" })}
+//           >
+//             Posty w wątku
+//           </button>
+//         </li>
+//       )}
+//       <li
+//         className={`nav-item ${location.pathname === "/users" ? "nav-item-active" : ""}`}
+//       >
+//         <button
+//           type="button"
+//           className="nav-link active"
+//           onClick={() => navigate({ to: `/users?q=${value}` })}
+//         >
+//           Użytkownicy
+//         </button>
+//       </li>
+//       <li
+//         className={`nav-item ${location.pathname === "/communities" ? "nav-item-active" : ""}`}
+//       >
+//         <button
+//           type="button"
+//           className="nav-link active"
+//           onClick={() => navigate({ to: `/communities?q=${value}` })}
+//         >
+//           Społeczności
+//         </button>
+//       </li>
+//     </ul>
+//   );
+// };
 
 export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   const location = useLocation();
   const additionalPath = location.pathname.split("/")[2];
-  const isSearchingPosts = !isNaN(Number(additionalPath)); // server endpoints only search posts in communities and users, by specyfing additional id parameter
-  const [searchValue, setSearchValue] = useState("");
   const [rotated, setRotated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const modalRef = useRef();
@@ -119,7 +137,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
           </div>
         </div>
         <div className="navbar-searchbar">
-          <SearchInput value={searchValue} setValue={setSearchValue} />
+          <SearchInput />
         </div>
         <div className="hide-on-mobile">
           {/* change to community */}
@@ -231,7 +249,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
           </div>
         )}
       </div>
-      <SearchSections value={searchValue} isSearchingPosts={isSearchingPosts} />
+      {/* <SearchSections value={searchValue} isSearchingPosts={isSearchingPosts} /> */}
     </nav>
   );
 }

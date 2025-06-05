@@ -1,5 +1,6 @@
   import {useCallback, useEffect, useState} from "react";
   import getColor from "../../utils/getColor";
+  import { Link, useNavigate } from "@tanstack/react-router";
   import { useAuth } from "../../contexts/authProvider";
   import axios from "axios";
   const sideNavItems = [
@@ -7,6 +8,7 @@
       icon: "bi bi-bar-chart-fill",
       title: "Wszystkie posty",
       subTitle: "Wszystkie posty w jednym miejscu",
+      linkTo: "/"
     },
     {
       icon: "bi-house-door-fill",
@@ -110,9 +112,11 @@
     }
   ];
 
-const NavRow = ({ icon, title, subTitle, onClick, isSelected }) => (
-  <div
+const NavRow = ({ icon, title, subTitle, onClick, isSelected, link}) => (
+  <Link
+    to={link}
     className={`sidebar-row ${isSelected ? "selected" : ""}`}
+    activeProps={{ className: `selected` }}
     onClick={onClick}
   >
     <div className="navrow-icon-wrapper">
@@ -122,7 +126,7 @@ const NavRow = ({ icon, title, subTitle, onClick, isSelected }) => (
       <div className="info-title">{title}</div>
       <div className="info-subtitle">{subTitle}</div>
     </div>
-  </div>
+  </Link>
 );
 
 const CommunityRow = ({title, numberOfUsers, isSelected, onClick}) => {
@@ -144,6 +148,7 @@ export default function SideNav () {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     // app.py blocked by cors policy, doesn't return id anyway. No endpoint on .net
 
@@ -183,7 +188,7 @@ export default function SideNav () {
                 icon={item.icon}
                 title={item.title}
                 subTitle={item.subTitle}
-                onClick={() => setSelected(index)}
+                link={item.linkTo || "/notImplemented"}
                 isSelected={selected === index}
               />
             ))}
