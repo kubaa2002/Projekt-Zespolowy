@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef} from "react";
 import { useAuth } from "../../contexts/authProvider";
 import { useNavigate } from "@tanstack/react-router";
 import { useLocation } from "@tanstack/react-router";
-
 const SearchInput = ({ value, setValue }) => {
   return (
     <div className="input-group search-group">
@@ -18,7 +17,7 @@ const SearchInput = ({ value, setValue }) => {
 };
 const SearchSections = ({ value, isSearchingPosts }) => {
   const navigate = useNavigate();
-  if (!value && value.length === 0) return null;
+  const location = useLocation();
   return (
     <ul className="navbar-nav">
       {isSearchingPosts && (
@@ -32,16 +31,24 @@ const SearchSections = ({ value, isSearchingPosts }) => {
           </button>
         </li>
       )}
-      <li className="nav-item">
-        <button type="button" className="nav-link active" onClick={() => navigate({to: `/users?q=${value}`})}>
-          Użytkownicy
-        </button>
-      </li>
-      <li className="nav-item ">
+      <li
+        className={`nav-item ${location.pathname === "/users" ? "nav-item-active" : ""}`}
+      >
         <button
           type="button"
           className="nav-link active"
-          onClick={() => navigate({to: `/communities?q=${value}`})}
+          onClick={() => navigate({ to: `/users?q=${value}` })}
+        >
+          Użytkownicy
+        </button>
+      </li>
+      <li
+        className={`nav-item ${location.pathname === "/communities" ? "nav-item-active" : ""}`}
+      >
+        <button
+          type="button"
+          className="nav-link active"
+          onClick={() => navigate({ to: `/communities?q=${value}` })}
         >
           Społeczności
         </button>
@@ -57,6 +64,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   const [searchValue, setSearchValue] = useState("");
   const [rotated, setRotated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const modalRef = useRef();
 
   const auth = useAuth();
   useEffect(() => {
@@ -70,6 +78,16 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     if (modalRef.current && (!modalRef.current.contains(e.target))) {
+  //       setMobileMenuOpen(false);
+  //       setRotated(false);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
 
   const handleProfileClick = () => {
     setRotated((rotated) => !rotated);
@@ -100,12 +118,9 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             We absolutely do not copy reddit
           </div>
         </div>
-          <div className="navbar-searchbar">
-            <SearchInput
-              value={searchValue}
-              setValue={setSearchValue}
-            />
-          </div>
+        <div className="navbar-searchbar">
+          <SearchInput value={searchValue} setValue={setSearchValue} />
+        </div>
         <div className="hide-on-mobile">
           {/* change to community */}
           <button
@@ -147,7 +162,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 <li
                   className="dropdown-menu-item"
                   onClick={() => {
-                    navigate({ to: "/create?type=community" });
+                    navigate({ to: "/communities/new" });
                     setMobileMenuOpen(false);
                   }}
                 >
@@ -178,7 +193,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
         </div>
         {/* Dropdown na desktopie */}
         {rotated && (
-          <div className="dropdown-menu-profile">
+          <div className="dropdown-menu-profile" ref={modalRef}>
             <ul className="dropdown-menu-list">
               <li className="dropdown-menu-item dropdown-menu-username">
                 {auth.user.userName}
@@ -187,7 +202,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
               <li
                 className="dropdown-menu-item"
                 onClick={() => {
-                  navigate({ to: "/create?type=community" });
+                  navigate({ to: "/communities/new" });
                   setMobileMenuOpen(false);
                 }}
               >

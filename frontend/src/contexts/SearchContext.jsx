@@ -109,7 +109,6 @@ const SearchProvider = ({ children }) => {
         setHasMore(false);
       } 
       setData((prev) => mergeUniqueById(prev, newData));
-      console.log("Search communities response:", response.data);
     } catch (err) {
       setError(err.response?.data || "Error searching communities");
     } finally {

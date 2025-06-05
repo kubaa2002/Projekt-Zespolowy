@@ -21,6 +21,7 @@ import { Route as CreateImport } from './routes/create'
 import { Route as IndexImport } from './routes/index'
 import { Route as UsersIndexImport } from './routes/users/index'
 import { Route as CommunitiesIndexImport } from './routes/communities/index'
+import { Route as UsersUserIdImport } from './routes/users/$userId'
 import { Route as CommunitiesNewImport } from './routes/communities/new'
 import { Route as CommunitiesCommunityIdImport } from './routes/communities/$communityId'
 
@@ -83,6 +84,12 @@ const UsersIndexRoute = UsersIndexImport.update({
 const CommunitiesIndexRoute = CommunitiesIndexImport.update({
   id: '/communities/',
   path: '/communities/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const UsersUserIdRoute = UsersUserIdImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -172,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunitiesNewImport
       parentRoute: typeof rootRoute
     }
+    '/users/$userId': {
+      id: '/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof UsersUserIdImport
+      parentRoute: typeof rootRoute
+    }
     '/communities/': {
       id: '/communities/'
       path: '/communities'
@@ -202,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
   '/communities/new': typeof CommunitiesNewRoute
+  '/users/$userId': typeof UsersUserIdRoute
   '/communities': typeof CommunitiesIndexRoute
   '/users': typeof UsersIndexRoute
 }
@@ -217,6 +232,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
   '/communities/new': typeof CommunitiesNewRoute
+  '/users/$userId': typeof UsersUserIdRoute
   '/communities': typeof CommunitiesIndexRoute
   '/users': typeof UsersIndexRoute
 }
@@ -233,6 +249,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
   '/communities/new': typeof CommunitiesNewRoute
+  '/users/$userId': typeof UsersUserIdRoute
   '/communities/': typeof CommunitiesIndexRoute
   '/users/': typeof UsersIndexRoute
 }
@@ -250,6 +267,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/communities/$communityId'
     | '/communities/new'
+    | '/users/$userId'
     | '/communities'
     | '/users'
   fileRoutesByTo: FileRoutesByTo
@@ -264,6 +282,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/communities/$communityId'
     | '/communities/new'
+    | '/users/$userId'
     | '/communities'
     | '/users'
   id:
@@ -278,6 +297,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/communities/$communityId'
     | '/communities/new'
+    | '/users/$userId'
     | '/communities/'
     | '/users/'
   fileRoutesById: FileRoutesById
@@ -294,6 +314,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   CommunitiesCommunityIdRoute: typeof CommunitiesCommunityIdRoute
   CommunitiesNewRoute: typeof CommunitiesNewRoute
+  UsersUserIdRoute: typeof UsersUserIdRoute
   CommunitiesIndexRoute: typeof CommunitiesIndexRoute
   UsersIndexRoute: typeof UsersIndexRoute
 }
@@ -309,6 +330,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   CommunitiesCommunityIdRoute: CommunitiesCommunityIdRoute,
   CommunitiesNewRoute: CommunitiesNewRoute,
+  UsersUserIdRoute: UsersUserIdRoute,
   CommunitiesIndexRoute: CommunitiesIndexRoute,
   UsersIndexRoute: UsersIndexRoute,
 }
@@ -333,6 +355,7 @@ export const routeTree = rootRoute
         "/signup",
         "/communities/$communityId",
         "/communities/new",
+        "/users/$userId",
         "/communities/",
         "/users/"
       ]
@@ -366,6 +389,9 @@ export const routeTree = rootRoute
     },
     "/communities/new": {
       "filePath": "communities/new.jsx"
+    },
+    "/users/$userId": {
+      "filePath": "users/$userId.jsx"
     },
     "/communities/": {
       "filePath": "communities/index.jsx"

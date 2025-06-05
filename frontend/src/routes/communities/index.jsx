@@ -1,64 +1,105 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useSearch } from '../../contexts/SearchContext.jsx'
-import { useEffect } from 'react'
-export const Route = createFileRoute('/communities/')({
+import { createFileRoute } from "@tanstack/react-router";
+import { useAuth } from "../../contexts/authProvider.jsx";
+import { useState, useEffect, useCallback } from "react";
+import MainLayout from "../../components/main/MainLayout.jsx";
+import ProtectedRoute from "../../utils/ProtectedRoute.jsx";
+import mergeUniqueById from "../../utils/mergeUniqueById.js";
+import axios from "axios";
+export const Route = createFileRoute("/communities/")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <Communities />
+  return (
+    <ProtectedRoute>
+      <MainLayout>
+        <Communities />
+      </MainLayout>
+    </ProtectedRoute>
+  );
 }
 
 const Communities = () => {
   const query = Route.useSearch();
-  console.log("Communities query:", query);
-  const search = useSearch();
   const pageSize = 10;
-  
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const { token } = useAuth();
+
+  const searchCommunities = useCallback(
+    async (query = "", start = 0, amount = 10) => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/search/community?q=${encodeURIComponent(query)}&start=${start}&amount=${amount}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setError(null);
+        const newData = response.data;
+        if (newData.length < amount) {
+          setHasMore(false);
+        }
+        setData((prev) => mergeUniqueById(prev, newData));
+      } catch (err) {
+        setError(err.response?.data || "Error searching communities");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [token]
+  );
   useEffect(() => {
     if (query.q !== undefined) {
-      search.reset(); 
-      search.searchCommunities(query.q, 0, pageSize);
+      setHasMore(true);
+      setData([]);
+      searchCommunities(query.q, data.length, pageSize);
     }
-    return () => {
-      search.reset();
-    };
-  }, [query.q]);
+  }, [query.q, token]);
 
   const handleLoadMore = () => {
-    search.searchCommunities(query["q"], search.data.length, pageSize);
+    searchCommunities(query.q, data.length, pageSize);
   };
 
+  if (error) return <div>Error: {error}</div>;
   return (
     <div>
-      {search.loading && search.data.length === 0 && <p>Ładowanie...</p>}
-  
-      {search.data.map((community) => (
+      {loading && data.length === 0 && <p>Ładowanie...</p>}
+
+      {data.map((community) => (
         <div key={community.id} className="community-card">
           <h2>{community.name}</h2>
           <p>{community.description}</p>
         </div>
       ))}
-  
-      {!search.loading && search.data.length === 0 && (
+
+      {!loading && data.length === 0 && (
         <div className="no-more-posts">Nie znaleziono</div>
       )}
-  
-      {search.data.length > 0 && (
+
+      {data.length > 0 && (
         <div className="pagination">
-          {search.hasMore ? (
+          {hasMore ? (
             <button
               className="btn btn-primary"
               onClick={handleLoadMore}
-              disabled={search.loading}
+              disabled={loading}
             >
-              {search.loading ? "Ładowanie..." : "Załaduj więcej"}
+              {loading ? "Ładowanie..." : "Załaduj więcej"}
             </button>
           ) : (
-            <div className="no-more-posts">Nie ma już więcej społeczności do załadowania</div>
+            <div className="no-more-posts">
+              Nie ma już więcej społeczności do załadowania
+            </div>
           )}
         </div>
       )}
     </div>
   );
-}
+};

@@ -1,5 +1,7 @@
-  import {useState} from "react";
-
+  import {useCallback, useEffect, useState} from "react";
+  import getColor from "../../utils/getColor";
+  import { useAuth } from "../../contexts/authProvider";
+  import axios from "axios";
   const sideNavItems = [
     {
       icon: "bi bi-bar-chart-fill",
@@ -41,8 +43,72 @@
     {
       title: "ProgramowaniewC",
       numberOfUsers: 130000
+    },
+    {
+      title: "MiłośnicyAstronomii",
+      numberOfUsers: 45000
+    },
+    {
+      title: "GotowanieZPasją",
+      numberOfUsers: 82000
+    },
+    {
+      title: "PolskaLiteratura",
+      numberOfUsers: 15800
+    },
+    {
+      title: "KinoEuropejskie",
+      numberOfUsers: 12100
+    },
+    {
+      title: "ZdrowiePsychicznePL",
+      numberOfUsers: 50000
+    },
+    {
+      title: "Motoryzacja24h",
+      numberOfUsers: 60000
+    },
+    {
+      title: "SzachyOnline",
+      numberOfUsers: 27800
+    },
+    {
+      title: "ZróbToSamDIY",
+      numberOfUsers: 39200
+    },
+    {
+      title: "EkonomiaDlaWszystkich",
+      numberOfUsers: 47200
+    },
+    {
+      title: "GóryiSzlaki",
+      numberOfUsers: 21500
+    },
+    {
+      title: "NaukaAngielskiego",
+      numberOfUsers: 134000
+    },
+    {
+      title: "MinecraftPL",
+      numberOfUsers: 98000
+    },
+    {
+      title: "Linuxowcy",
+      numberOfUsers: 42000
+    },
+    {
+      title: "RozwójOsobisty",
+      numberOfUsers: 61000
+    },
+    {
+      title: "PolitykaNaTrzeźwo",
+      numberOfUsers: 35000
+    },
+    {
+      title: "E-sportPolska",
+      numberOfUsers: 72000
     }
-  ]
+  ];
 
 const NavRow = ({ icon, title, subTitle, onClick, isSelected }) => (
   <div
@@ -59,15 +125,10 @@ const NavRow = ({ icon, title, subTitle, onClick, isSelected }) => (
   </div>
 );
 
-// Maybe insted of image in the database store the color hex??? easy to implement, we could also add color field in the /new community form
-const CommunityRow = ({title, numberOfUsers, isSelected, idx, onClick}) => {
-  // colors for communites (also they are random, based on index)
-  const colors = [
-    "#007BF5", "#A2B1BF", "#1A5591", "#153452" 
-  ];
+const CommunityRow = ({title, numberOfUsers, isSelected, onClick}) => {
   return (
     <div className={`community-row ${isSelected ? "selected" : ""}`} onClick={onClick}>
-      <div className="community-icon-wrapper" style={{backgroundColor: colors[idx]}}>
+      <div className="community-icon-wrapper" style={{backgroundColor: getColor(title)}}>
         <i className="bi bi-person"></i>
       </div>
       <div className="community-info">
@@ -80,7 +141,38 @@ const CommunityRow = ({title, numberOfUsers, isSelected, idx, onClick}) => {
     
 export default function SideNav () {
     const [selected, setSelected] = useState(null);
-  
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    // app.py blocked by cors policy, doesn't return id anyway. No endpoint on .net
+
+    // const {token} = useAuth();
+    // const decoded = jwt_decode(token);
+    // const userId = decoded.user_id;
+
+    
+
+    // useEffect(() => {
+    //   const serachUserCommunities = async  () => {
+    //     setLoading(true);
+    //     try{
+    //     axios.get(`${import.meta.env.VITE_API_URL}/${userId}/communities`, {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`
+    //       }
+    //     })
+    //   } catch(err) {
+    //     setError(err);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    //   };
+
+    //   serachUserCommunities();
+    // })
+
+    if (error) return <div>Error: {error}</div>;
     return (
       <div className="side-wrapper">
         <div className="side-list-wrapper">
@@ -101,12 +193,12 @@ export default function SideNav () {
               Obserwowane społeczności
             </div>
             <div className="community-list-wrapper">
-              {communitites.map((community, index) => (
+              {loading && data.length === 0 && <p>Ładowanie...</p>}
+              {communitites.map((community, index)=> (
                 <CommunityRow 
-                  key={community.title} 
+                  key={community.title}  
                   title={community.title} 
                   numberOfUsers={community.numberOfUsers}
-                  idx={index % 4} // solution for now :P
                   onClick={() => setSelected(index+4)} // +4 as there are alredy 4 items in the first list. Probably should be refactored in the future
                   isSelected={selected === index+4}
                 />
