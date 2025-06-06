@@ -62,6 +62,20 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 
+builder.Services.AddCors(options =>
+{
+    var frontendUrl = builder.Configuration["FrontendUrl"];
+    if (string.IsNullOrEmpty(frontendUrl))
+    {
+        throw new ApplicationException("FrontendUrl is not set in the configuration.");
+    }
+
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins(frontendUrl).AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<LikesService>();
@@ -81,6 +95,7 @@ if (app.Environment.IsDevelopment())
 // We need to enable this when we will be deploying to a hosting
 //app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseCors();
 app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())

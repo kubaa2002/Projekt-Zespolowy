@@ -1,0 +1,61 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+@use "../../styles/fonts" as fonts;
+//hero_page
+.background-circle {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+}
+
+.main-page-container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center; // Wyśrodkowanie tekstu
+}
+  
+.main-page-title {
+	@include fonts.display-main-page-title();
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: map.get(colors.$key-colors, white);
+  
+	i {
+	  font-size: 104px;
+	  margin-right: 10px;
+	}
+}
+
+.main-page-subtitle {
+	@include fonts.display-main-page-subtitle();
+	color: map.get(colors.$key-colors, white);
+}
+
+.btn-welcome {
+	@include fonts.button-welcome-button-user-name();
+	max-width: 393px;
+	border-radius: 60px;
+	margin-top:31px;
+	background-color: map.get(colors.$key-colors, black);
+	border: 1px solid map.get(colors.$key-colors, white);
+	color : map.get(colors.$key-colors, white);
+	&:hover {
+		background-color: color.adjust(map.get(colors.$key-colors,black), $lightness: -20%);
+	}
+}
+
+.circle-icon {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	font-size: 32px;
+	color: map.get(colors.$key-colors, black);
+	transform: translate(-50%, -50%);
+	z-index:1
+}

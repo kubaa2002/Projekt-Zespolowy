@@ -1,0 +1,13 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+@use "../../styles/fonts" as fonts;
+
+.create-container {
+	height: auto;
+    width: 100%;
+	max-height: 771px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

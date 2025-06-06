@@ -103,24 +103,18 @@ namespace Projekt_Zespolowy.Services
             {
                 return new ServiceResponse<Post>(StatusCodes.Status400BadRequest, null);
             }
-            if (context.Users.SingleOrDefault(u => u.Id == post.AppUserId) == default)
+            if (context.Users.Any(u => u.Id == post.AppUserId) == false)
             {
                 return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
             }
-            var result = context.Posts.SingleOrDefault(x => x.Id == post.Id);
-            if (result != default)
+            if (context.Posts.Any(p => p.Id == post.Id) == true)
             {
-                return new ServiceResponse<Post>(StatusCodes.Status409Conflict, result);
+                return new ServiceResponse<Post>(StatusCodes.Status409Conflict, null);
             }
             else
             {
                 context.Posts.Add(post);
                 context.SaveChanges();
-                //context.Posts.Last().Id = post.Id;
-                // Błąd - jeśli w body nie zostanie podane Id (a afaik nie powinno, bo baza danych krzyczy),
-                // to zwraca id posta  =0, zarówno w ścieżce jak i w body odpowiedzi.
-                // Pytanie, czy np chcemy aby (już po zapisaniu posta w bazie) pobrało id (lub całego posta)
-                // i dopiero to zwracało w ciele.
                 return new ServiceResponse<Post>(StatusCodes.Status201Created, post);
             }
         }
@@ -152,7 +146,7 @@ namespace Projekt_Zespolowy.Services
         public ServiceResponse<Post> Update(PostDTO newPost)
         {
             Post post = newPost;
-            if (context.Posts.SingleOrDefault(x => x.Id == post.Id) != default)
+            if (context.Posts.Any(x => x.Id == post.Id) == false)
             {
                 return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
             }
@@ -172,29 +166,42 @@ namespace Projekt_Zespolowy.Services
         /// Changes the value of IsDeleted property to True.
         /// </summary>
         /// <param name="newPost"> A DTO record that shall be deleted.</param>
-        public ServiceResponse<string?> Delete(int id, PostDTO newPost)
+        public ServiceResponse<string?> Delete(int id)
         {
             var post = context.Posts.SingleOrDefault(x => x.Id == id);
             if (post == default)
             {
                 return new ServiceResponse<string?>(StatusCodes.Status404NotFound, null);
             }
-            post.IsDeleted = true;
-            var temp = Update(post);
+            if (post.IsDeleted == true)
+            {
+                return new ServiceResponse<string?>(StatusCodes.Status409Conflict, null);
+            }
 
-            return new ServiceResponse<string?>(temp.ResponseCode, "deleted"); //można później zmienić aby nie dublować wywoływania metod
+            post.IsDeleted = true;
+            //var temp = Update(post);
+            context.Posts.Update(post);
+            context.SaveChanges();
+
+            return new ServiceResponse<string?>(StatusCodes.Status200OK, "deleted");
         }
 
-        public ServiceResponse<string?> UndoDelete(int id, PostDTO newPost)
+        public ServiceResponse<string?> UndoDelete(int id)
         {
             var post = context.Posts.SingleOrDefault(x => x.Id == id);
             if (post == default)
             {
                 return new ServiceResponse<string?>(StatusCodes.Status404NotFound, null);
             }
-            post.IsDeleted = false;
-            var temp = Update(post);
-            return new ServiceResponse<string?>(temp.ResponseCode, "undone deletetion"); //można później zmienić aby nie dublować wywoływania metod
+            if (post.IsDeleted == false)
+            {
+                return new ServiceResponse<string?>(StatusCodes.Status409Conflict, null);
+            }
+            post.IsDeleted = true;
+            context.Posts.Update(post);
+            context.SaveChanges();
+
+            return new ServiceResponse<string?>(StatusCodes.Status200OK, "undeleted");
         }
     }
 }
