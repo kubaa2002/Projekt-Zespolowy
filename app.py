@@ -118,6 +118,16 @@ def init_db():
         used BOOLEAN DEFAULT 0,
         FOREIGN KEY (email) REFERENCES users(email)
     )''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS shares (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        postId INTEGER NOT NULL,
+        userId TEXT NOT NULL,
+        sharedAt TEXT NOT NULL,
+        FOREIGN KEY (postId) REFERENCES posts(id),
+        FOREIGN KEY (userId) REFERENCES users(id),
+        UNIQUE (postId, userId)
+    )''')
     conn.commit()
     conn.close()
 
@@ -192,7 +202,7 @@ def login():
     if user and bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
         token = jwt.encode({"user_id": user["id"], "exp": datetime.utcnow() + timedelta(hours=24)},
                            SECRET_KEY, algorithm="HS256")
-        return jsonify({"token": token, "userName": user["username"]}), 200
+        return jsonify({"token": token, "userName": user["username"], "id":user["id"]}), 200
     return jsonify({"error": "Invalid credentials"}), 401
 
 
@@ -609,14 +619,14 @@ def undo_delete_post(id):
 def get_current_user_test():
     conn = get_db()
     c = conn.cursor()
-    c.execute("SELECT username, email FROM users WHERE id = ?", (request.user_id,))
+    c.execute("SELECT username, email,id FROM users WHERE id = ?", (request.user_id,))
     user = c.fetchone()
     conn.close()
     
     if not user:
         return jsonify({"message": "Użytkownik nie istnieje"}), 401
     
-    return jsonify({"userName": user["username"], "email": user["email"]}), 200
+    return jsonify({"userName": user["username"], "email": user["email"],"id": user["id"]}), 200
 
 
 
@@ -913,6 +923,9 @@ def get_community(community_id):
               (community_id, request.user_id))
     member = c.fetchone()
 
+    c.execute("SELECT COUNT(*) FROM community_members WHERE communityId = ?", (community_id,))
+    member_count = c.fetchone()[0] 
+
    
     response = {
         "name": community["name"],
@@ -920,7 +933,8 @@ def get_community(community_id):
         "createdDate": community["createdDateTime"],
         "isMember": member is not None,
         "joinedDate": member["joinedDateTime"] if member else None,
-        "role": member["role"] if member else None
+        "role": member["role"] if member else None,
+        "memberCount": member_count
     }
 
     conn.close()
@@ -1271,6 +1285,214 @@ def get_user_profile(user_id):
     conn.close()
     return jsonify(profile), 200
 
+@app.route("/share/<int:post_id>/<user_id>", methods=["POST"])
+@token_required
+def share_post(post_id, user_id):
+
+    if request.user_id != user_id:
+        return jsonify({"error": "Nie masz uprawnień do udostępniania w imieniu innego użytkownika."}), 403
+
+    conn = get_db()
+    c = conn.cursor()
+
+
+    c.execute("SELECT * FROM posts WHERE id = ? AND isDeleted = 0", (post_id,))
+    post = c.fetchone()
+    if not post:
+        conn.close()
+        return jsonify({"error": "Post nie istnieje lub został usunięty."}), 404
+
+
+    c.execute("SELECT * FROM users WHERE id = ? AND isDeleted = 0", (user_id,))
+    user = c.fetchone()
+    if not user:
+        conn.close()
+        return jsonify({"error": "Użytkownik nie istnieje."}), 404
+
+
+    c.execute("SELECT * FROM shares WHERE postId = ? AND userId = ?", (post_id, user_id))
+    existing_share = c.fetchone()
+    if existing_share:
+        conn.close()
+        return jsonify({"error": "Dany użytkownik udostępnił już ten post!"}), 409
+
+
+    shared_at = datetime.utcnow().isoformat()
+    c.execute(
+        "INSERT INTO shares (postId, userId, sharedAt) VALUES (?, ?, ?)",
+        (post_id, user_id, shared_at)
+    )
+    conn.commit()
+
+
+    share_response = {
+        "postId": post_id,
+        "userId": user_id,
+        "sharedAt": shared_at
+    }
+    conn.close()
+    return jsonify(share_response), 201
+
+
+@app.route("/share/GetSharedPostsIds/<user_id>", methods=["GET"])
+@token_required
+def get_shared_posts_ids(user_id):
+    conn = get_db()
+    c = conn.cursor()
+
+
+    c.execute("SELECT * FROM users WHERE id = ? AND isDeleted = 0", (user_id,))
+    user = c.fetchone()
+    if not user:
+        conn.close()
+        return jsonify({"error": "Użytkownik nie istnieje."}), 404
+
+
+    c.execute("SELECT postId FROM shares WHERE userId = ?", (user_id,))
+    post_ids = [row["postId"] for row in c.fetchall()]
+
+    conn.close()
+
+    if not post_ids:
+        return jsonify({}), 204
+
+    return jsonify(post_ids), 200
+
+@app.route("/share/GetSharedPosts/<user_id>", methods=["GET"])
+@token_required
+def get_shared_posts(user_id):
+    conn = get_db()
+    c = conn.cursor()
+
+    # Check if user exists and is not deleted
+    c.execute("SELECT * FROM users WHERE id = ? AND isDeleted = 0", (user_id,))
+    user = c.fetchone()
+    if not user:
+        conn.close()
+        return jsonify({"error": "Użytkownik nie istnieje."}), 404
+
+    # Get post IDs from shares table
+    c.execute("SELECT postId FROM shares WHERE userId = ?", (user_id,))
+    post_ids = [row["postId"] for row in c.fetchall()]
+
+    if not post_ids:
+        conn.close()
+        return jsonify([]), 204  # Return empty array for consistency
+
+    # Fetch full post details for the shared post IDs
+    placeholders = ",".join("?" for _ in post_ids)
+    c.execute(
+        f"""
+        SELECT id, userId, content, createdAt, isDeleted
+        FROM posts
+        WHERE id IN ({placeholders}) AND isDeleted = 0
+        """,
+        post_ids
+    )
+    posts = [
+        {
+            "id": row["id"],
+            "userId": row["userId"],
+            "content": row["content"],
+            "createdAt": row["createdAt"],
+            # Add other post fields as needed
+        }
+        for row in c.fetchall()
+    ]
+
+    conn.close()
+
+    if not posts:
+        return jsonify([]), 204  # No valid posts found
+
+    return jsonify(posts), 200
+
+
+@app.route("/share/DeleteShare/<int:post_id>/<user_id>", methods=["DELETE"])
+@token_required
+def delete_share(post_id, user_id):
+
+    if request.user_id != user_id:
+        return jsonify({"error": "Nie masz uprawnień do usuwania udostępnienia innego użytkownika."}), 403
+
+    conn = get_db()
+    c = conn.cursor()
+
+
+    c.execute("SELECT * FROM shares WHERE postId = ? AND userId = ?", (post_id, user_id))
+    share = c.fetchone()
+    if not share:
+        conn.close()
+        return jsonify({"error": "Użytkownik nie udostępnił danego postu!"}), 404
+
+
+    c.execute("DELETE FROM shares WHERE postId = ? AND userId = ?", (post_id, user_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Usunięto udostępnienie posta."}), 200
+
+@app.route("/user/follow/<user_id>", methods=["POST"])
+@token_required
+def follow_user(user_id):
+    if request.user_id == user_id:
+        return jsonify({"error": "Nie możesz obserwować samego siebie."}), 400
+
+    conn = get_db()
+    c = conn.cursor()
+
+
+    c.execute("SELECT * FROM users WHERE id = ? AND isDeleted = 0", (user_id,))
+    target_user = c.fetchone()
+    if not target_user:
+        conn.close()
+        return jsonify({"error": "Użytkownik nie istnieje."}), 404
+
+
+    c.execute("SELECT * FROM followers WHERE followerId = ? AND followingId = ?",
+              (request.user_id, user_id))
+    already_following = c.fetchone()
+    if already_following:
+        conn.close()
+        return jsonify({"message": "Już obserwujesz tego użytkownika."}), 200
+
+
+    followed_date = datetime.utcnow().isoformat()
+    c.execute("INSERT INTO followers (followerId, followingId, followedDateTime) VALUES (?, ?, ?)",
+              (request.user_id, user_id, followed_date))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Użytkownik zaobserwowany."}), 201
+
+@app.route("/user/unfollow/<user_id>", methods=["DELETE"])
+@token_required
+def unfollow_user(user_id):
+    conn = get_db()
+    c = conn.cursor()
+
+
+    c.execute("SELECT * FROM users WHERE id = ? AND isDeleted = 0", (user_id,))
+    target_user = c.fetchone()
+    if not target_user:
+        conn.close()
+        return jsonify({"error": "Użytkownik nie istnieje."}), 404
+
+
+    c.execute("SELECT * FROM followers WHERE followerId = ? AND followingId = ?",
+              (request.user_id, user_id))
+    following = c.fetchone()
+    if not following:
+        conn.close()
+        return jsonify({"error": "Nie obserwujesz tego użytkownika."}), 404
+
+
+    c.execute("DELETE FROM followers WHERE followerId = ? AND followingId = ?",
+              (request.user_id, user_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Przestałeś obserwować użytkownika."}), 200
 if __name__ == "__main__":
     init_db()
     app.run(debug=True, host="0.0.0.0", port=5192)

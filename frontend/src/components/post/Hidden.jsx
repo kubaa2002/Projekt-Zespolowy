@@ -4,9 +4,25 @@ import CommentBox from './CommentBox';
 import CommentCard from './CommentCard';
 import { useAuth } from '../../contexts/authProvider'; 
 import CommentModal from './CommentModal';
+import Post from './Post';
+import BackButton from './BackButton';
 
-const Hidden = ({ id }) => {
+const Hidden = () => {
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
+
+ if (!id) {
+    return (
+      <MainLayout>
+          <h1>Error</h1>
+          <p>Post ID is missing in the URL.</p>
+      </MainLayout>
+    );
+  }
+
+
   const [comments, setComments] = useState([]);
+  const [post, setPost] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { token } = useAuth(); 
@@ -26,6 +42,11 @@ const Hidden = ({ id }) => {
         `${import.meta.env.VITE_API_URL}/posts/${parentId}/comments?page=${page}&pageSize=${pageSize}`,
         getAuthConfig()
       );
+      const response2 = await axios.get(
+        `${import.meta.env.VITE_API_URL}/posts/${parentId}`,
+        getAuthConfig()
+      );
+      setPost(response2.data);
       setComments(response.data); 
       setError(null);
       console.log("Fetched comments:", response.data);
@@ -37,7 +58,7 @@ const Hidden = ({ id }) => {
       setLoading(false);
     }
   };
-
+console.log(comments)
   useEffect(() => {
     fetchPostComments(id); 
   }, [id]);
@@ -47,12 +68,16 @@ const Hidden = ({ id }) => {
 
   return (
     <div>
+      <BackButton />
+      <Post post={post} showReplies={false}  />
       <CommentBox id={id}  comments={comments} setComments={setComments}/>
       {comments.map((comment) => (
         
         <CommentCard
           key={comment.id}
           id={comment.id}
+          authorId={comment.authorId}
+          communityId={comment.communityId}
           authorName={comment.authorName || 'Jakiś tam użytkownik'}
           createdDateTime={comment.createdDateTime}
           text={comment.content || 'Lorem ipsum dolor sit amet...'}

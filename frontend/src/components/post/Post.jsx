@@ -5,13 +5,17 @@ import Hidden from './Hidden';
 import UserTag from './UserTag';
 import axios from 'axios';
 import { useAuth } from '../../contexts/authProvider';
+import MainLayout from '../main/MainLayout';
+import { useNavigate } from '@tanstack/react-router';
 
-const Post = ({ post }) => {
-  const { id, authorId, content, createdDateTime, isLied } = post;
+const Post = ({ post,showReplies=true }) => {
+  console.log('Post component rendered with post:', post.id);
+  const { id, authorId, content, createdDateTime, isLied, likesCount } = post;
   const [liked, setLiked] = useState(isLied);
-  const [saved, setSaved] = useState(false);
-  const [showReplies, setShowReplies] = useState(false);
-  const { token } = useAuth();
+
+
+  const { token,postIds, setPostIds,user } = useAuth();
+  const navigate = useNavigate();
 
  
   const getAuthConfig = () => ({
@@ -30,16 +34,55 @@ const Post = ({ post }) => {
         getAuthConfig()
       );
       console.log('Reaction processed:', response.data);
-      setLiked(!liked); // Toggle local state
+      setLiked(!liked);
+      post.likesCount = liked ? post.likesCount - 1 : post.likesCount + 1;
     } catch (err) {
       console.error('Error processing reaction:', err);
     }
   };
 
+  const handleDeleteShare = async () => {
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_API_URL}/share/DeleteShare/${id}/${user.id}`,
+      getAuthConfig()
+    );
+
+    if (response.status === 200) {
+      console.log(`Usunięto udostępnienie posta ${id} przez użytkownika ${user.id}.`);
+      setPostIds((prevPostIds) => prevPostIds.filter((postId) => postId !== id)); // Update postIds state
+      return true; // Indicate success
+    }
+  } catch (err) {
+    console.error('Błąd podczas usuwania udostępnienia:', err.response?.data?.error || err.message);
+    throw err; // Propagate error for further handling
+  }
+};
+const handleSharePost = async () => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/share/${id}/${user.id}`,
+      {}, // Empty payload as endpoint doesn't require a body
+      getAuthConfig()
+    );
+
+    if (response.status === 201) {
+      const shareDetails = response.data;
+      console.log(`Post ${id} udostępniony przez użytkownika ${user.id} o ${shareDetails.sharedAt}.`);
+      setPostIds((prevPostIds) => [...prevPostIds, id]); // Update postIds state
+      return shareDetails; // e.g., { postId: 1, userId: "u006", sharedAt: "2025-06-06T..." }
+    }
+  } catch (err) {
+    console.error('Błąd podczas udostępniania posta:', err.response?.data?.error || err.message);
+    throw err; // Propagate error for further handling
+  }
+};
+
   const isLong = false;
   const previewText = isLong ? content.slice(0, 300) + '...' : content;
 
   return (
+    
     <div>
       <div className="post-container">
         <UserTag post={post} />
@@ -69,10 +112,11 @@ const Post = ({ post }) => {
                   fill="red"
                 />
               </svg>
-              Like
+              {likesCount}
             </label>
-            <label
-              onClick={() => setShowReplies((p) => !p)}
+            {showReplies && (
+              <label
+              onClick={() => navigate({ to: `/post?id=${id}` })}
               className="icon-checkbox"
             >
               <svg
@@ -97,53 +141,23 @@ const Post = ({ post }) => {
               </svg>
               Komentarze
             </label>
-            <label className={`icon-checkbox ${saved ? 'active' : ''}`}>
-              <input
-                type="checkbox"
-                checked={saved}
-                onChange={() => setSaved(!saved)}
-              />
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3 3C3 2.20435 3.31607 1.44129 3.87868 0.87868C4.44129 0.316071 5.20435 0 6 0L18 0C18.7956 0 19.5587 0.316071 20.1213 0.87868C20.6839 1.44129 21 2.20435 21 3V23.25C20.9999 23.3857 20.9631 23.5188 20.8933 23.6351C20.8236 23.7515 20.7236 23.8468 20.604 23.9108C20.4844 23.9748 20.3497 24.0052 20.2142 23.9988C20.0787 23.9923 19.9474 23.9492 19.8345 23.874L12 19.6515L4.1655 23.874C4.05256 23.9492 3.92135 23.9923 3.78584 23.9988C3.65033 24.0052 3.5156 23.9748 3.396 23.9108C3.2764 23.8468 3.17641 23.7515 3.10667 23.6351C3.03694 23.5188 3.00007 23.3857 3 23.25V3ZM6 1.5C5.60218 1.5 5.22064 1.65804 4.93934 1.93934C4.65804 2.22064 4.5 2.60218 4.5 3V21.849L11.5845 18.126C11.7076 18.0441 11.8521 18.0004 12 18.0004C12.1479 18.0004 12.2924 18.0441 12.4155 18.126L19.5 21.849V3C19.5 2.60218 19.342 2.22064 19.0607 1.93934C18.7794 1.65804 18.3978 1.5 18 1.5H6Z"
-                  fill="red"
-                />
-              </svg>
-              Zapisz
-            </label>
+            )}
+            
           </div>
-          <label className="icon-checkbox">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g clipPath="url(#clip0_253_41801)">
-                <path
-                  d="M20.2502 1.50047C19.6534 1.50047 19.0811 1.73752 18.6592 2.15948C18.2372 2.58144 18.0002 3.15373 18.0002 3.75047C18.0002 4.34721 18.2372 4.9195 18.6592 5.34146C19.0811 5.76342 19.6534 6.00047 20.2502 6.00047C20.8469 6.00047 21.4192 5.76342 21.8411 5.34146C22.2631 4.9195 22.5002 4.34721 22.5002 3.75047C22.5002 3.15373 22.2631 2.58144 21.8411 2.15948C21.4192 1.73752 20.8469 1.50047 20.2502 1.50047ZM16.5002 3.75047C16.5 2.87062 16.8093 2.01874 17.3739 1.34389C17.9384 0.669031 18.7223 0.214166 19.5883 0.0588767C20.4543 -0.0964129 21.3474 0.0577611 22.1112 0.494425C22.8751 0.931088 23.4611 1.62243 23.7667 2.44751C24.0723 3.27258 24.078 4.17884 23.7829 5.00773C23.4879 5.83662 22.9107 6.53535 22.1525 6.98169C21.3942 7.42802 20.5032 7.59352 19.6352 7.44925C18.7673 7.30497 17.9777 6.8601 17.4047 6.19247L7.32765 10.8725C7.55932 11.6066 7.55932 12.3943 7.32765 13.1285L17.4047 17.8085C18.0104 17.104 18.8561 16.6494 19.7779 16.5329C20.6997 16.4165 21.632 16.6463 22.3939 17.178C23.1559 17.7097 23.6934 18.5053 23.9022 19.4107C24.1109 20.316 23.9762 21.2667 23.524 22.0783C23.0719 22.89 22.3345 23.5049 21.4548 23.8039C20.5751 24.1029 19.6157 24.0646 18.7626 23.6966C17.9095 23.3285 17.2233 22.6569 16.8372 21.8118C16.4511 20.9667 16.3925 20.0083 16.6727 19.1225L6.59565 14.4425C6.09681 15.0238 5.43188 15.4385 4.69032 15.6306C3.94876 15.8227 3.16615 15.7832 2.44776 15.5172C1.72937 15.2512 1.10967 14.7716 0.672015 14.1429C0.234362 13.5142 -0.000244141 12.7665 -0.000244141 12.0005C-0.000244141 11.2344 0.234362 10.4868 0.672015 9.85804C1.10967 9.22932 1.72937 8.74972 2.44776 8.48375C3.16615 8.21778 3.94876 8.17821 4.69032 8.37034C5.43188 8.56248 6.09681 8.97712 6.59565 9.55847L16.6727 4.87847C16.5579 4.51347 16.4998 4.13307 16.5002 3.75047ZM3.75015 9.75047C3.15342 9.75047 2.58112 9.98752 2.15916 10.4095C1.73721 10.8314 1.50015 11.4037 1.50015 12.0005C1.50015 12.5972 1.73721 13.1695 2.15916 13.5915C2.58112 14.0134 3.15342 14.2505 3.75015 14.2505C4.34689 14.2505 4.91919 14.0134 5.34114 13.5915C5.7631 13.1695 6.00015 12.5972 6.00015 12.0005C6.00015 11.4037 5.7631 10.8314 5.34114 10.4095C4.91919 9.98752 4.34689 9.75047 3.75015 9.75047ZM20.2502 18.0005C19.6534 18.0005 19.0811 18.2375 18.6592 18.6595C18.2372 19.0814 18.0002 19.6537 18.0002 20.2505C18.0002 20.8472 18.2372 21.4195 18.6592 21.8415C19.0811 22.2634 19.6534 22.5005 20.2502 22.5005C20.8469 22.5005 21.4192 22.2634 21.8411 21.8415C22.2631 21.4195 22.5002 20.8472 22.5002 20.2505C22.5002 19.6537 22.2631 19.0814 21.8411 18.6595C21.4192 18.2375 20.8469 18.0005 20.2502 18.0005Z"
-                  fill="black"
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_253_41801">
-                  <rect width="24" height="24" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
+          {
+           !postIds.includes(id) ? (<span className="icon-checkbox" onClick={handleSharePost} >
+            <i className="bi bi-share-fill"/>
             Share
-          </label>
+          </span>) : (<span className="icon-checkbox active" onClick={handleDeleteShare} >
+            <i className="bi bi-share-fill"/>
+            Shared
+          </span>)
+          }
         </div>
       </div>
-      {showReplies && <Hidden id={id} />}
+
     </div>
+   
   );
 };
 
