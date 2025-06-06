@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "./contexts/authProvider"; 
 import axios from "axios";
 import Post from "./components/post/Post";
 import { usePosts } from "./contexts/PostsContext";
-
-const PostsList = ({ showSort, setShowSort }) => {
+// Patrk if this solution is bad, pls don't kill me :///////
+// I dunno for now if we should pass something like "isMyPost" to differentiate them
+const PostsList = ({urlWithoutQueryParams}) => {
   const { token } = useAuth();
   const {setPosts,posts} = usePosts(); 
   const [loading, setLoading] = useState(false);
@@ -13,7 +14,7 @@ const PostsList = ({ showSort, setShowSort }) => {
   const [pageSize] = useState(10);
   const [hasMore, setHasMore] = useState(true); 
   const [sortOption, setSortOption] = useState("Najnowsze"); 
-
+  const [showSort, setShowSort] = useState(false);
 
   const getAuthConfig = () => ({
     headers: {
@@ -26,7 +27,7 @@ const PostsList = ({ showSort, setShowSort }) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/posts?page=${pageNum}&pageSize=${pageSize}`,
+        `${urlWithoutQueryParams}?page=${pageNum}&pageSize=${pageSize}`,
         getAuthConfig()
       );
       const newPosts = response.data;
