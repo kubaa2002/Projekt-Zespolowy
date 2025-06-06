@@ -1,20 +1,33 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "./contexts/authProvider"; 
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useAuth } from "./contexts/authProvider";
 import axios from "axios";
 import Post from "./components/post/Post";
 import { usePosts } from "./contexts/PostsContext";
-// Patrk if this solution is bad, pls don't kill me :///////
-// I dunno for now if we should pass something like "isMyPost" to differentiate them
-const PostsList = ({urlWithoutQueryParams}) => {
-  const { token } = useAuth();
-  const {setPosts,posts} = usePosts(); 
+
+const PostsList = ({ showSort, setShowSort }) => {
+  const { token, setFollow, user } = useAuth();
+  const { setPosts, posts } = usePosts();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const [hasMore, setHasMore] = useState(true); 
-  const [sortOption, setSortOption] = useState("Najnowsze"); 
-  const [showSort, setShowSort] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [sortOption, setSortOption] = useState("Najnowsze");
+
+  const observer = useRef(); 
+  const lastPostElementRef = useCallback(
+    (node) => {
+      if (loading || !hasMore) return; 
+      if (observer.current) observer.current.disconnect(); 
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1); 
+        }
+      });
+      if (node) observer.current.observe(node); 
+    },
+    [loading, hasMore]
+  );
 
   const getAuthConfig = () => ({
     headers: {
@@ -22,17 +35,15 @@ const PostsList = ({urlWithoutQueryParams}) => {
     },
   });
 
-
   const fetchPosts = async (pageNum) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${urlWithoutQueryParams}?page=${pageNum}&pageSize=${pageSize}`,
+        `${import.meta.env.VITE_API_URL}/posts?page=${pageNum}&pageSize=${pageSize}`,
         getAuthConfig()
       );
       const newPosts = response.data;
       setPosts((prev) => (pageNum === 1 ? newPosts : [...prev, ...newPosts]));
-
       setHasMore(newPosts.length === pageSize);
       setError(null);
     } catch (err) {
@@ -42,24 +53,23 @@ const PostsList = ({urlWithoutQueryParams}) => {
     }
   };
 
-
   useEffect(() => {
-    fetchPosts(1);
+    fetchPosts(1); 
   }, []);
 
-
-  const handleLoadMore = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchPosts(nextPage);
-  };
-
+  useEffect(() => {
+    if (page > 1) {
+      fetchPosts(page); 
+    }
+  }, [page]);
 
   const handleSortChange = (option) => {
     setSortOption(option);
-    setShowSort(false); 
+    setShowSort(false);
+    setPage(1); 
+    setPosts([]); 
+    fetchPosts(1); 
   };
-
 
   const sortedPosts = [...posts]
     .filter((post) => post.parentId === null)
@@ -67,7 +77,7 @@ const PostsList = ({urlWithoutQueryParams}) => {
       if (sortOption === "Najnowsze") {
         return new Date(b.createdDateTime) - new Date(a.createdDateTime);
       } else if (sortOption === "Najbardziej lubiane") {
-        return (b.likesCount || 0) - (a.likesCount || 0); 
+        return (b.likesCount || 0) - (a.likesCount || 0);
       }
       return 0;
     });
@@ -107,26 +117,24 @@ const PostsList = ({urlWithoutQueryParams}) => {
           </li>
         </ul>
       </div>
-     
-        {sortedPosts.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
-   
-      <div className="pagination">
-        {hasMore ? (
-          <button
-            className="btn btn-primary"
-            onClick={handleLoadMore}
-            disabled={loading}
-          >
-            {loading ? "Ładowanie..." : "Załaduj więcej"}
-          </button>
-        ) : (
-          <div className="no-more-posts">
-            Nie ma już więcej postów do załadowania
-          </div>
-        )}
-      </div>
+
+      {sortedPosts.map((post, index) => {
+        if (index === sortedPosts.length - 1) {
+          return (
+            <div key={post.id} ref={lastPostElementRef}>
+              <Post post={post} />
+            </div>
+          );
+        }
+        return <Post key={post.id} post={post} />;
+      })}
+
+      {loading && page > 1 && <div>Ładowanie...</div>}
+      {!hasMore && sortedPosts.length > 0 && (
+        <div className="no-more-posts">
+          Nie ma już więcej postów do załadowania
+        </div>
+      )}
     </div>
   );
 };

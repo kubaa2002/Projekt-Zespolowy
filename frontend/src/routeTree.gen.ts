@@ -15,6 +15,7 @@ import { Route as SignupImport } from './routes/signup'
 import { Route as SettingsImport } from './routes/settings'
 import { Route as ResetconfirmImport } from './routes/resetconfirm'
 import { Route as ResetImport } from './routes/reset'
+import { Route as PostImport } from './routes/post'
 import { Route as LoginImport } from './routes/login'
 import { Route as HeroImport } from './routes/hero'
 import { Route as CreateImport } from './routes/create'
@@ -48,6 +49,12 @@ const ResetconfirmRoute = ResetconfirmImport.update({
 const ResetRoute = ResetImport.update({
   id: '/reset',
   path: '/reset',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PostRoute = PostImport.update({
+  id: '/post',
+  path: '/post',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -137,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/post': {
+      id: '/post'
+      path: '/post'
+      fullPath: '/post'
+      preLoaderRoute: typeof PostImport
+      parentRoute: typeof rootRoute
+    }
     '/reset': {
       id: '/reset'
       path: '/reset'
@@ -210,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
+  '/post': typeof PostRoute
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
@@ -226,6 +241,7 @@ export interface FileRoutesByTo {
   '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
+  '/post': typeof PostRoute
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
@@ -243,6 +259,7 @@ export interface FileRoutesById {
   '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
+  '/post': typeof PostRoute
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
@@ -261,6 +278,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/hero'
     | '/login'
+    | '/post'
     | '/reset'
     | '/resetconfirm'
     | '/settings'
@@ -276,6 +294,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/hero'
     | '/login'
+    | '/post'
     | '/reset'
     | '/resetconfirm'
     | '/settings'
@@ -291,6 +310,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/hero'
     | '/login'
+    | '/post'
     | '/reset'
     | '/resetconfirm'
     | '/settings'
@@ -308,6 +328,7 @@ export interface RootRouteChildren {
   CreateRoute: typeof CreateRoute
   HeroRoute: typeof HeroRoute
   LoginRoute: typeof LoginRoute
+  PostRoute: typeof PostRoute
   ResetRoute: typeof ResetRoute
   ResetconfirmRoute: typeof ResetconfirmRoute
   SettingsRoute: typeof SettingsRoute
@@ -324,6 +345,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreateRoute: CreateRoute,
   HeroRoute: HeroRoute,
   LoginRoute: LoginRoute,
+  PostRoute: PostRoute,
   ResetRoute: ResetRoute,
   ResetconfirmRoute: ResetconfirmRoute,
   SettingsRoute: SettingsRoute,
@@ -349,6 +371,7 @@ export const routeTree = rootRoute
         "/create",
         "/hero",
         "/login",
+        "/post",
         "/reset",
         "/resetconfirm",
         "/settings",
@@ -371,6 +394,9 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.jsx"
+    },
+    "/post": {
+      "filePath": "post.jsx"
     },
     "/reset": {
       "filePath": "reset.jsx"
