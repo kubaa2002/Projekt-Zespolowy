@@ -18,7 +18,8 @@
   height: 330px;
   gap: 15px;
   padding: 15px;
-  a{
+
+  a {
     text-decoration: none;
     color: black;
   }
@@ -34,7 +35,7 @@
     cursor: pointer;
 
 
-    &:hover{
+    &:hover {
       background-color: map.get(colors.$navbar, border-gray-400);
     }
 
@@ -75,49 +76,61 @@
       color: map.get(colors.$changed-text, subtitle-main-buttons);
     }
   }
-  .community-header{
+
+  .community-header {
     @include fonts.body-followed-header();
     color: black;
   }
-  .community-list-wrapper{
+
+  .community-list-wrapper {
     flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    
-    .community-row{
+
+    a {
+
+      &:hover,
+      &.selected {
+        background-color: map.get(colors.$navbar, border-gray-400);
+      }
+    }
+
+    .community-row {
       display: flex;
       gap: 15px;
       cursor: pointer;
-      &:hover, &.selected {
-        background-color: map.get(colors.$navbar, border-gray-400);
-      }
 
-      .community-icon-wrapper{
+
+      .community-icon-wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 60px;
         height: 60px;
-        font-size: 18px; 
+        font-size: 18px;
         color: white;
       }
-      .community-info{
+
+      .community-info {
         display: flex;
         flex-direction: column;
         justify-content: center;
         gap: 3px;
       }
-      .community-title{
+
+      .community-title {
         @include fonts.body-communities-names();
       }
-      .community-users{
+
+      .community-users {
         @include fonts.body-members-counter();
         color: map.get(colors.$changed-text, count-members);
       }
     }
   }
+
   .main-text {
     @include fonts.basic-text();
   }

@@ -1,34 +1,32 @@
-import { useCallback, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { useAuth } from '../contexts/authProvider';
 import axios from 'axios';
 
 const useGetCommunities = (userId) => {
   const [communities, setCommunities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const getAuthConfig = () => ({
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`, 
-    },
-  });
+  const { token } = useAuth();
 
   const getCommunities = useCallback(async () => {
+    if (!userId || !token) return;
     setIsLoading(true);
     setError(null);
 
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/user/${userId}/communities`,
-        getAuthConfig()
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.status === 200) {
         setCommunities(response.data);
-        console.log('Pobrano społeczności:', response.data);
-        return response.data; 
       } else if (response.status === 204) {
-        setCommunities([]); 
-        return []; 
+        setCommunities([]);
       } else {
         throw new Error('Nieoczekiwany kod statusu odpowiedzi.');
       }
@@ -39,13 +37,16 @@ const useGetCommunities = (userId) => {
           : err.response?.data?.error || 'Błąd podczas pobierania społeczności.';
       setError(errorMessage);
       setCommunities([]);
-      throw new Error(errorMessage); 
     } finally {
       setIsLoading(false);
     }
-  }, [userId]); 
+  }, [userId, token]);
 
-  return { getCommunities, communities, isLoading, error };
+  useEffect(() => {
+    getCommunities();
+  }, [getCommunities, userId,token]);
+
+  return { communities, isLoading, error, getCommunities };
 };
 
 export default useGetCommunities;

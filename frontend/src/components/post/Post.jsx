@@ -9,7 +9,6 @@ import MainLayout from '../main/MainLayout';
 import { useNavigate } from '@tanstack/react-router';
 
 const Post = ({ post,showReplies=true }) => {
-  console.log('Post component rendered with post:', post.id);
   const { id, authorId, content, createdDateTime, isLied, likesCount } = post;
   const [liked, setLiked] = useState(isLied);
 

@@ -19,21 +19,12 @@ export default function MainModal({
   communityId,
   setCommunityId
 }) {
-  if (!show) return null;
- const { user, token } = useAuth();
+  const { user, token } = useAuth();
   const [communities, setCommunities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedOption, setSelectedOption] = useState({ type: "user", id: user?.id || "" });
-
-
-  const getAuthConfig = () => ({
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-
+  
   const getCommunities = useCallback(async () => {
     if (!user?.id) return;
 
@@ -65,14 +56,20 @@ export default function MainModal({
     }
   }, [user?.id, token]);
 
-
   useEffect(() => {
     if (show && user?.id) {
       getCommunities();
     }
   }, [show, user?.id, getCommunities]);
 
-
+  
+  
+  const getAuthConfig = () => ({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  
   const handleSelectChange = (e) => {
     const value = e.target.value;
     if (value === "user") {
@@ -84,12 +81,9 @@ export default function MainModal({
       setCommunityId(community.id);
     }
   };
-
-
-
-
- 
-
+  
+  if (!show) return null;
+  
   return (
      <div className="create-post-container">
       <div className="create-post-content">

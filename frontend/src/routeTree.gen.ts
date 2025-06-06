@@ -22,6 +22,7 @@ import { Route as CreateImport } from './routes/create'
 import { Route as IndexImport } from './routes/index'
 import { Route as UsersIndexImport } from './routes/users/index'
 import { Route as CommunitiesIndexImport } from './routes/communities/index'
+import { Route as UsersFollowingImport } from './routes/users/following'
 import { Route as UsersUserIdImport } from './routes/users/$userId'
 import { Route as CommunitiesNewImport } from './routes/communities/new'
 import { Route as CommunitiesCommunityIdImport } from './routes/communities/$communityId'
@@ -91,6 +92,12 @@ const UsersIndexRoute = UsersIndexImport.update({
 const CommunitiesIndexRoute = CommunitiesIndexImport.update({
   id: '/communities/',
   path: '/communities/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const UsersFollowingRoute = UsersFollowingImport.update({
+  id: '/users/following',
+  path: '/users/following',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -200,6 +207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsersUserIdImport
       parentRoute: typeof rootRoute
     }
+    '/users/following': {
+      id: '/users/following'
+      path: '/users/following'
+      fullPath: '/users/following'
+      preLoaderRoute: typeof UsersFollowingImport
+      parentRoute: typeof rootRoute
+    }
     '/communities/': {
       id: '/communities/'
       path: '/communities'
@@ -232,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
   '/communities/new': typeof CommunitiesNewRoute
   '/users/$userId': typeof UsersUserIdRoute
+  '/users/following': typeof UsersFollowingRoute
   '/communities': typeof CommunitiesIndexRoute
   '/users': typeof UsersIndexRoute
 }
@@ -249,6 +264,7 @@ export interface FileRoutesByTo {
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
   '/communities/new': typeof CommunitiesNewRoute
   '/users/$userId': typeof UsersUserIdRoute
+  '/users/following': typeof UsersFollowingRoute
   '/communities': typeof CommunitiesIndexRoute
   '/users': typeof UsersIndexRoute
 }
@@ -267,6 +283,7 @@ export interface FileRoutesById {
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
   '/communities/new': typeof CommunitiesNewRoute
   '/users/$userId': typeof UsersUserIdRoute
+  '/users/following': typeof UsersFollowingRoute
   '/communities/': typeof CommunitiesIndexRoute
   '/users/': typeof UsersIndexRoute
 }
@@ -286,6 +303,7 @@ export interface FileRouteTypes {
     | '/communities/$communityId'
     | '/communities/new'
     | '/users/$userId'
+    | '/users/following'
     | '/communities'
     | '/users'
   fileRoutesByTo: FileRoutesByTo
@@ -302,6 +320,7 @@ export interface FileRouteTypes {
     | '/communities/$communityId'
     | '/communities/new'
     | '/users/$userId'
+    | '/users/following'
     | '/communities'
     | '/users'
   id:
@@ -318,6 +337,7 @@ export interface FileRouteTypes {
     | '/communities/$communityId'
     | '/communities/new'
     | '/users/$userId'
+    | '/users/following'
     | '/communities/'
     | '/users/'
   fileRoutesById: FileRoutesById
@@ -336,6 +356,7 @@ export interface RootRouteChildren {
   CommunitiesCommunityIdRoute: typeof CommunitiesCommunityIdRoute
   CommunitiesNewRoute: typeof CommunitiesNewRoute
   UsersUserIdRoute: typeof UsersUserIdRoute
+  UsersFollowingRoute: typeof UsersFollowingRoute
   CommunitiesIndexRoute: typeof CommunitiesIndexRoute
   UsersIndexRoute: typeof UsersIndexRoute
 }
@@ -353,6 +374,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunitiesCommunityIdRoute: CommunitiesCommunityIdRoute,
   CommunitiesNewRoute: CommunitiesNewRoute,
   UsersUserIdRoute: UsersUserIdRoute,
+  UsersFollowingRoute: UsersFollowingRoute,
   CommunitiesIndexRoute: CommunitiesIndexRoute,
   UsersIndexRoute: UsersIndexRoute,
 }
@@ -379,6 +401,7 @@ export const routeTree = rootRoute
         "/communities/$communityId",
         "/communities/new",
         "/users/$userId",
+        "/users/following",
         "/communities/",
         "/users/"
       ]
@@ -418,6 +441,9 @@ export const routeTree = rootRoute
     },
     "/users/$userId": {
       "filePath": "users/$userId.jsx"
+    },
+    "/users/following": {
+      "filePath": "users/following.jsx"
     },
     "/communities/": {
       "filePath": "communities/index.jsx"

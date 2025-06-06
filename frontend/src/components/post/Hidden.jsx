@@ -1,40 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import CommentBox from './CommentBox';
-import CommentCard from './CommentCard';
-import { useAuth } from '../../contexts/authProvider'; 
-import CommentModal from './CommentModal';
-import Post from './Post';
-import BackButton from './BackButton';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import CommentBox from "./CommentBox";
+import CommentCard from "./CommentCard";
+import { useAuth } from "../../contexts/authProvider";
+import CommentModal from "./CommentModal";
+import Post from "./Post";
+import BackButton from "./BackButton";
 
 const Hidden = () => {
   const [comments, setComments] = useState([]);
   const [post, setPost] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { token } = useAuth(); 
+  const { token } = useAuth();
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
 
- if (!id) {
-    return (
-      <MainLayout>
-          <h1>Error</h1>
-          <p>Post ID is missing in the URL.</p>
-      </MainLayout>
-    );
-  }
-
-
-
-
+  useEffect(() => {
+    fetchPostComments(id);
+  }, [id]);
 
   const getAuthConfig = () => ({
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-
 
   const fetchPostComments = async (parentId, page = 1, pageSize = 10) => {
     setLoading(true);
@@ -48,21 +38,26 @@ const Hidden = () => {
         getAuthConfig()
       );
       setPost(response2.data);
-      setComments(response.data); 
+      setComments(response.data);
       setError(null);
-      console.log("Fetched comments:", response.data);
       return response.data;
     } catch (err) {
-      setError(err.response?.data || 'Error fetching post comments');
+      setError(err.response?.data || "Error fetching post comments");
       throw err;
     } finally {
       setLoading(false);
     }
   };
-console.log(comments)
-  useEffect(() => {
-    fetchPostComments(id); 
-  }, [id]);
+
+
+  if (!id) {
+    return (
+      <MainLayout>
+        <h1>Error</h1>
+        <p>Post ID is missing in the URL.</p>
+      </MainLayout>
+    );
+  }
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -70,18 +65,17 @@ console.log(comments)
   return (
     <div>
       <BackButton />
-      <Post post={post} showReplies={false}  />
-      <CommentBox id={id}  comments={comments} setComments={setComments}/>
+      <Post post={post} showReplies={false} />
+      <CommentBox id={id} comments={comments} setComments={setComments} />
       {comments.map((comment) => (
-        
         <CommentCard
           key={comment.id}
           id={comment.id}
           authorId={comment.authorId}
           communityId={comment.communityId}
-          authorName={comment.authorName || 'Jakiś tam użytkownik'}
+          authorName={comment.authorName || "Jakiś tam użytkownik"}
           createdDateTime={comment.createdDateTime}
-          text={comment.content || 'Lorem ipsum dolor sit amet...'}
+          text={comment.content || "Lorem ipsum dolor sit amet..."}
           likes={comment.likesCount || 0}
           dislikes={comment.dislikesCount || 0}
           isDisliked={comment.isDisliked || false}
@@ -89,7 +83,6 @@ console.log(comments)
           replyCount={comment.replyCount || 0}
         />
       ))}
-    
     </div>
   );
 };

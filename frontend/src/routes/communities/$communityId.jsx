@@ -25,7 +25,7 @@ const Communities = () => {
     <>
       {/* A tutaj zrób layout do wyświetlenia community*/}
       <div className="zamien-mnie-na-layout"></div>
-      <PostsList
+      <PostsList key={communityId}
         urlWithoutQueryParams={`${import.meta.env.VITE_API_URL}/posts/community/${communityId}`}
       />
     </>
