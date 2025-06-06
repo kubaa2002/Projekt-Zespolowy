@@ -8,6 +8,11 @@ import Post from './Post';
 import BackButton from './BackButton';
 
 const Hidden = () => {
+  const [comments, setComments] = useState([]);
+  const [post, setPost] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { token } = useAuth(); 
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
 
@@ -21,11 +26,7 @@ const Hidden = () => {
   }
 
 
-  const [comments, setComments] = useState([]);
-  const [post, setPost] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { token } = useAuth(); 
+
 
 
   const getAuthConfig = () => ({
