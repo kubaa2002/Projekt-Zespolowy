@@ -5,7 +5,7 @@ import axios from "axios";
 import { useAuth } from "../../contexts/authProvider.jsx";
 import { useState, useEffect } from "react";
 import Profile from "../../components/profilesLayouts/profile.jsx";
-
+import PostsList from "../../PostsList.jsx";
 export const Route = createFileRoute("/users/$userId")({
   component: RouteComponent,
 });
@@ -29,12 +29,10 @@ const ProfilePage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!token) return;
     setLoading(true);
-    setError(null);
 
     axios
-      .get(`${import.meta.env.VITE_API_URL}/users/${userId}`, {
+      .get(`${import.meta.env.VITE_API_URL}/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setUser(res.data))
@@ -55,5 +53,12 @@ const ProfilePage = () => {
   if (error) return <p>{error}</p>;
   if (!user) return <p>Nie znaleziono użytkownika</p>;
 
-  return <Profile user={user} />;
+  return (
+    <>
+      <Profile user={user} />
+      <PostsList urlWithoutQueryParams={`${import.meta.env.VITE_API_URL}/posts/user/${userId}`}/>
+    </>
+  );
 };
+
+

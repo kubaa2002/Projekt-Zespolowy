@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/authProvider";
 import { useNavigate } from "@tanstack/react-router";
-import { useLocation } from "@tanstack/react-router";
 const SearchInput = () => {
   const [searchType, setSearchType] = useState("users");
   const [searchValue, setSearchValue] = useState("");
@@ -78,8 +77,6 @@ const SearchInput = () => {
 // };
 
 export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
-  const location = useLocation();
-  const additionalPath = location.pathname.split("/")[2];
   const [rotated, setRotated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const modalRef = useRef();

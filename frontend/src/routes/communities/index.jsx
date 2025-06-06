@@ -6,6 +6,7 @@ import ProtectedRoute from "../../utils/ProtectedRoute.jsx";
 import mergeUniqueById from "../../utils/mergeUniqueById.js";
 import axios from "axios";
 import SearchCommunity from "../../components/communitiesLayouts/SearchCommunity.jsx";
+import { useNavigate } from "@tanstack/react-router";
 export const Route = createFileRoute("/communities/")({
   component: RouteComponent,
 });
@@ -28,6 +29,11 @@ const Communities = () => {
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const { token } = useAuth();
+
+  const navigate = useNavigate();
+  const handleCommunityClick = (communityId) => {
+    navigate({ to: `/communities/${communityId}` });
+  };
 
   const searchCommunities = useCallback(
     async (query = "", start = 0, amount = 10) => {
@@ -76,7 +82,7 @@ const Communities = () => {
       {data.map((community) => (
         <div className="community-card"
           key={community.id}
-          //onClick={() => handleCommunityClick(community.id)}
+          onClick={() => handleCommunityClick(community.id)}
           style={{ cursor: "pointer" }}
           >
           <SearchCommunity community={community} />

@@ -8,7 +8,6 @@ import { useAuth } from "../../contexts/authProvider";
 
 export default function Main() {
   const [rotated, setRotated] = useState(false);
-  const [showSort, setShowSort] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [content, setContent] = useState("");
   const [communityId, setCommunityId] = useState(null);
@@ -17,6 +16,7 @@ export default function Main() {
   const fileInputRef = useRef(null);
   const {createPost} = usePosts();
   const {user} = useAuth();
+
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -123,7 +123,7 @@ export default function Main() {
             handlePublish={handlePublish}
           />
         
-        <PostsList showSort={showSort} setShowSort={setShowSort} />
+        <PostsList urlWithoutQueryParams={`${import.meta.env.VITE_API_URL}/posts`}/> {/* solution for now? im lazy*/}
         
     </MainLayout>
   );
