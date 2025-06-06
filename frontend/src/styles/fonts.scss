@@ -1,0 +1,166 @@
+@use "sass:color";
+@use "sass:map";
+
+// Base mixin for shared text styles
+@mixin base-text-style($font-size, $font-weight, $line-height: null, $letter-spacing: null, $text-decoration: none) {
+	font-size: $font-size;
+	font-family: Inter;
+	font-weight: $font-weight;
+	font-style: normal;
+	@if $line-height {
+	  line-height: $line-height;
+	}
+	@if $letter-spacing {
+	  letter-spacing: $letter-spacing;
+	}
+	text-decoration: $text-decoration;
+	text-transform: none;
+  }
+  
+  // Specific mixins extending the base mixin
+  @mixin basic-text() {
+	@include base-text-style(16px, 400, 150%);
+  }
+  
+  @mixin title-login-register-password-subtitle() {
+	@include base-text-style(32px, 500, 120%);
+  }
+  
+  @mixin title-login-register-vibe-title() {
+	@include base-text-style(48px, 700, 150%);
+  }
+  
+  @mixin title-navbar-subtitle() {
+	@include base-text-style(32px, 400, 150%);
+  }
+  
+  @mixin title-subheader() {
+	@include base-text-style(20px, 800, 150%);
+  }
+  
+  @mixin title-post-title() {
+	@include base-text-style(20px, 700);
+  }
+  
+  @mixin title-post-ended-modal-header() {
+	@include base-text-style(20px, 500, 120%);
+  }
+  
+  @mixin title-settings-headers() {
+	@include base-text-style(20px, 600, 28px);
+  }
+  
+  @mixin title-header-report-list-createpost-profile() {
+	@include base-text-style(24px, 400, 120%);
+  }
+  
+  @mixin headline-navbar-title() {
+	@include base-text-style(64px, 700, 150%);
+  }
+  
+  @mixin display-main-page-title() {
+	@include base-text-style(104px, 700, 150%);
+  }
+  
+  @mixin display-main-page-subtitle() {
+	@include base-text-style(48px, 400, 150%);
+  }
+  
+  @mixin button-hyperlink() {
+	@include base-text-style(16px, 400, 150%, null, underline);
+  }
+  
+  @mixin button-welcome-button-user-name() {
+	@include base-text-style(20px, 400, 150%);
+  }
+  
+  @mixin button-blue-response-buttons() {
+	@include base-text-style(12px, 300, null, 0.02em);
+  }
+  
+  @mixin button-post-like-com-save-share() {
+	@include base-text-style(14px, 500);
+  }
+  
+  @mixin button-general-followed-buttons() {
+	@include base-text-style(20px, 400, 28px);
+  }
+  
+  @mixin body-post-content() {
+	@include base-text-style(16px, 400, 25px);
+  }
+  
+  @mixin body-main-comment-text() {
+	@include base-text-style(14px, 400, 25px, 0.05em);
+  }
+  
+  @mixin body-subcomment-text() {
+	@include base-text-style(12px, 300, 25px, 0.05em);
+  }
+  
+  @mixin body-like-dislike-counters() {
+	@include base-text-style(12px, 300, null, 0.02em);
+  }
+  
+  @mixin body-main-buttons-subtitle-and-follow-counter() {
+	@include base-text-style(9px, 600, 14px);
+  }
+  
+  @mixin body-modal-warnings-stars-tooltipt-sortby() {
+	@include base-text-style(14px, 400, 150%);
+  }
+  
+  @mixin body-roboto-code-and-number() {
+	font-size: 14px;
+	font-family: Roboto;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 18px;
+	letter-spacing: 0.02em;
+	text-decoration: none;
+	text-transform: none;
+  }
+  
+  @mixin body-members-counter() {
+	@include base-text-style(12px, 500);
+  }
+  
+  @mixin body-user-stats() {
+	@include base-text-style(16px, 500, 26px);
+  }
+  
+  @mixin body-user-stats-results() {
+	@include base-text-style(16px, 400, 26px);
+  }
+  
+  @mixin body-buttons-from-dots-post-date-user() {
+	@include base-text-style(12px, 400, 150%);
+  }
+  
+  @mixin body-notifications-subtitle() {
+	@include base-text-style(13px, 400, null, 0.05em);
+  }
+  
+  @mixin body-main-buttons-title() {
+	@include base-text-style(12px, 600, 18px);
+  }
+  
+  @mixin body-communities-names() {
+	@include base-text-style(16px, 600);
+  }
+  
+  @mixin body-followed-header() {
+	@include base-text-style(16px, 500);
+  }
+  
+  @mixin body-settings-password-label-user-name() {
+	@include base-text-style(16px, 500, 150%);
+  }
+  
+  @mixin useless-swap-label-10() {
+	@include base-text-style(10px, 400, 100%);
+  }
+  
+  @mixin useless-scrollbar() {
+	@include base-text-style(4px, 400);
+  }

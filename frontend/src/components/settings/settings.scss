@@ -1,0 +1,13 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+@use "../../styles/fonts" as fonts;
+
+.settings-container {
+	width: 100%;
+	height: auto;
+	border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

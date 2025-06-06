@@ -1,0 +1,121 @@
+@use "sass:color";
+@use "sass:map";
+
+//key colors
+$key-colors: (
+	white: rgba(255, 255, 255),
+	black: rgba(0, 0, 0),
+	razacy-rozowy: rgba(253, 47, 217),
+	dark: rgba(38, 45, 52),
+	white-dark: rgba(247, 247, 247),
+);
+
+// most used unchanged colors
+$navbar: (
+	border-gray-400: rgba(206, 212, 218),
+	searchbar-code-gray-300: rgba(222, 226, 230),
+	unchanged-black: rgba(0, 0, 0),
+	unchanged-white: rgba(255, 255, 255),
+);
+
+// unchanged border colors
+$border: (
+	searchicon-border: rgba(13, 110, 253),
+	input-tag-border-gray-400: rgba(206, 212, 218),
+);
+
+// input result
+$input: (
+	danger: rgba(220, 53, 69),
+	success: rgba(25, 135, 84),
+);
+
+//photo dragger background
+$background-dragger-gray-100: rgba(248,249,250);
+
+//unchanged text colors
+$text: (
+	obserwowane-groupimage-gray-500: rgba(173,181,189),
+	unchanged-searchbar-gray-600: rgba(108,117,125),
+	code-number: rgba(133,120,87),
+);
+
+//main page colors
+$main-page: (
+	ciemniejszy-rozowy: rgba(205,31,217),
+	jeszcze-ciemniejszy-rozowy: rgba(189,31,217),
+	jasny-fioletowy: rgba(173,31,217),
+	fioletowy: rgba(161,31,217),
+	bardziej-jasny-fioletowy: rgba(189,31,217),
+);
+
+//colors for community images
+$image:(
+	group-1: rgba(0,123,245),
+	group-2: rgba(162,177,191),
+	group-3: rgba(26,85,145),
+	group-4: rgba(21,52,82),
+);
+
+//changed text colors
+$changed-text:(
+	post-counter: rgba(56,73,83),
+	dropdown-menu-gray-900: rgba(33,37,41),
+	subtitle-main-buttons: rgba(151,152,157),
+	hyperlink-checkbox: rgba(13,110,253),
+	count-members: rgba(167,167,167),
+	date-subtitle-post-comment: rgba(128,128,128),
+	input-gray-600: rgba(108,117,125),
+	dark-post-counter: rgba(220,225,230),
+	dark-dropdown-menu-gray-900: rgba(235,235,235),
+	dark-subtitle-main-buttons: rgba(200,205,210),
+	dark-hyperlink-checkbox: rgba(90,160,255),
+	dark-count-members: rgba(210,210,215),
+	dark-date-subtitle-post-comment: rgba(185,190,195),
+	dark-input-gray-600: rgba(200,205,210),
+);
+
+//changed border colors
+$changed-border: (
+	focused-border: rgba(134,183,254),
+	modal: rgba(222,226,230),
+	delete-user-gray-400: rgba(206,212,218),
+	dark-focused-border: rgba(80,138,209),
+	dark-modal: rgba(60,70,80),
+	dark-delete-user-gray-400: rgba(70,80,90),
+);
+
+//changed scrollbar colors
+$changed-scrollbar: (
+	main: rgba(241,241,241),
+	thumb: rgba(193,193,193),
+	arrows: rgba(80,80,80),
+	dark-main: rgba(74,80,88),
+	dark-thumb: rgba(80,90,100),
+	dark-arrows: rgba(170,180,190),
+);
+
+//changed background for image upload colors
+$changed-background: (
+	modal-image: rgba(247,247,247),
+	dark-modal-image: rgba(45,55,65),
+);
+
+//changed button colors
+$changed-button: (
+	send-photo: rgba(108,117,125),
+	dark-send-photo: rgba(156,164,172),
+);
+
+//changed icon down in modal colors
+$changed-icon: (
+	down-modal-gray-800: rgba(52,58,64),
+	dark-down-model-gray-800: rgba(190,195,200),
+);
+
+:root {
+	--razacy-rozowy: #{map.get($key-colors, razacy-rozowy)};
+	@each $key, $value in $main-page {
+	  --#{$key}: #{$value};
+	}
+  }

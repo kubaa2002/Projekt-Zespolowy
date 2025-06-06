@@ -33,7 +33,7 @@ public class UserController : ControllerBase
             var errors = new ErrorResponse { Status = 400 };
             if (existedUser != null)
             {
-                errors.Errors["UserName"] = new List<string> { "Pseudonim zajęty" };
+                errors.Errors["UserName"] = new List<string> { "Nazwa użytkownika zajęta" };
                 return BadRequest(errors);
             }
 
@@ -43,8 +43,8 @@ public class UserController : ControllerBase
                 errors.Errors["Email"] = new List<string> { "Nie można użyć tego adresu email" };
                 return BadRequest(errors);
             }
-
-            var user = new AppUser()
+            
+            var user = new AppUser
             {
                 UserName = model.UserName,
                 Email = model.Email,
@@ -52,7 +52,7 @@ public class UserController : ControllerBase
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
-
+            
             if (result.Succeeded)
             {
                 var token = GenerateToken(model.UserName);
@@ -64,10 +64,9 @@ public class UserController : ControllerBase
                 ModelState.AddModelError("", error.Description);
             }
         }
-   
+
         return BadRequest(ModelState);
     }
-
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
@@ -88,7 +87,7 @@ public class UserController : ControllerBase
             errors.Errors["error"] = new List<string> { "Niepoprawna nazwa użytkownika lub hasło" };
             return Unauthorized(errors);
         }
-        return Unauthorized(ModelState);
+        return BadRequest(ModelState);
     }
 
     [HttpPost("logout")]
