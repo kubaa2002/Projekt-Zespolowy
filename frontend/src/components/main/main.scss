@@ -26,8 +26,8 @@
     // flex-grow 2 or 3 works best. Adjust in the future to fit sidebar cards
     flex-grow: 2;
     .side-list-wrapper{
-        // position sticky in the future
-        
+      position: sticky;
+      top: 40px;  
     }
   }
 }

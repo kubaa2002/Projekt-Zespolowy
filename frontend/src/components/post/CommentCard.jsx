@@ -9,7 +9,7 @@ import UserTag from "./UserTag";
 import Like from "./Like";
 import Dislike from "./Dislike";
 
-const CommentCard = ({ id, authorName, createdDateTime, text, likes, dislikes, isLied, isDisliked: isDislikedProp, replyCount }) => {
+const CommentCard = ({ id, authorName, createdDateTime, text, likes, dislikes, isLied, isDisliked: isDislikedProp, replyCount,authorId,communityId }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,8 +19,8 @@ const CommentCard = ({ id, authorName, createdDateTime, text, likes, dislikes, i
   const [isDisliked, setIsDisliked] = useState(isDislikedProp); // Initialize with isDislikedProp
   const [likesCount, setLikesCount] = useState(likes); // Track likes count
   const [dislikesCount, setDislikesCount] = useState(dislikes); // Track dislikes count
-  const { token } = useAuth();
-  const post = { authorName, createdDateTime };
+  const { token,user } = useAuth();
+  const post = { authorName, createdDateTime,authorId,id };
 
   // Function to get auth headers
   const getAuthConfig = () => ({
@@ -121,18 +121,16 @@ const CommentCard = ({ id, authorName, createdDateTime, text, likes, dislikes, i
         `${import.meta.env.VITE_API_URL}/posts/${commentId}`,
         {
           id: 0,
-          authorId: "123",
+          authorId: user.id,
           content: replyText.trim(),
-          communityId: null,
+          communityId: communityId,
           createdDateTime: new Date().toISOString(),
           parentId: id,
           isDeleted: false,
         },
         getAuthConfig()
       );
-      if (showReplies) {
-        fetchPostComments(id);
-      }
+      await fetchPostComments(id);
       closeModal();
     } catch (err) {
       console.error('Error submitting reply:', err.response?.data || err.message);
