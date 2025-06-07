@@ -68,7 +68,7 @@ namespace Projekt_Zespolowy.Controllers
             {
                 case "observed":
                     // Zwracamy błąd 400 z czytelnym komunikatem dla dewelopera frontendu.
-                    return BadRequest("Filtr 'observed' nie jest obsługiwany w kontekście postów społeczności.");
+                    return BadRequest("Filtr 'observed' nie jest obsługiwany dla posts/community.");
                 
                 case "new":
                     response = postsService.GetCommunityPostsSortedByNewest(communityId, start, pageSize);

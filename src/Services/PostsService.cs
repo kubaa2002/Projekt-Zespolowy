@@ -104,12 +104,12 @@ namespace Projekt_Zespolowy.Services
                 .Join(followedUserIds,
                     post => post.AppUserId,
                     followedId => followedId,
-                    (post, followedId) => post) 
+                    (post, followedId) => post)
 
                 .Join(userCommunityIds,
-                    post => post.CommunityId, 
+                    post => post.CommunityId,
                     communityId => communityId,
-                    (post, communityId) => post); 
+                    (post, communityId) => post);
 
             var posts = query
                 .Include(p => p.Likes)
@@ -122,7 +122,7 @@ namespace Projekt_Zespolowy.Services
             return posts.Any()
                 ? new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts)
                 : new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
-
+        }
         public PostsService(AppDbContext context)
         {
             this.context = context;
