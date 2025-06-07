@@ -1,4 +1,4 @@
-﻿namespace Projekt_Zespolowy.Posts
+﻿namespace Projekt_Zespolowy.Models
 {
     public struct ServiceResponse<T>
     {

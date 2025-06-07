@@ -11,4 +11,6 @@ docker/bin/
 *.vspx
 *.cache
 .vs
+/.vs/Projekt-Zespolowy
+/.vs/ProjectEvaluation
 /src/.vs/Projekt-Zespolowy

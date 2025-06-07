@@ -4,6 +4,7 @@ using Projekt_Zespolowy.Posts;
 using Projekt_Zespolowy.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Likes;
 
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -16,10 +17,12 @@ namespace Projekt_Zespolowy.Controllers
         PostsService postsService;
         CommunityService communityService;
 
-        public PostsController(PostsService postsService, CommunityService communityService)
+        LikesService likesService;
+        public PostsController(PostsService postsService, CommunityService communityService, LikesService likesService) 
         {
             this.postsService = postsService;
             this.communityService = communityService;
+            this.likesService = likesService;
         }
 
         [HttpGet]
@@ -85,7 +88,7 @@ namespace Projekt_Zespolowy.Controllers
             return StatusCode(response.ResponseCode, postsDTO);
         }
         [HttpGet("user/{authorId}")]
-        public IActionResult UserPosts(int authorId, int page, int pageSize)
+        public IActionResult UserPosts(string authorId, int page, int pageSize)
         {
             // Here should go a chech whether the user exists or not, but I am not sure what user it is supposed to be
             // as in newer files there showes up something called community user, and we already have app user
@@ -139,7 +142,8 @@ namespace Projekt_Zespolowy.Controllers
         public IActionResult GetById(int id)
         {
             var result = postsService.GetById(id);
-            return result.ResponseBody != null ? Ok(result) : NotFound(); 
+            PostDTO postDTO = result.ResponseBody;
+            return result.ResponseBody != null ? Ok(postDTO) : NotFound(); 
         }
 
         [HttpPost]
@@ -156,7 +160,7 @@ namespace Projekt_Zespolowy.Controllers
             }
         }
 
-        [HttpPost("/community/{community_id}")]
+        [HttpPost("community/{community_id}")]
         public IActionResult PostInCommunity(int community_id, [FromBody] PostDTO postDTO)
         {
             var response = postsService.AddInCommunity(community_id, postDTO);
@@ -173,7 +177,7 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(response.ResponseCode);
             }
         }
-        [HttpPost("/{parent_id}")]
+        [HttpPost("{parent_id}")]
         public IActionResult PostAsComment(int parent_id, [FromBody] PostDTO postDTO)
         {
             var response = postsService.AddComment(parent_id, postDTO);
@@ -238,6 +242,61 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(response.ResponseCode);
             }
         }
-
+        [HttpPost("{postId}/Like")]
+        public IActionResult GiveReaction(int postId, [FromBody] LikeDTO like)
+        {
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
+            {
+                return NotFound("Post nie istnieje lub został usunięty");
+            }
+            like.PostId = postId;
+            var sr = likesService.Add(like);
+            return StatusCode(sr.ResponseCode);
+        }
+        [HttpGet("{postId}/{reactionId}/Nr")]
+        public IActionResult GetReactionCount(int postId, int reactionId)
+        {
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
+            {
+                return NotFound();
+            }
+            var reactionCount = this.likesService.GetOfPostCountByType(postId, reactionId);
+            return StatusCode(reactionCount.ResponseCode, reactionCount.ResponseBody);
+        }
+        [HttpGet("{postId}/Reactions/Nr")]
+        public IActionResult GetReactionCount(int postId)
+        {
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
+            {
+                return NotFound();
+            }
+            var reactionCount = this.likesService.GetOfPostCount(postId);
+            return StatusCode(reactionCount.ResponseCode, reactionCount.ResponseBody);
+        }
+        [HttpGet("{postId}/{reactionId}")]
+        public IActionResult GetReaction(int postId, int reactionId)
+        {
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
+            {
+                return NotFound();
+            }
+            var likes = this.likesService.GetOfPostByType(postId, reactionId);
+            return StatusCode(likes.ResponseCode, likes.ResponseBody.Select(x => (LikeDTO)x));
+        }
+        [HttpGet("{postId}/Reactions")]
+        public IActionResult GetReaction(int postId)
+        {
+            var post = this.postsService.GetById(postId);
+            if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
+            {
+                return NotFound();
+            }
+            var likes = this.likesService.GetOfPost(postId);
+            return StatusCode(likes.ResponseCode, likes.ResponseBody.Select(x=>(LikeDTO)x));
+        }
     }
 }

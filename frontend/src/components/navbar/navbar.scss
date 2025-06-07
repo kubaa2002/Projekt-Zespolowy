@@ -1,0 +1,179 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+@use "../../styles/fonts" as fonts;
+
+//navbar
+.btn-register {
+	width: 190px;
+	height: 72px;
+	margin-right: 2vw;
+	background-color: map.get(colors.$key-colors, black);
+	color: map.get(colors.$key-colors, white);
+	border: 1px solid map.get(colors.$key-colors, white);
+	&:hover {
+		background-color: color.adjust(map.get(colors.$key-colors,black), $lightness: -20%);
+	}
+	&-post{
+		margin-right:4.83vw;
+	}
+};
+  
+.btn-login {
+	width: 120px;
+	height: 72px;
+	margin-right:2vw;
+	background-color: map.get(colors.$key-colors, white);
+	color: map.get(colors.$key-colors, black);
+	border: 1px solid map.get(colors.$key-colors, black);
+	&:hover {
+		background-color: color.adjust(map.get(colors.$key-colors,white), $lightness: -20%);
+	}
+};
+
+.btn-register,
+.btn-login {
+	position: relative;
+	z-index:1
+};
+
+.navbar {
+	background-color: transparent;
+	padding: 0 15px;
+	&-logged{
+		border-bottom: 3px solid map.get(colors.$navbar,border-gray-400);
+	}
+};
+
+.navbar-main {
+	background-color: map.get(colors.$key-colors, razacy-rozowy);
+}
+
+.left-sidebar {
+	width: 27vw;
+	height: 100%;
+	user-select: none;
+	cursor: pointer;
+	color: map.get(colors.$key-colors, white);
+}
+
+.navbar-subtitle {
+	@include fonts.title-navbar-subtitle();
+}
+
+.headline-navbar-title {
+	@include fonts.headline-navbar-title();
+}
+
+.profile {
+	height: 72px;
+	margin-right: 1.25vw;
+	width: 5.68vw;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 15px;
+	user-select: none;
+	cursor: pointer;
+}
+
+
+.navbar-nav {
+  @include fonts.button-general-followed-buttons();
+  height: 46px; //nieco zmienione jak w design
+  background-color: map.get(colors.$key-colors,razacy-rozowy);
+  gap: 8px;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+
+	.nav-item {
+		padding-left: 16px;
+		padding-right: 16px;
+		&-active {
+			border-bottom: 2px solid map.get(colors.$navbar, unchanged-black);
+			border-radius: 0;
+		}
+	}
+
+	.nav-link.active {
+		color: map.get(colors.$navbar, unchanged-black);
+	}
+	.nav-link.disabled {
+		color: map.get(colors.$text, obserwowane-groupimage-gray-500);
+	}
+}
+
+.hide-on-mobile {
+  display: flex;
+}
+.show-on-mobile {
+  display: none;
+}
+
+.dropdown-menu-item {
+  padding: 4px 16px;
+  cursor: pointer;
+  @include fonts.basic-text();
+}
+
+.dropdown-menu-list{
+	list-style: none;
+	margin: 0;
+	padding: 0 0;
+}
+
+.dropdown-menu-profile {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: 233px;
+  z-index: 3;
+  display: block;
+  background: map.get(colors.$key-colors, white);
+  border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+  border-right: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.menu-toggle-icon {
+  font-size: 32px;
+  cursor: pointer;
+  margin-right: 1.25vw;
+}
+
+.dropdown-menu-profile, .dropdown-menu-item, .profile, .notification-icon  {
+  user-select: none;
+}
+.dropdown-menu-username{
+	@include fonts.button-welcome-button-user-name();
+	border-bottom: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+	cursor: auto;
+	user-select: text;
+	overflow-wrap: anywhere;
+}
+.dropdown-menu-item:not(.dropdown-menu-username):hover {
+  background-color: map.get(colors.$key-colors, razacy-rozowy);
+  color: map.get(colors.$key-colors, white);
+}
+
+@media screen and (max-width: 1600px) {
+	.navbar-main .btn {
+		width: 150px;
+		height: 70px;
+	}
+	.navbar-subtitle{
+		display: none;
+	}
+	.hide-on-mobile {
+		display: none;
+	  }
+	.show-on-mobile {
+		display: flex;
+	}
+	.navbar-searchbar{
+		margin-right: auto;
+		margin-left: 10px;
+	}
+}

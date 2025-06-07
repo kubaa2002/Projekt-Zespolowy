@@ -1,0 +1,144 @@
+.post-container {
+  border: 1px solid #FD2FD9;
+
+  padding: 16px;
+  margin: 16px auto;
+  background-color: #fff;
+  width: 100%;
+}
+
+.post-header {
+  display: flex;
+  border: 1px solid #FD2FD9;
+    padding: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+
+.post-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  background-image: url('avatar.svg');
+  background-size: cover;
+  border-radius: 50%;
+}
+
+.author-name {
+  color: #333;
+}
+
+.post-date {
+  font-size: 0.85em;
+  color: #888;
+}
+
+.menu-container {
+  position: relative;
+}
+
+.dots-button {
+  background: none;
+  border: none;
+  font-size: 1.4em;
+  cursor: pointer;
+  color: #333;
+}
+
+.ggg {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 999;
+}
+
+.ggg button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.95em;
+}
+
+.ggg button:hover {
+  background-color: #f1f1f1;
+}
+
+
+.post-content {
+  padding: 1rem 0;
+}
+
+
+.read-more {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.read-more:hover {
+  text-decoration: underline;
+}
+
+.post-image {
+  margin-top: 10px;
+  max-width: 100%;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  font-size: 13px;
+  div {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+ 
+}
+
+.icon-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1em;
+  color: #666;
+  cursor: pointer;
+  filter: grayscale(1);
+}
+
+.icon-checkbox input {
+  display: none;
+}
+
+.icon-checkbox.active {
+  color: #e91e63;
+  filter: none;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  font-size: 1em;
+  color: #666;
+  cursor: pointer;
+  filter: grayscale(1);
+}
+
+.action-button:hover {
+  color: #000;
+  filter: grayscale(0);
+}

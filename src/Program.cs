@@ -14,8 +14,8 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<RevokedTokenFilter>();
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentityCore<AppUser>()
@@ -62,15 +62,32 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 
+builder.Services.AddCors(options =>
+{
+    var frontendUrl = builder.Configuration["FrontendUrl"];
+    if (string.IsNullOrEmpty(frontendUrl))
+    {
+        throw new ApplicationException("FrontendUrl is not set in the configuration.");
+    }
+
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins(frontendUrl).AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<LikesService>();
+
 var app = builder.Build();
 
 // We need to enable this when we will be deploying to a hosting
 //app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseCors();
 app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())
