@@ -14,8 +14,8 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<RevokedTokenFilter>();
 });
 
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentityCore<AppUser>()
@@ -79,8 +79,18 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<LikesService>();
+builder.Services.AddScoped<SharingService>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 // We need to enable this when we will be deploying to a hosting
 //app.UseHttpsRedirection();

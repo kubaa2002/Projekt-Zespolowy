@@ -6,15 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
-using Projekt_Zespolowy.Posts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
 namespace Projekt_Zespolowy.Services
 {
-    //TODO: Add connection to database instead of hard coded objects
-    //WhyNotDoneAlready: no posts database, no knowledge what post like :(
-    public class PostsService
+    public class PostsService : Controller
     {
         AppDbContext context;
         public PostsService(AppDbContext context)
@@ -123,8 +120,7 @@ namespace Projekt_Zespolowy.Services
             //ale jeśli jakieś posty zostałyby usunięte doprowadziłoby to do wyświetlenie mniejszej liczby postów niż length, nie sądzę,
             //żeby było to docelowe działanie
             //context.Posts.Where(x => x.Id >= start && x.Id < start + length); <--- to o czym myślę
-          
-            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Include(x=>x.Likes).ToList();
+            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Include(x => x.Likes).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
@@ -134,8 +130,8 @@ namespace Projekt_Zespolowy.Services
             // When ok
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
         }
-        public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId) 
-        { 
+        public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId)
+        {
             List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == commnityId).Include(x => x.Likes).ToList();
             // When no posts
             if (start > foundPosts.Count)
@@ -171,22 +167,20 @@ namespace Projekt_Zespolowy.Services
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
         }
 
-    public ServiceResponse<IEnumerable<Post>> GetAll()
+        public ServiceResponse<IEnumerable<Post>> GetAll()
         {
             var result = context.Posts.ToList();
-            if (result.Count == 0)
+            if (result.Count() == 0)
             {
                 return new ServiceResponse<IEnumerable<Post>>(StatusCodes.Status204NoContent, null);
             }
             else
-            {
                 return new ServiceResponse<IEnumerable<Post>>(StatusCodes.Status200OK, result);
-            }
         }
         public ServiceResponse<Post> GetById(int id)
         {
             var result = context.Posts.Include(x => x.Likes).SingleOrDefault(x => x.Id == id);
-            if (result == default) 
+            if (result == default)
             {
                 return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
             }
@@ -195,9 +189,10 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<Post> Add(PostDTO newPost)
         {
+            if (newPost.CreatedDateTime == default)
+                newPost.CreatedDateTime = DateTimeOffset.UtcNow;
+
             Post post = newPost;
-            if (post.CreatedDateTime == default)
-                post.CreatedDateTime = DateTimeOffset.UtcNow;
             if (post.Content.Length > 2000)
             {
                 return new ServiceResponse<Post>(StatusCodes.Status413PayloadTooLarge, null);
@@ -206,12 +201,13 @@ namespace Projekt_Zespolowy.Services
             {
                 return new ServiceResponse<Post>(StatusCodes.Status400BadRequest, null);
             }
-            //czy mogę tak wywołać metodę? czy to stworzy zbyt wiele zapytań i jest nieefektywne?
-            //jako ciało można rozważyć zwracanie istniejącego rekordu, jest to w controllers
-            var result = context.Posts.SingleOrDefault(x => x.Id == post.Id);
-            if (result != default)
+            if (context.Users.Any(u => u.Id == post.AppUserId) == false)
             {
-                return new ServiceResponse<Post>(StatusCodes.Status409Conflict, result);
+                return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
+            }
+            if (context.Posts.Any(p => p.Id == post.Id) == true)
+            {
+                return new ServiceResponse<Post>(StatusCodes.Status409Conflict, null);
             }
             else
             {
@@ -248,7 +244,7 @@ namespace Projekt_Zespolowy.Services
         public ServiceResponse<Post> Update(PostDTO newPost)
         {
             Post post = newPost;
-            if (context.Posts.SingleOrDefault(x => x.Id == post.Id) != default)
+            if (context.Posts.Any(x => x.Id == post.Id) == false)
             {
                 return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
             }
@@ -268,29 +264,42 @@ namespace Projekt_Zespolowy.Services
         /// Changes the value of IsDeleted property to True.
         /// </summary>
         /// <param name="newPost"> A DTO record that shall be deleted.</param>
-        public ServiceResponse<string?> Delete(int id, PostDTO newPost)
+        public ServiceResponse<string?> Delete(int id)
         {
             var post = context.Posts.SingleOrDefault(x => x.Id == id);
             if (post == default)
             {
                 return new ServiceResponse<string?>(StatusCodes.Status404NotFound, null);
             }
-            post.IsDeleted = true;
-            var temp = Update(post);
+            if (post.IsDeleted == true)
+            {
+                return new ServiceResponse<string?>(StatusCodes.Status409Conflict, null);
+            }
 
-            return new ServiceResponse<string?>(temp.ResponseCode, "deleted"); //można później zmienić aby nie dublować wywoływania metod
+            post.IsDeleted = true;
+            //var temp = Update(post);
+            context.Posts.Update(post);
+            context.SaveChanges();
+
+            return new ServiceResponse<string?>(StatusCodes.Status200OK, "deleted");
         }
 
-        public ServiceResponse<string?> UndoDelete(int id, PostDTO newPost)
+        public ServiceResponse<string?> UndoDelete(int id)
         {
             var post = context.Posts.SingleOrDefault(x => x.Id == id);
             if (post == default)
             {
                 return new ServiceResponse<string?>(StatusCodes.Status404NotFound, null);
             }
-            post.IsDeleted = false;
-            var temp = Update(post);
-            return new ServiceResponse<string?>(temp.ResponseCode, "undone deletetion"); //można później zmienić aby nie dublować wywoływania metod
+            if (post.IsDeleted == false)
+            {
+                return new ServiceResponse<string?>(StatusCodes.Status409Conflict, null);
+            }
+            post.IsDeleted = true;
+            context.Posts.Update(post);
+            context.SaveChanges();
+
+            return new ServiceResponse<string?>(StatusCodes.Status200OK, "undeleted");
         }
     }
 }
