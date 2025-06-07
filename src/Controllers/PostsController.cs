@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt_Zespolowy.Services;
-using Projekt_Zespolowy.Posts;
 using Projekt_Zespolowy.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Likes;
+using System.Net;
 
 namespace Projekt_Zespolowy.Controllers
 {
@@ -103,7 +103,7 @@ namespace Projekt_Zespolowy.Controllers
         public IActionResult GetAll()
         {
             var result = postsService.GetAll();
-            return result.ResponseBody != null ? Ok(result) : NoContent();
+            return result.ResponseBody != null ? Ok(result.ResponseBody) : NoContent();
         }
 
         [HttpGet("{id}")]
@@ -112,7 +112,7 @@ namespace Projekt_Zespolowy.Controllers
         {
             var result = postsService.GetById(id);
             PostDTO postDTO = result.ResponseBody;
-            return result.ResponseBody != null ? Ok(postDTO) : NotFound(); 
+            return result.ResponseBody != null ? Ok(result.ResponseBody) : NotFound(); 
         }
 
         [HttpPost]
@@ -121,7 +121,23 @@ namespace Projekt_Zespolowy.Controllers
             var response = postsService.Add(postDTO);
             if (response.ResponseCode == 201)
             {
-                return Created($"/posts/{postDTO.Id}", postDTO);
+                return Created($"/posts/{postDTO.Id}", response.ResponseBody);
+            }
+            if (response.ResponseCode == 413)
+            {
+                return StatusCode(response.ResponseCode);
+            }
+            if (response.ResponseCode == 400)
+            {
+                return BadRequest("Post nie możebyć pusty!");
+            }
+            if (response.ResponseCode == 404)
+            {
+                return NotFound("Użytkownik nie istnieje!");
+            }
+            if (response.ResponseCode == 409)
+            {
+                return Conflict("Dany post już istnieje!");
             }
             else
             {
@@ -139,7 +155,7 @@ namespace Projekt_Zespolowy.Controllers
             }
             if (response.ResponseCode == 201)
             {
-                return Created($"/posts/{postDTO.Id}", postDTO);
+                return Created($"/posts/{postDTO.Id}", response.ResponseBody);
             }
             else
             {
@@ -156,7 +172,7 @@ namespace Projekt_Zespolowy.Controllers
             }
             if (response.ResponseCode == 201)
             {
-                return Created($"/posts/{postDTO.Id}", postDTO);
+                return Created($"/posts/{postDTO.Id}", response.ResponseBody);
             }
             else
             {
@@ -169,7 +185,7 @@ namespace Projekt_Zespolowy.Controllers
             var response = postsService.Update(postDTO);
             if (response.ResponseCode == 200)
             {
-                return Ok($"/posts/{postDTO.Id}");
+                return Ok($"/posts/{response.ResponseBody.Id}");
             }
             else
             {
@@ -178,16 +194,20 @@ namespace Projekt_Zespolowy.Controllers
         }
 
         [HttpPut("[action]/{id}")]
-        public IActionResult Delete(int id, [FromBody] PostDTO post)
+        public IActionResult Delete(int id)
         {
-            var response = postsService.Delete(id ,post);
+            var response = postsService.Delete(id);
             if (response.ResponseCode == 200)
             {
-                return NoContent();
+                return Ok();
             }
             if (response.ResponseCode == 404)
             {
                 return NotFound("Post który próbujesz usunąć, nie istnieje!");
+            }
+            if (response.ResponseCode == 409)
+            {
+                return Conflict("Ten post jest już usunięty!");
             }
             else
             {
@@ -195,9 +215,9 @@ namespace Projekt_Zespolowy.Controllers
             }
         }
         [HttpPut("[action]/{id}")]
-        public IActionResult UndoDelete(int id, [FromBody] PostDTO post)
+        public IActionResult UndoDelete(int id)
         {
-            var response = postsService.UndoDelete(id, post);
+            var response = postsService.UndoDelete(id);
             if (response.ResponseCode == 200)
             {
                 return NoContent();
@@ -205,6 +225,10 @@ namespace Projekt_Zespolowy.Controllers
             if (response.ResponseCode == 404)
             {
                 return NotFound("Post który próbujesz przywrócić, nigdy nie istniał!");
+            }
+            if (response.ResponseCode == 409)
+            {
+                return Conflict("Ten post nie jest usunięty!");
             }
             else
             {
