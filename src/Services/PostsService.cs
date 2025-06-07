@@ -8,6 +8,7 @@ using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
 using Projekt_Zespolowy.Posts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Projekt_Zespolowy.Services
 {
@@ -16,17 +17,10 @@ namespace Projekt_Zespolowy.Services
     public class PostsService
     {
         AppDbContext context;
-        List<Post> posts;
-        private readonly ICurrentUserService _currentUserService;
-        public PostsService(AppDbContext context, ICurrentUserService currentUserService)
+        public PostsService(AppDbContext context)
         {
             this.context = context;
-            posts = new List<Post>();
-            for (int i = 0; i < 150; i++)
-            {
-                posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = i%12 >= 8 ? null : i/12, AppUserId = (i%16).ToString(), ParentId = i%4 == 0 ? null : i/4, CreatedDateTime = DateTime.UtcNow});
-            }
-            _currentUserService = currentUserService;
+
         }
         public ServiceResponse<List<Post>> GetPostsSortedByNewest(int start, int length)
         {
@@ -84,13 +78,13 @@ namespace Projekt_Zespolowy.Services
                 : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
         }
 
-        public ServiceResponse<List<Post>> GetObservedPostsSortedByNewest(int start, int length)
+        public ServiceResponse<List<Post>> GetObservedPostsSortedByNewest(string userId, int start, int length)
         {
-            var userId = _currentUserService.UserId;
             if (string.IsNullOrEmpty(userId))
             {
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
             }
+
             var userCommunityIds = context.CommunityMembers
                 .Where(cm => cm.AppUserId == userId)
                 .Select(cm => cm.CommunityId);
@@ -122,11 +116,6 @@ namespace Projekt_Zespolowy.Services
             return posts.Any()
                 ? new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts)
                 : new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
-        }
-        public PostsService(AppDbContext context)
-        {
-            this.context = context;
-
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
         {

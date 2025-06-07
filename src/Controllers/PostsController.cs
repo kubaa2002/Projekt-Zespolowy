@@ -8,6 +8,7 @@ using Projekt_Zespolowy.Likes;
 
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 namespace Projekt_Zespolowy.Controllers
 {
 [ApiController]
@@ -18,8 +19,11 @@ namespace Projekt_Zespolowy.Controllers
         CommunityService communityService;
 
         LikesService likesService;
-        public PostsController(PostsService postsService, CommunityService communityService, LikesService likesService) 
+        
+        private readonly UserManager<AppUser> userManager;
+        public PostsController(PostsService postsService, CommunityService communityService, LikesService likesService, UserManager<AppUser> userManager)
         {
+            this.userManager = userManager;
             this.postsService = postsService;
             this.communityService = communityService;
             this.likesService = likesService;
@@ -32,6 +36,14 @@ namespace Projekt_Zespolowy.Controllers
             int start = (page - 1) * pageSize;
             ServiceResponse<List<Post>> response;
 
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            if (userName == null) return Unauthorized();
+
+            var user = userManager.FindByNameAsync(userName).Result;
+            if (user == null) return Unauthorized();
+
+            var userId = user.Id;
+
             switch (filter)
             {
                 case "new":
@@ -41,7 +53,7 @@ namespace Projekt_Zespolowy.Controllers
                     response = postsService.GetPostsSortedByPopularity(start, pageSize);
                     break;
                 case "observed":
-                    response = postsService.GetObservedPostsSortedByNewest(start, pageSize);
+                    response = postsService.GetObservedPostsSortedByNewest(userId, start, pageSize);
                     break;
                 default:
                     response = postsService.GetPostsFromRange(start, pageSize);

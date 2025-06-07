@@ -78,8 +78,6 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<LikesService>();
 
 var app = builder.Build();

@@ -12,7 +12,6 @@ namespace Projekt_Zespolowy.Posts
         public int? CommunityId { get; set; }
         public DateTimeOffset CreatedDateTime { get; set; }
         public int? ParentId { get; set; }
-        public bool IsDeleted { get; set; }
         public int ReactionCount { get; set; }
         public ICollection<LikeDTO> Likes { get; set; } = new List<LikeDTO>();
         public static implicit operator PostDTO(Post? p)
