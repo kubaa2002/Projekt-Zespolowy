@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Projekt_Zespolowy.Services
 {
@@ -15,6 +17,102 @@ namespace Projekt_Zespolowy.Services
         public PostsService(AppDbContext context)
         {
             this.context = context;
+
+        }
+        public ServiceResponse<List<Post>> GetPostsSortedByNewest(int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => p.ParentId == null)
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetPostsSortedByPopularity(int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => p.ParentId == null)
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.Likes.Count)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetCommunityPostsSortedByNewest(int communityId, int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => p.ParentId == null && p.CommunityId == communityId)
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetCommunityPostsSortedByPopularity(int communityId, int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => p.ParentId == null && p.CommunityId == communityId)
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.Likes.Count)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetObservedPostsSortedByNewest(string userId, int start, int length)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
+            }
+
+            var userCommunityIds = context.CommunityMembers
+                .Where(cm => cm.AppUserId == userId)
+                .Select(cm => cm.CommunityId);
+
+            var followedUserIds = context.Followers
+                .Where(f => f.FollowerId == userId)
+                .Select(f => f.FollowingId);
+
+            var query = context.Posts
+                .Where(p => p.ParentId == null && p.AppUserId != userId)
+                .Join(followedUserIds,
+                    post => post.AppUserId,
+                    followedId => followedId,
+                    (post, followedId) => post)
+
+                .Join(userCommunityIds,
+                    post => post.CommunityId,
+                    communityId => communityId,
+                    (post, communityId) => post);
+
+            var posts = query
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Skip(start)
+                .Take(length)
+                .ToList();
+
+
+            return posts.Any()
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
         {
