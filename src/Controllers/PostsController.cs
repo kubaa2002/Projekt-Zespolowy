@@ -36,14 +36,6 @@ namespace Projekt_Zespolowy.Controllers
             int start = (page - 1) * pageSize;
             ServiceResponse<List<Post>> response;
 
-            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (userName == null) return Unauthorized();
-
-            var user = userManager.FindByNameAsync(userName).Result;
-            if (user == null) return Unauthorized();
-
-            var userId = user.Id;
-
             switch (filter)
             {
                 case "new":
@@ -53,6 +45,13 @@ namespace Projekt_Zespolowy.Controllers
                     response = postsService.GetPostsSortedByPopularity(start, pageSize);
                     break;
                 case "observed":
+                    var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+                    if (userName == null) return Unauthorized();
+
+                    var user = userManager.FindByNameAsync(userName).Result;
+                    if (user == null) return Unauthorized();
+
+                    var userId = user.Id;
                     response = postsService.GetObservedPostsSortedByNewest(userId, start, pageSize);
                     break;
                 default:
