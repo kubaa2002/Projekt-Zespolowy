@@ -64,7 +64,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 var app = builder.Build();
 
 // We need to enable this when we will be deploying to a hosting

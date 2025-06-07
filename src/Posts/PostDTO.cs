@@ -10,10 +10,11 @@ namespace Projekt_Zespolowy.Posts
         public int? CommunityId { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public int? ParentId { get; set; }
+        public int LikesCount { get; set; }
         public bool IsDeleted { get; set; }
         public static implicit operator PostDTO(Post? p)
         {
-            return new PostDTO() { Id = p.Id, Content = p.Content, CommunityId = p.CommunityId, AuthorId = p.AppUserId, CreatedDateTime = p.CreatedDateTime.DateTime, ParentId = p.ParentId };
+            return new PostDTO() { Id = p.Id, Content = p.Content, CommunityId = p.CommunityId, AuthorId = p.AppUserId, CreatedDateTime = p.CreatedDateTime.DateTime, ParentId = p.ParentId, LikesCount = p.Likes?.Count ?? 0};
         }
         public static implicit operator Post(PostDTO? p)
         {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
@@ -11,11 +12,12 @@ namespace Projekt_Zespolowy.Services
 {
     //TODO: Add connection to database instead of hard coded objects
     //WhyNotDoneAlready: no posts database, no knowledge what post like :(
-    public class PostsService : Controller
+    public class PostsService
     {
         AppDbContext context;
         List<Post> posts;
-        public PostsService(AppDbContext context)
+        private readonly ICurrentUserService _currentUserService;
+        public PostsService(AppDbContext context, ICurrentUserService currentUserService)
         {
             this.context = context;
             posts = new List<Post>();
@@ -23,6 +25,102 @@ namespace Projekt_Zespolowy.Services
             {
                 posts.Add( new Post() { Id = i , Content = $"test{i}", CommunityId = i%12 >= 8 ? null : i/12, AppUserId = (i%16).ToString(), ParentId = i%4 == 0 ? null : i/4, CreatedDateTime = DateTime.UtcNow});
             }
+            _currentUserService = currentUserService;
+        }
+        public ServiceResponse<List<Post>> GetPostsSortedByNewest(int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => p.ParentId == null)
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetPostsSortedByPopularity(int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => p.ParentId == null)
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.Likes.Count)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetCommunityPostsSortedByNewest(int communityId, int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => p.ParentId == null && p.CommunityId == communityId)
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetCommunityPostsSortedByPopularity(int communityId, int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => p.ParentId == null && p.CommunityId == communityId)
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.Likes.Count)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetObservedPostsSortedByNewest(int start, int length)
+        {
+            var userId = _currentUserService.UserId;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
+            }
+            var userCommunityIds = context.CommunityMembers
+                .Where(cm => cm.AppUserId == userId)
+                .Select(cm => cm.CommunityId);
+
+            var followedUserIds = context.Followers
+                .Where(f => f.FollowerId == userId)
+                .Select(f => f.FollowingId);
+
+            var query = context.Posts
+                .Where(p => p.ParentId == null && p.AppUserId != userId)
+                .Join(followedUserIds,
+                    post => post.AppUserId,
+                    followedId => followedId,
+                    (post, followedId) => post) 
+
+                .Join(userCommunityIds,
+                    post => post.CommunityId, 
+                    communityId => communityId,
+                    (post, communityId) => post); 
+
+            var posts = query
+                .Include(p => p.Likes)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Skip(start)
+                .Take(length)
+                .ToList();
+
+
+            return posts.Any()
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
         {
@@ -30,15 +128,15 @@ namespace Projekt_Zespolowy.Services
             //ale jeśli jakieś posty zostałyby usunięte doprowadziłoby to do wyświetlenie mniejszej liczby postów niż length, nie sądzę,
             //żeby było to docelowe działanie
             //context.Posts.Where(x => x.Id >= start && x.Id < start + length); <--- to o czym myślę
-            List<Post> foundPosts = posts.Where(x => x.ParentId == null).ToList();
+            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Include(x => x.Likes).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
             // When only partial content
             if (start + length > foundPosts.Count)
-                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent,foundPosts.Skip(start).ToList());
+                return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent, foundPosts.Skip(start).ToList());
             // When ok
-            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK,foundPosts.GetRange(start, length));
+            return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
         }
         public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId)
         {
