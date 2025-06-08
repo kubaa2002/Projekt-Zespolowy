@@ -102,22 +102,28 @@ namespace Projekt_Zespolowy.Controllers;
         [HttpGet("user")]
         public async Task<IActionResult> SearchUsers([FromQuery] string q, [FromQuery] int? start = 0, [FromQuery] int? amount = 10)
         {
-        var query = _context.Users
-            .GroupJoin(_context.Followers,
-                user => user.Id,
-                follower => follower.FollowingId,
-                (user, followers) => new
-                {
-                    User = user,
-                    FollowerCount = followers.Count()
-                })
-            .Where(u => u.User.UserName.Contains(q))
-            .OrderByDescending(u => u.FollowerCount);
+            var query = _context.Users
+                .GroupJoin(_context.Followers,
+                    user => user.Id,
+                    follower => follower.FollowingId,
+                    (user, followers) => new
+                    {
+                        User = user,
+                        FollowerCount = followers.Count()
+                    })
+                .Where(u => u.User.UserName.Contains(q))
+                .OrderByDescending(u => u.FollowerCount);
 
-        var results = await query
+            var results = await query
                 .Skip(start ?? 0)
                 .Take(amount ?? 10)
-                .Select(u => u.User)
+                .Select(u => new UserDTO
+                {
+                    CreatedAt = u.User.CreatedAt,
+                    Id = u.User.Id,
+                    Email = u.User.Email,
+                    UserName = u.User.UserName,
+                })
                 .ToListAsync();
 
             if (!results.Any())
