@@ -157,7 +157,7 @@ console.log("Token:", follow);
           <div className="d-flex align-items-center mb-3">
             <img
               className="rounded-circle me-3"
-              src={user.avatarUrl || "/default-avatar.svg"}
+              src={"/avatar.svg"}
               alt={`${user.userName}'s avatar`}
               width={80}
               height={80}

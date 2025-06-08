@@ -1,6 +1,7 @@
 import  { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/authProvider';
 import axios from 'axios';
+import { useNavigate } from '@tanstack/react-router';
 
 const UserTag = ({ post }) => {
   const { authorName, createdDateTime, authorId, id } = post;
@@ -8,7 +9,7 @@ const UserTag = ({ post }) => {
   const [isDeleted, setIsDeleted] = useState(post.isDeleted || false);
   const menuRef = useRef();
   const { user, token,follow,setFollow } = useAuth();
-
+  const navigate = useNavigate();
 
 
   const isPostOwner = authorId === user.id;
@@ -115,7 +116,7 @@ const UserTag = ({ post }) => {
     <div className="post-header" style={{ backgroundColor: isDeleted ? '#ffcccc' : 'transparent' }}>
      
       
-        {!isDeleted ? (<div className="post-author" >
+        {!isDeleted ? (<div className="post-author" onClick={() => navigate({to: `/users/${authorId}`})} >
           <div className="author-avatar" />
         <div>
           <div className="author-name">{authorName}</div>

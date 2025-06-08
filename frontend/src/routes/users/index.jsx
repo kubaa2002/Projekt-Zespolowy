@@ -63,17 +63,24 @@ const Users = () => {
     []
   );
   useEffect(() => {
-    if (query.q !== undefined) {
+    const isValidQuery = query.q !== '';
+    if (isValidQuery) {
       setHasMore(true);
       setData([]);
-      searchUsers(query.q, 0, pageSize);
+      searchUsers(query.q, data.length, pageSize);
+    } else{
+      setData([]);
+      setHasMore(false);
+      setError("Brak zapytania do wyszukania");
     }
   }, [query.q]);
 
   const handleLoadMore = () => {
     searchUsers(query.q, data.length, pageSize);
   };
-  if (error) return <div>Error: {error}</div>;
+  if (error) {
+    return <div>Error: {typeof error === 'string' ? error : error.title || "Something went wrong"}</div>;
+  }
   return (
     <>
       {loading && data.length === 0 && <p>Ładowanie...</p>}
