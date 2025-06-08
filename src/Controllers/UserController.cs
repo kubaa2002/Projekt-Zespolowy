@@ -159,7 +159,7 @@ public class UserController : ControllerBase
             return Unauthorized(new { message = "Użytkownik nie istnieje" });
         }
 
-        return Ok(new { userName = user.UserName, email = user.Email });
+        return Ok(new { userName = user.UserName, email = user.Email, id = user.Id });
 
     }
 

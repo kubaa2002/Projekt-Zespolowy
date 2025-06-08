@@ -9,6 +9,8 @@ export default function QuickModal({
   maxLength,
   content,
   setContent,
+   title, 
+  setTitle,
   file,
   handleFileChange,
   handleRemove,
@@ -122,6 +124,8 @@ export default function QuickModal({
                   className="form-control"
                   id="title"
                   placeholder="Zadaj pytanie lub podziel się myślą"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)} 
                 />
               </div>
             </div>

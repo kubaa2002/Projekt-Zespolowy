@@ -58,11 +58,18 @@ namespace Projekt_Zespolowy.Controllers
                     response = postsService.GetPostsFromRange(start, pageSize);
                     break;
             }
-
+            
             if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
+            Console.WriteLine(response.ResponseBody);
+            var postsDTO = response.ResponseBody
+                .Where(x => x.IsDeleted == false)
+            .Select(post => {
+                var dto = (PostDTO)post;
+                return dto;
+            })
 
-            var postsDTO = response.ResponseBody.Select(x => (PostDTO)x).ToList();
+                .ToList();
             return StatusCode(response.ResponseCode, postsDTO);
         }
 
@@ -156,20 +163,14 @@ namespace Projekt_Zespolowy.Controllers
             PostDTO postDTO = result.ResponseBody;
             return result.ResponseBody != null ? Ok(result.ResponseBody) : NotFound(); 
         }
-        [Authorize]
+
         [HttpPost]
         public IActionResult Post([FromBody] PostDTO postDTO)
         {
-            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
-            if(usr == null)
-            {
-                return Unauthorized();
-            }
-            postDTO.AuthorId = userManager.FindByNameAsync(usr).Result.Id;
             var response = postsService.Add(postDTO);
             if (response.ResponseCode == 201)
             {
-                return Created($"/posts/{postDTO.Id}", (PostDTO)response.ResponseBody);
+                return Created($"/posts/{postDTO.Id}", response.ResponseBody);
             }
             if (response.ResponseCode == 413)
             {
@@ -192,40 +193,27 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(response.ResponseCode);
             }
         }
-        [Authorize]
+
         [HttpPost("community/{community_id}")]
         public IActionResult PostInCommunity(int community_id, [FromBody] PostDTO postDTO)
         {
-            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (usr == null)
-            {
-                return Unauthorized();
-            }
-            postDTO.AuthorId = userManager.FindByNameAsync(usr).Result.Id;
             var response = postsService.AddInCommunity(community_id, postDTO);
-            if (response.ResponseCode == 404)
+            if(response.ResponseCode == 404)
             {
                 return NotFound("Dana społeczność nie istnieje!");
             }
             if (response.ResponseCode == 201)
             {
-                return Created($"/posts/{postDTO.Id}", (PostDTO)response.ResponseBody);
+                return Created($"/posts/{postDTO.Id}", response.ResponseBody);
             }
             else
             {
                 return StatusCode(response.ResponseCode);
             }
         }
-        [Authorize]
         [HttpPost("{parent_id}")]
         public IActionResult PostAsComment(int parent_id, [FromBody] PostDTO postDTO)
         {
-            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (usr == null)
-            {
-                return Unauthorized();
-            }
-            postDTO.AuthorId = userManager.FindByNameAsync(usr).Result.Id;
             var response = postsService.AddComment(parent_id, postDTO);
             if (response.ResponseCode == 404)
             {
@@ -233,27 +221,16 @@ namespace Projekt_Zespolowy.Controllers
             }
             if (response.ResponseCode == 201)
             {
-                return Created($"/posts/{postDTO.Id}", (PostDTO)response.ResponseBody);
+                return Created($"/posts/{postDTO.Id}", response.ResponseBody);
             }
             else
             {
                 return StatusCode(response.ResponseCode);
             }
         }
-        [Authorize]
         [HttpPut]
         public IActionResult Put([FromBody] PostDTO postDTO)
         {
-            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (usr == null)
-            {
-                return Unauthorized();
-            }
-            var usrId = userManager.FindByNameAsync(usr).Result.Id;
-            if(postsService.GetById(postDTO.Id).ResponseBody.AppUserId != usrId)
-            {
-                return Unauthorized();
-            }
             var response = postsService.Update(postDTO);
             if (response.ResponseCode == 200)
             {
@@ -264,20 +241,10 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(response.ResponseCode);
             }
         }
-        [Authorize]
+
         [HttpPut("[action]/{id}")]
         public IActionResult Delete(int id)
         {
-            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (usr == null)
-            {
-                return Unauthorized();
-            }
-            var usrId = userManager.FindByNameAsync(usr).Result.Id;
-            if (postsService.GetById(id).ResponseBody.AppUserId != usrId)
-            {
-                return Unauthorized();
-            }
             var response = postsService.Delete(id);
             if (response.ResponseCode == 200)
             {
@@ -296,20 +263,9 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(response.ResponseCode);
             }
         }
-        [Authorize]
         [HttpPut("[action]/{id}")]
         public IActionResult UndoDelete(int id)
         {
-            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (usr == null)
-            {
-                return Unauthorized();
-            }
-            var usrId = userManager.FindByNameAsync(usr).Result.Id;
-            if (postsService.GetById(id).ResponseBody.AppUserId != usrId)
-            {
-                return Unauthorized();
-            }
             var response = postsService.UndoDelete(id);
             if (response.ResponseCode == 200)
             {
@@ -328,16 +284,9 @@ namespace Projekt_Zespolowy.Controllers
                 return StatusCode(response.ResponseCode);
             }
         }
-        [Authorize]
         [HttpPost("{postId}/Like")]
         public IActionResult GiveReaction(int postId, [FromBody] LikeDTO like)
         {
-            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (usr == null)
-            {
-                return Unauthorized();
-            }
-            like.AppUserId = userManager.FindByNameAsync(usr).Result.Id;
             var post = this.postsService.GetById(postId);
             if(post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
             {

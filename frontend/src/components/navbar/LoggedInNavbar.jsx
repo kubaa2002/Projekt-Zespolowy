@@ -5,7 +5,7 @@ const SearchInput = () => {
   const [searchType, setSearchType] = useState("users");
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
-
+ 
   function handleSearch() {
     return navigate({ to: `/${searchType}?q=${searchValue}` });
   }
@@ -80,8 +80,10 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   const [rotated, setRotated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const modalRef = useRef();
+  const mobileMenuRef = useRef(null);
 
   const auth = useAuth();
+   const {user}=useAuth();
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 1600) {
@@ -93,16 +95,20 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  // useEffect(() => {
-  //   const handleClickOutside = (e) => {
-  //     if (modalRef.current && (!modalRef.current.contains(e.target))) {
-  //       setMobileMenuOpen(false);
-  //       setRotated(false);
-  //     }
-  //   };
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => document.removeEventListener("mousedown", handleClickOutside);
-  // }, []);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      // Sprawdź, czy kliknięcie jest poza desktopowym menu
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        setRotated(false);
+      }
+      // Sprawdź, czy kliknięcie jest poza mobilnym menu
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleProfileClick = () => {
     setRotated((rotated) => !rotated);
@@ -168,12 +174,15 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             onClick={handleMobileMenuClick}
           ></i>
           {mobileMenuOpen && (
-            <div className="dropdown-menu-profile">
+            <div className="dropdown-menu-profile" ref={mobileMenuRef}>
               <ul className="dropdown-menu-list">
                 <li className="dropdown-menu-item dropdown-menu-username">
                   {auth.user.userName}
                 </li>
-                <li className="dropdown-menu-item">Profil</li>
+                <li className="dropdown-menu-item" onClick={() => {
+                  navigate({ to: `/users/${user.id}` });
+                  setMobileMenuOpen(false);
+                }} >Profil</li>
                 <li
                   className="dropdown-menu-item"
                   onClick={() => {
@@ -192,7 +201,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 >
                   Ustawienia
                 </li>
-                <li className="dropdown-menu-item">Ciemny motyw</li>
+              
                 <li
                   className="dropdown-menu-item"
                   onClick={() => {
@@ -213,7 +222,10 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
               <li className="dropdown-menu-item dropdown-menu-username">
                 {auth.user.userName}
               </li>
-              <li className="dropdown-menu-item">Profil</li>
+              <li className="dropdown-menu-item" onClick={() => {
+                  navigate({ to: `/users/${user.id}` });
+                  setMobileMenuOpen(false);
+                }}  >Profil</li>
               <li
                 className="dropdown-menu-item"
                 onClick={() => {
@@ -232,7 +244,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
               >
                 Ustawienia
               </li>
-              <li className="dropdown-menu-item">Ciemny motyw</li>
+              
               <li
                 className="dropdown-menu-item"
                 onClick={() => {

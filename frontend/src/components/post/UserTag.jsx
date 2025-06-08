@@ -49,10 +49,10 @@ const UserTag = ({ post }) => {
         {},
         getAuthConfig()
       );
-      if (response.status === 200) {
+     
         setIsDeleted(false);
         setShowMenu(false);
-      }
+     
     } catch (err) {
       console.error('Błąd podczas przywracania posta:', err.response?.data?.error || err.message);
     }

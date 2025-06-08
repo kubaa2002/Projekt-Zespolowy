@@ -9,6 +9,8 @@ export default function MainModal({
   onClose,
   maxLength,
   content,
+  title, 
+  setTitle,
   setContent,
   file,
   handleFileChange,
@@ -112,13 +114,15 @@ export default function MainModal({
         <div className="mb-3">
           <div className="form-item">
             <label htmlFor="title" className="form-label">
-              Tytuł <span className="text-danger">*</span>
+              Tytuł2 <span className="text-danger">*</span>
             </label>
             <input
               type="text"
               className="form-control"
               id="title"
               placeholder="Zadaj pytanie lub podziel się myślą"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)} 
             />
           </div>
         </div>

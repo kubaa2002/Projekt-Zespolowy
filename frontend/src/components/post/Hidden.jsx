@@ -37,8 +37,14 @@ const Hidden = () => {
         `${import.meta.env.VITE_API_URL}/posts/${parentId}`,
         getAuthConfig()
       );
-      setPost(response2.data);
-      setComments(response.data);
+      const comme = response.data;
+      comme.forEach(obj => {
+        obj.isDeleted = false;
+      });
+      const nnn = response2.data;
+      nnn.isDeleted = false
+      setPost(nnn);
+      setComments(comme);
       setError(null);
       return response.data;
     } catch (err) {
