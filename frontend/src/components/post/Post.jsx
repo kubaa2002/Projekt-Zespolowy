@@ -29,7 +29,12 @@ const Post = ({ post,showReplies=true }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/posts/${id}/Like`,
-        { reactionType },
+        { 
+         appUserId: user.id,
+
+postId: id,
+
+reactionId: reactionType },
         getAuthConfig()
       );
       console.log('Reaction processed:', response.data);

@@ -62,7 +62,9 @@ namespace Projekt_Zespolowy.Controllers
             if (response.ResponseCode == StatusCodes.Status204NoContent)
                 return NoContent();
 
-            var postsDTO = response.ResponseBody.Select(x => (PostDTO)x).ToList();
+            var postsDTO = response.ResponseBody
+            .Where(x => x.IsDeleted == false)
+            .Select(x => (PostDTO)x).ToList();
             return StatusCode(response.ResponseCode, postsDTO);
         }
 

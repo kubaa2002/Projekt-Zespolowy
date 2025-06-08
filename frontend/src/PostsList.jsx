@@ -44,6 +44,10 @@ const PostsList = ({urlWithoutQueryParams}) => {
         getAuthConfig()
       );
       const newPosts = response.data;
+      newPosts.forEach(obj => {
+        obj.isDeleted = false;
+      });
+      console.log("Fetched posts:", newPosts);
       setPosts((prev) => (pageNum === 1 ? newPosts : [...prev, ...newPosts]));
       setHasMore(newPosts.length === pageSize);
       setError(null);

@@ -10,6 +10,7 @@ export default function Main() {
   const [rotated, setRotated] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
   const [communityId, setCommunityId] = useState(null);
   const maxLength = 2000;
   const [file, setFile] = useState(null);
@@ -35,11 +36,13 @@ export default function Main() {
       alert("Uzupełnij treść posta.");
       return;
     }
+    console.log("tytul "+title)
   
     const postData = {
       id: 0, // zakładamy, że backend sam nadaje ID
       authorId: user.id, // zakładamy, że masz dostęp do aktualnego użytkownika
       content: content.trim(),
+      title: title.trim() || "Bez tytułu", // jeśli tytuł jest pusty, ustaw domyślny
       communityId: communityId, // możesz zmienić na wartość z selecta, jeśli potrzebujesz
       createdDateTime: new Date().toISOString(),
       parentId: null,
@@ -102,6 +105,8 @@ export default function Main() {
             setContent={setContent}
             communityId={communityId}
             setCommunityId={setCommunityId}
+            title={title}
+            setTitle={setTitle}
             file={file}
             handleFileChange={handleFileChange}
             handleRemove={handleRemove}
@@ -115,6 +120,8 @@ export default function Main() {
             maxLength={maxLength}
             content={content}
             setContent={setContent}
+            title={title}
+            setTitle={setTitle}
             communityId={communityId}
             setCommunityId={setCommunityId}
             file={file}

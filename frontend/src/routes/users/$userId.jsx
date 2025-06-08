@@ -35,7 +35,10 @@ const ProfilePage = () => {
       .get(`${import.meta.env.VITE_API_URL}/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => setUser(res.data))
+      .then((res) => {setUser(res.data)
+
+        console.log("User data received:", res.data);
+      })
       .catch((err) => {
         console.error("AXIOS ERROR:", err);
         const msg =
@@ -47,6 +50,8 @@ const ProfilePage = () => {
       })
 
       .finally(() => setLoading(false));
+      console.log("User data fetched:", user);
+      console.log("User ID:", userId);
   }, [userId, token]);
 
   if (loading) return <p>Ładowanie profilu...</p>;

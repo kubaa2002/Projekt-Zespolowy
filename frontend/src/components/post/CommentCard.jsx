@@ -123,6 +123,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, likes, dislikes, i
           id: 0,
           authorId: user.id,
           content: replyText.trim(),
+          title: "Odpowiedź na komentarz",
           communityId: communityId,
           createdDateTime: new Date().toISOString(),
           parentId: id,

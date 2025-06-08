@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts/authProvider";
 const CommentBox = ({ id, comments, setComments }) => {
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
-  const { token } = useAuth(); 
+  const { token,user } = useAuth(); 
 
 
   const getAuthConfig = () => ({
@@ -24,9 +24,10 @@ const CommentBox = ({ id, comments, setComments }) => {
 
     const postData = {
       id: 0, 
-      authorId: "123",
+      authorId: user.id,
       content: comment.trim(),
       communityId: null,
+      title: "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
       createdDateTime: new Date().toISOString(),
       parentId: id,
       isDeleted: false,
@@ -43,8 +44,9 @@ const CommentBox = ({ id, comments, setComments }) => {
       setComment(""); 
       setError(""); 
     } catch (err) {
-      console.error("Błąd podczas publikacji komentarza:", err);
-      setError(err.response?.data || "Błąd podczas publikacji komentarza");
+      location.reload();
+      //console.error("Błąd podczas publikacji komentarza:", err);
+      //setError(err.response?.data || "Błąd podczas publikacji komentarza");
     }
   };
 

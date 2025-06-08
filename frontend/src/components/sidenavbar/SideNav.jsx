@@ -75,7 +75,7 @@ export default function SideNav() {
 
   if (error) return <div>Error: {error.message}</div>;
   return (
-    <div className="side-wrapper">
+    <div className="side-wrapper user-select-none">
       <div className="side-list-wrapper">
         <div className="sidebar-card">
           {sideNavItems.map((item, index) => (
@@ -88,7 +88,7 @@ export default function SideNav() {
             />
           ))}
         </div>
-        <div className="sidebar-card">
+        <div className="sidebar-card user-select-none">
           <div className="community-header">Obserwowane społeczności</div>
           <div className="community-list-wrapper">
             {isLoading && communities.length === 0 && <p>Ładowanie...</p>}

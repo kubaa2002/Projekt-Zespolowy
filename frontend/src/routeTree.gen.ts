@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignupImport } from './routes/signup'
+import { Route as ShereImport } from './routes/shere'
 import { Route as SettingsImport } from './routes/settings'
 import { Route as ResetconfirmImport } from './routes/resetconfirm'
 import { Route as ResetImport } from './routes/reset'
@@ -32,6 +33,12 @@ import { Route as CommunitiesCommunityIdImport } from './routes/communities/$com
 const SignupRoute = SignupImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ShereRoute = ShereImport.update({
+  id: '/shere',
+  path: '/shere',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -179,6 +186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsImport
       parentRoute: typeof rootRoute
     }
+    '/shere': {
+      id: '/shere'
+      path: '/shere'
+      fullPath: '/shere'
+      preLoaderRoute: typeof ShereImport
+      parentRoute: typeof rootRoute
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -242,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
+  '/shere': typeof ShereRoute
   '/signup': typeof SignupRoute
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
   '/communities/new': typeof CommunitiesNewRoute
@@ -260,6 +275,7 @@ export interface FileRoutesByTo {
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
+  '/shere': typeof ShereRoute
   '/signup': typeof SignupRoute
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
   '/communities/new': typeof CommunitiesNewRoute
@@ -279,6 +295,7 @@ export interface FileRoutesById {
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
+  '/shere': typeof ShereRoute
   '/signup': typeof SignupRoute
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
   '/communities/new': typeof CommunitiesNewRoute
@@ -299,6 +316,7 @@ export interface FileRouteTypes {
     | '/reset'
     | '/resetconfirm'
     | '/settings'
+    | '/shere'
     | '/signup'
     | '/communities/$communityId'
     | '/communities/new'
@@ -316,6 +334,7 @@ export interface FileRouteTypes {
     | '/reset'
     | '/resetconfirm'
     | '/settings'
+    | '/shere'
     | '/signup'
     | '/communities/$communityId'
     | '/communities/new'
@@ -333,6 +352,7 @@ export interface FileRouteTypes {
     | '/reset'
     | '/resetconfirm'
     | '/settings'
+    | '/shere'
     | '/signup'
     | '/communities/$communityId'
     | '/communities/new'
@@ -352,6 +372,7 @@ export interface RootRouteChildren {
   ResetRoute: typeof ResetRoute
   ResetconfirmRoute: typeof ResetconfirmRoute
   SettingsRoute: typeof SettingsRoute
+  ShereRoute: typeof ShereRoute
   SignupRoute: typeof SignupRoute
   CommunitiesCommunityIdRoute: typeof CommunitiesCommunityIdRoute
   CommunitiesNewRoute: typeof CommunitiesNewRoute
@@ -370,6 +391,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetRoute: ResetRoute,
   ResetconfirmRoute: ResetconfirmRoute,
   SettingsRoute: SettingsRoute,
+  ShereRoute: ShereRoute,
   SignupRoute: SignupRoute,
   CommunitiesCommunityIdRoute: CommunitiesCommunityIdRoute,
   CommunitiesNewRoute: CommunitiesNewRoute,
@@ -397,6 +419,7 @@ export const routeTree = rootRoute
         "/reset",
         "/resetconfirm",
         "/settings",
+        "/shere",
         "/signup",
         "/communities/$communityId",
         "/communities/new",
@@ -429,6 +452,9 @@ export const routeTree = rootRoute
     },
     "/settings": {
       "filePath": "settings.jsx"
+    },
+    "/shere": {
+      "filePath": "shere.jsx"
     },
     "/signup": {
       "filePath": "signup.jsx"
