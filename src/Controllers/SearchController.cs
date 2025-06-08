@@ -30,7 +30,9 @@ namespace Projekt_Zespolowy.Controllers;
             }
 
             var query = _context.Posts
+                .Where(p => !p.IsDeleted)
                 .Where(p => p.CommunityId == community_id)
+                .Include(p => p.Author)
                 .GroupJoin(_context.Likes,
                     post => post.Id,
                     like => like.PostId,
@@ -68,7 +70,9 @@ namespace Projekt_Zespolowy.Controllers;
             }
 
             var query = _context.Posts
+                .Where(p => !p.IsDeleted)
                 .Where(p => p.AppUserId == user_id)
+                .Include(p => p.Author)
                 .GroupJoin(_context.Likes,
                     post => post.Id,
                     like => like.PostId,

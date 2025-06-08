@@ -150,8 +150,12 @@ namespace Projekt_Zespolowy.Controllers
         public IActionResult GetById(int id)
         {
             var result = postsService.GetById(id);
+            if(result.ResponseBody == null)
+            {
+                return NotFound();
+            }
             PostDTO postDTO = result.ResponseBody;
-            return result.ResponseBody != null ? Ok(postDTO) : NotFound(); 
+            return Ok(postDTO);
         }
         [Authorize]
         [HttpPost]
