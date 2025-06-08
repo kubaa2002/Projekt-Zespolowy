@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projekt_Zespolowy.Services;
 using Projekt_Zespolowy.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Likes;
-using System.Net;
-
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -145,7 +142,7 @@ namespace Projekt_Zespolowy.Controllers
         public IActionResult GetAll()
         {
             var result = postsService.GetAll();
-            return result.ResponseBody != null ? Ok(result.ResponseBody) : NoContent();
+            return result.ResponseBody != null ? Ok(result.ResponseBody.Select(x => (PostDTO)x).ToList()) : NoContent();
         }
 
         [HttpGet("{id}")]
@@ -154,7 +151,7 @@ namespace Projekt_Zespolowy.Controllers
         {
             var result = postsService.GetById(id);
             PostDTO postDTO = result.ResponseBody;
-            return result.ResponseBody != null ? Ok(result.ResponseBody) : NotFound(); 
+            return result.ResponseBody != null ? Ok(postDTO) : NotFound(); 
         }
         [Authorize]
         [HttpPost]
