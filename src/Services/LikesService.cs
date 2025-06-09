@@ -56,5 +56,12 @@ namespace Projekt_Zespolowy.Services
             List<Like> likes = context.Likes.Where(x => x.PostId == postId).ToList();
             return new ServiceResponse<int>(StatusCodes.Status200OK, likes.Count);
         }
+        public ServiceResponse<string> Remove(Like like) 
+        {
+            
+            context.Likes.Remove(like);
+            context.SaveChanges();
+            return new ServiceResponse<string>(StatusCodes.Status200OK, "removed reaction");
+        }
     }
 }

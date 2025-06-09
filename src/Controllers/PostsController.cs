@@ -350,6 +350,29 @@ namespace Projekt_Zespolowy.Controllers
             var sr = likesService.Add(like);
             return StatusCode(sr.ResponseCode);
         }
+        [Authorize]
+        [HttpPost("{postId}/unlike")]
+        public IActionResult RemoveReaction(int postId)
+        {
+            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
+            if (usr == null)
+            {
+                return Unauthorized();
+            }
+            var AppUserId = userManager.FindByNameAsync(usr).Result.Id;
+            var post = this.postsService.GetById(postId);
+            if (post.ResponseCode == StatusCodes.Status404NotFound || post.ResponseBody.IsDeleted)
+            {
+                return NotFound("Post nie istnieje lub został usunięty");
+            }
+            if(post.ResponseBody.Likes.FirstOrDefault(p => p.AppUserId == AppUserId) == default)
+            {
+                return NotFound("Nie pozostawiono reakcji na tego posta");
+            }
+            Like like = post.ResponseBody.Likes.FirstOrDefault(p => p.AppUserId == AppUserId);
+            var sr = likesService.Remove(like);
+            return StatusCode(sr.ResponseCode);
+        }
         [HttpGet("{postId}/{reactionId}/Nr")]
         public IActionResult GetReactionCount(int postId, int reactionId)
         {
