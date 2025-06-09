@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import SearchProfile from "../../components/profilesLayouts/SearchProfile.jsx";
+import SearchProfile from "../../components/profilesLayouts/searchProfile.jsx";
 export const Route = createFileRoute('/users/following')({
   component: RouteComponent,
 })

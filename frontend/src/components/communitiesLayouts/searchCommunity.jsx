@@ -1,4 +1,4 @@
-import './SearchCommunity.scss';
+import './searchCommunity.scss';
 
 const SearchCommunity = ({ community }) => {
   return (

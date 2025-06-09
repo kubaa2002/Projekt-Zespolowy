@@ -6,7 +6,7 @@ import mergeUniqueById from "../../utils/mergeUniqueById.js";
 import MainLayout from "../../components/main/MainLayout.jsx";
 import axios from "axios";
 import { useAuth } from "../../contexts/authProvider.jsx";
-import SearchProfile from "../../components/profilesLayouts/SearchProfile.jsx";
+import SearchProfile from "../../components/profilesLayouts/searchProfile.jsx";
 export const Route = createFileRoute("/users/")({
   component: RouteComponent,
 });
