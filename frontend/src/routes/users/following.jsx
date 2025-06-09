@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import SearchProfile from "../../components/profilesLayouts/SearchProfile";
+import SearchProfile from "../../components/profilesLayouts/searchProfile";
 import useGetFollowingUsers from "../../hooks/useGetFollowingUsers";
 import MainLayout from "../../components/main/MainLayout";
 import ProtectedRoute from "../../utils/ProtectedRoute";
