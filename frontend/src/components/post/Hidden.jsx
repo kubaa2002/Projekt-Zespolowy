@@ -82,11 +82,12 @@ const Hidden = () => {
           authorName={comment.authorName || "Jakiś tam użytkownik"}
           createdDateTime={comment.createdDateTime}
           text={comment.content || "Lorem ipsum dolor sit amet..."}
-          likes={comment.likesCount || 0}
+          likes={comment.likes || []}
           dislikes={comment.dislikesCount || 0}
           isDisliked={comment.isDisliked || false}
           isLied={comment.isLied || false}
           replyCount={comment.replyCount || 0}
+          post={comment}
         />
       ))}
     </div>

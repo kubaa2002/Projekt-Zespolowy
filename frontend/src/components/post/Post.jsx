@@ -9,10 +9,11 @@ import MainLayout from "../main/MainLayout";
 import { useNavigate } from "@tanstack/react-router";
 
 const Post = ({ post, showReplies = true }) => {
-  const { id, authorId, content, createdDateTime, isLied, likesCount } = post;
-  const [liked, setLiked] = useState(isLied);
-
   const { token, postIds, setPostIds, user } = useAuth();
+  const { id, authorId, content, createdDateTime, isLied, likesCount,likes } = post;
+  const [liked, setLiked] = useState(likes.some(like => like.appUserId === user.id));
+ 
+  
   const navigate = useNavigate();
 
   const getAuthConfig = () => ({
@@ -24,7 +25,8 @@ const Post = ({ post, showReplies = true }) => {
   const handleLike = async () => {
     const reactionType = liked ? 3 : 1;
     try {
-      const response = await axios.post(
+      if (!liked) {
+        const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/posts/${id}/Like`,
         {
           appUserId: user.id,
@@ -35,9 +37,22 @@ const Post = ({ post, showReplies = true }) => {
         },
         getAuthConfig()
       );
-      console.log("Reaction processed:", response.data);
+      } else {
+        const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/posts/${id}/unlike`,
+        {
+          appUserId: user.id,
+
+          postId: id,
+
+          reactionId: reactionType,
+        },
+        getAuthConfig()
+      );
+      }
+      
       setLiked(!liked);
-      post.likesCount = liked ? post.likesCount - 1 : post.likesCount + 1;
+      post.likes = liked ? post.likes.filter(p => p.appUserId !== user.id) : [...post.likes, { appUserId: user.id, reactionId: reactionType }];
     } catch (err) {
       console.error("Error processing reaction:", err);
     }
@@ -125,7 +140,7 @@ const Post = ({ post, showReplies = true }) => {
                   fill="red"
                 />
               </svg>
-              {likesCount}
+              {likes.filter(like => like.reactionId === 1).length}
             </label>
             {showReplies && (
               <label

@@ -108,7 +108,7 @@ export default function MainModal({
         <div className="mb-3">
           <div className="form-item">
             <label htmlFor="title" className="form-label">
-              Tytuł2 <span className="text-danger">*</span>
+              Tytuł <span className="text-danger">*</span>
             </label>
             <input
               type="text"

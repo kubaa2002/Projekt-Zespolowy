@@ -4,13 +4,12 @@ import axios from 'axios';
 import { useNavigate } from '@tanstack/react-router';
 
 const UserTag = ({ post }) => {
-  const { authorName, createdDateTime, authorId, id } = post;
+  const { userName: authorName, createdDateTime, authorId, id } = post;
   const [showMenu, setShowMenu] = useState(false);
   const [isDeleted, setIsDeleted] = useState(post.isDeleted || false);
   const menuRef = useRef();
   const { user, token,follow,setFollow } = useAuth();
   const navigate = useNavigate();
-
 
   const isPostOwner = authorId === user.id;
   const formattedDate = new Date(createdDateTime).toLocaleDateString('pl-PL', {
