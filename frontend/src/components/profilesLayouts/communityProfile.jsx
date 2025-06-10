@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./profile.scss";
 
-const CommunityProfile = ({ community,communityId }) => {
+const CommunityProfile = ({ community, communityId }) => {
   const [isMember, setIsMember] = useState(community.isMember); // Track membership status
   const [isJoinLoading, setIsJoinLoading] = useState(false); // Handle join/leave button loading
   const [description, setDescription] = useState(community.description); // Track description
@@ -93,7 +93,10 @@ const CommunityProfile = ({ community,communityId }) => {
     return <div className="text-center mt-5">Ładowanie...</div>;
   }
 
-  console.log("Rendering CommunityProfile component with community:", community);
+  console.log(
+    "Rendering CommunityProfile component with community:",
+    community
+  );
 
   return (
     <div className="container mt-5">
@@ -103,7 +106,8 @@ const CommunityProfile = ({ community,communityId }) => {
             <div>
               <h2 className="card-title mb-1">{community.name}</h2>
               <p className="text-muted mb-0">
-                Utworzono: {new Date(community.createdDate).toLocaleDateString()}
+                Utworzono:{" "}
+                {new Date(community.createdDate).toLocaleDateString()}
               </p>
               <p className="mb-0">{description || "Brak opisu"}</p>
             </div>
@@ -124,8 +128,8 @@ const CommunityProfile = ({ community,communityId }) => {
                 {isJoinLoading
                   ? "Ładowanie..."
                   : isMember
-                  ? "Opuść społeczność"
-                  : "Dołącz do społeczności"}
+                    ? "Opuść społeczność"
+                    : "Dołącz do społeczności"}
               </button>
             )}
           </div>
@@ -138,7 +142,11 @@ const CommunityProfile = ({ community,communityId }) => {
       {editModalOpen && (
         <div
           className="modal"
-          style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
           onClick={closeEditModal}
         >
           <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>

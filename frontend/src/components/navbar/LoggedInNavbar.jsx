@@ -1,15 +1,22 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/authProvider";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useLocation } from "@tanstack/react-router";
+import checkIfUserOrCommunityRoute from "../../utils/isUserOrCommunityRoute";
 const SearchInput = () => {
-  const [searchType, setSearchType] = useState("users");
+  const location = useLocation();
+  console.log("location", location);
+  const isUserOrCommunityRoute = checkIfUserOrCommunityRoute(location.pathname);
+  const [searchType, setSearchType] = useState(
+    isUserOrCommunityRoute ? "inRoute" : "users"
+  );
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
- 
+
   function handleSearch() {
-    if(searchValue){
-      return navigate({ to: `/${searchType}?q=${searchValue}` });
-    }
+    if (!searchValue) return;
+    if (searchType === "inRoute")
+      return navigate({ to: `/${location.pathname}?q=${searchValue}` });
+    return navigate({ to: `/${searchType}?q=${searchValue}` });
   }
 
   return (
@@ -26,7 +33,12 @@ const SearchInput = () => {
         id="searchType"
         className="form-control"
         onChange={(e) => setSearchType(e.currentTarget.value)}
+        value={searchType}
       >
+        {isUserOrCommunityRoute && (
+          <option value="inRoute">Posty w wątku</option>
+        )}
+        {/* conditionally display this option */}
         <option value="users">Użytkownicy</option>
         <option value="communities">Społeczności</option>
       </select>
@@ -44,7 +56,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   const mobileMenuRef = useRef(null);
 
   const auth = useAuth();
-   const {user}=useAuth();
+  const { user } = useAuth();
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 1600) {
@@ -117,7 +129,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             Stwórz społeczność
           </button>
           <div className="profile" onClick={handleProfileClick}>
-            <img src="avatar.svg" alt="Avatar" />
+            <img src="/avatar.svg" alt="Avatar" />
             <i
               className="bi bi-triangle-fill"
               style={{
@@ -140,10 +152,15 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 <li className="dropdown-menu-item dropdown-menu-username">
                   {auth.user.userName}
                 </li>
-                <li className="dropdown-menu-item" onClick={() => {
-                  navigate({ to: `/users/${user.id}` });
-                  setMobileMenuOpen(false);
-                }} >Profil</li>
+                <li
+                  className="dropdown-menu-item"
+                  onClick={() => {
+                    navigate({ to: `/users/${user.id}` });
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Profil
+                </li>
                 <li
                   className="dropdown-menu-item"
                   onClick={() => {
@@ -162,7 +179,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 >
                   Ustawienia
                 </li>
-              
+
                 <li
                   className="dropdown-menu-item"
                   onClick={() => {
@@ -183,10 +200,15 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
               <li className="dropdown-menu-item dropdown-menu-username">
                 {auth.user.userName}
               </li>
-              <li className="dropdown-menu-item" onClick={() => {
+              <li
+                className="dropdown-menu-item"
+                onClick={() => {
                   navigate({ to: `/users/${user.id}` });
                   setMobileMenuOpen(false);
-                }}  >Profil</li>
+                }}
+              >
+                Profil
+              </li>
               <li
                 className="dropdown-menu-item"
                 onClick={() => {
@@ -205,7 +227,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
               >
                 Ustawienia
               </li>
-              
+
               <li
                 className="dropdown-menu-item"
                 onClick={() => {

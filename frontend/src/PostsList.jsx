@@ -3,9 +3,10 @@ import { useAuth } from "./contexts/authProvider";
 import axios from "axios";
 import Post from "./components/post/Post";
 import { usePosts } from "./contexts/PostsContext";
-// Patrk if this solution is bad, pls don't kill me :///////
-// I dunno for now if we should pass something like "isMyPost" to differentiate them
-const PostsList = ({urlWithoutQueryParams}) => {
+import { Link, useLocation } from '@tanstack/react-router'
+
+const PostsList = ({urlWithoutQueryParams, searchParams}) => {
+  console.log(searchParams);
   const { token, setFollow, user } = useAuth();
   const {setPosts,posts} = usePosts(); 
   const [loading, setLoading] = useState(false);
@@ -16,6 +17,7 @@ const PostsList = ({urlWithoutQueryParams}) => {
   const [sortOption, setSortOption] = useState("Najnowsze");
   const [showSort, setShowSort] = useState(false);
   const observer = useRef(); 
+  const location = useLocation();
   const lastPostElementRef = useCallback(
     (node) => {
       if (loading || !hasMore) return; 
@@ -30,19 +32,19 @@ const PostsList = ({urlWithoutQueryParams}) => {
     [loading, hasMore]
   );
 
-  const getAuthConfig = () => ({
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
   const fetchPosts = async (pageNum) => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${urlWithoutQueryParams}?page=${pageNum}&pageSize=${pageSize}`,
-        getAuthConfig()
-      );
+      const response = await axios.get(urlWithoutQueryParams, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          ...(searchParams ? { q: searchParams } : {}),
+          page: pageNum,
+          pageSize: pageSize,
+        },
+      });
       const newPosts = response.data;
       if(Array.isArray(newPosts)){
         newPosts.forEach(obj => {
@@ -103,6 +105,7 @@ const PostsList = ({urlWithoutQueryParams}) => {
         >
           {sortOption}
         </button>
+       {searchParams && <Link to={location.pathname}>Wszytkie posty</Link>}
         <ul
           className="dropdown-menu dropdown-menu-custom"
           style={{

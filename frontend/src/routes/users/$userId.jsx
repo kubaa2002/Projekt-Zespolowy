@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useLocation } from "@tanstack/react-router";
 import ProtectedRoute from "../../utils/ProtectedRoute";
 import MainLayout from "../../components/main/MainLayout.jsx";
 import axios from "axios";
@@ -23,7 +23,8 @@ function RouteComponent() {
 const ProfilePage = () => {
   const { userId } = Route.useParams();
   const { token } = useAuth();
-
+  const location = useLocation();
+  const searchParams = location.search?.q;
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +36,8 @@ const ProfilePage = () => {
       .get(`${import.meta.env.VITE_API_URL}/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => {setUser(res.data)
+      .then((res) => {
+        setUser(res.data);
 
         console.log("User data received:", res.data);
       })
@@ -50,8 +52,8 @@ const ProfilePage = () => {
       })
 
       .finally(() => setLoading(false));
-      console.log("User data fetched:", user);
-      console.log("User ID:", userId);
+    console.log("User data fetched:", user);
+    console.log("User ID:", userId);
   }, [userId, token]);
 
   if (loading) return <p>Ładowanie profilu...</p>;
@@ -61,9 +63,11 @@ const ProfilePage = () => {
   return (
     <>
       <Profile user={user} />
-      <PostsList urlWithoutQueryParams={`${import.meta.env.VITE_API_URL}/posts/user/${userId}`}/>
+      <PostsList
+        key={userId + searchParams}
+        urlWithoutQueryParams={`${import.meta.env.VITE_API_URL}/${searchParams ? "search" : "posts"}/user/${userId}`}
+        searchParams={searchParams}
+      />
     </>
   );
 };
-
-

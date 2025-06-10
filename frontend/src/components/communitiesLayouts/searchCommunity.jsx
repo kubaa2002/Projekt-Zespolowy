@@ -4,7 +4,7 @@ const SearchCommunity = ({ community }) => {
   return (
     <div className="search-community-container">
       <img
-        src={community.avatarUrl || 'avatar.svg'}
+        src={community.avatarUrl || '/avatar.svg'}
         alt={`${community.name}'s avatar`}
         className="avatar"
       />
