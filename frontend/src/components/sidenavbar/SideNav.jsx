@@ -37,7 +37,7 @@ const CommunityRow = ({ title, numberOfUsers, link }) => {
             {numberOfUsers > 999
               ? Number((Math.abs(numberOfUsers) / 1000).toFixed(1)) + "k"
               : numberOfUsers}{" "}
-            użytkowników
+             {numberOfUsers == 1 ? "użytkownik" : "użytkowników" }
           </div>
         </div>
       </div>
@@ -75,7 +75,6 @@ export default function SideNav() {
     },
   ];
   
-
   if (error) return <div>Error: {error.message}</div>;
   return (
     <div className="side-wrapper user-select-none">
@@ -100,7 +99,7 @@ export default function SideNav() {
                 key={community.name}
                 title={community.name}
                 link={`/communities/${community.id}`}
-                numberOfUsers={404} // endpoint doesn't return number of users
+                numberOfUsers={community.memberCount} 
               />
             ))}
           </div>
