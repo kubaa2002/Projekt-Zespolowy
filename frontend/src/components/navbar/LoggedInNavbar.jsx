@@ -6,9 +6,7 @@ const SearchInput = () => {
   const location = useLocation();
   console.log("location", location);
   const isUserOrCommunityRoute = checkIfUserOrCommunityRoute(location.pathname);
-  const [searchType, setSearchType] = useState(
-    isUserOrCommunityRoute ? "inRoute" : "users"
-  );
+  const [searchType, setSearchType] = useState("users");
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
 
@@ -18,7 +16,9 @@ const SearchInput = () => {
       return navigate({ to: `/${location.pathname}?q=${searchValue}` });
     return navigate({ to: `/${searchType}?q=${searchValue}` });
   }
-
+  useEffect(() => {
+    setSearchType(isUserOrCommunityRoute ? "inRoute" : "users");
+  }, [isUserOrCommunityRoute]);
   return (
     <div className="input-group search-group">
       <input
