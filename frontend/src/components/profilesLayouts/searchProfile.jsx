@@ -1,4 +1,4 @@
-import './SearchProfile.scss';
+import './searchProfile.scss';
 
 const SearchProfile = ({ user }) => {
   return (
