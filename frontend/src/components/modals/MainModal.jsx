@@ -1,6 +1,5 @@
 import { useEffect, useState,useCallback  } from "react";
 import { useAuth } from "../../contexts/authProvider";
-import useGetCommunities from "../../hooks/useGetCommunities";
 import TextEditor from "./TextEditor";
 import axios from "axios";
 
@@ -12,13 +11,8 @@ export default function MainModal({
   title, 
   setTitle,
   setContent,
-  file,
-  handleFileChange,
-  handleRemove,
-  fileInputRef,
   hideSelect = false,
   handlePublish,
-  communityId,
   setCommunityId
 }) {
   const { user, token } = useAuth();
@@ -114,7 +108,7 @@ export default function MainModal({
         <div className="mb-3">
           <div className="form-item">
             <label htmlFor="title" className="form-label">
-              Tytuł2 <span className="text-danger">*</span>
+              Tytuł <span className="text-danger">*</span>
             </label>
             <input
               type="text"
@@ -142,54 +136,6 @@ export default function MainModal({
               {content.length}/{maxLength}
             </div>
           </div>
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Dołącz zdjęcie</label>
-          <div className="d-flex">
-            <label
-              className="btn btn-secondary"
-              style={{
-                cursor: file ? "not-allowed" : "pointer",
-                opacity: file ? 0.4 : 1,
-              }}
-            >
-              <i className="bi bi-upload me-2"></i>
-              Prześlij
-              <input
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-                ref={fileInputRef}
-                disabled={!!file}
-              />
-            </label>
-          </div>
-          {file && (
-            <div className="card mt-2 p-2 position-relative">
-              <div className="d-flex align-items-center">
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="preview"
-                  style={{
-                    width: "48px",
-                    height: "48px",
-                    objectFit: "cover",
-                  }}
-                />
-                <a href={URL.createObjectURL(file)} download>
-                  {file.name}
-                </a>
-                <button
-                  type="button"
-                  className="btn btn-link ms-auto"
-                  onClick={handleRemove}
-                >
-                  <i className="bi bi-trash"></i>
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
       <div className="create-post-footer">

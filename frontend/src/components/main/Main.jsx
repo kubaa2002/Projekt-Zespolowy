@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import MainModal from "../modals/MainModal";
 import QuickModal from "../modals/QuickModal";
 import MainLayout from "./MainLayout";
@@ -13,25 +13,11 @@ export default function Main() {
   const [title, setTitle] = useState("");
   const [communityId, setCommunityId] = useState(null);
   const maxLength = 2000;
-  const [file, setFile] = useState(null);
-  const fileInputRef = useRef(null);
   const {createPost} = usePosts();
   const {user} = useAuth();
 
 
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  const handleRemove = () => {
-    setFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  const handlePublish = async (onClose,post) => {
+  const handlePublish = async (onClose) => {
     if (!content.trim()) {
       alert("Uzupełnij treść posta.");
       return;
@@ -62,7 +48,6 @@ export default function Main() {
       console.log("Post opublikowany:", createdPost);
       // Resetowanie stanu po publikacji
       setContent("");
-      handleRemove(); // usuń załączony plik
       onClose(); // zamknij modal
     } catch (err) {
       console.error("Błąd podczas publikacji posta:", err);
@@ -99,7 +84,7 @@ export default function Main() {
           </div>
             <QuickModal
             show={showModal}
-            onClose={() => {setShowModal(false); setContent(""); handleRemove();}}
+            onClose={() => {setShowModal(false); setContent("");}}
             maxLength={maxLength}
             content={content}
             setContent={setContent}
@@ -107,16 +92,12 @@ export default function Main() {
             setCommunityId={setCommunityId}
             title={title}
             setTitle={setTitle}
-            file={file}
-            handleFileChange={handleFileChange}
-            handleRemove={handleRemove}
-            fileInputRef={fileInputRef}
             handlePublish={handlePublish}
           />
         </div>
           <MainModal
             show={rotated}
-            onClose={() => {setRotated(false); setContent(""); handleRemove();}}
+            onClose={() => {setRotated(false); setContent("");}}
             maxLength={maxLength}
             content={content}
             setContent={setContent}
@@ -124,10 +105,6 @@ export default function Main() {
             setTitle={setTitle}
             communityId={communityId}
             setCommunityId={setCommunityId}
-            file={file}
-            handleFileChange={handleFileChange}
-            handleRemove={handleRemove}
-            fileInputRef={fileInputRef}
             handlePublish={handlePublish}
           />
         

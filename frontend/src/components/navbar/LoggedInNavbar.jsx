@@ -7,7 +7,9 @@ const SearchInput = () => {
   const navigate = useNavigate();
  
   function handleSearch() {
-    return navigate({ to: `/${searchType}?q=${searchValue}` });
+    if(searchValue){
+      return navigate({ to: `/${searchType}?q=${searchValue}` });
+    }
   }
 
   return (
@@ -34,47 +36,6 @@ const SearchInput = () => {
     </div>
   );
 };
-// const SearchSections = ({ value, isSearchingPosts }) => {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   return (
-//     <ul className="navbar-nav">
-//       {isSearchingPosts && (
-//         <li className="nav-item nav-item-active">
-//           <button
-//             type="button"
-//             className="nav-link active"
-//             onClick={() => navigate({ to: "/" })}
-//           >
-//             Posty w wątku
-//           </button>
-//         </li>
-//       )}
-//       <li
-//         className={`nav-item ${location.pathname === "/users" ? "nav-item-active" : ""}`}
-//       >
-//         <button
-//           type="button"
-//           className="nav-link active"
-//           onClick={() => navigate({ to: `/users?q=${value}` })}
-//         >
-//           Użytkownicy
-//         </button>
-//       </li>
-//       <li
-//         className={`nav-item ${location.pathname === "/communities" ? "nav-item-active" : ""}`}
-//       >
-//         <button
-//           type="button"
-//           className="nav-link active"
-//           onClick={() => navigate({ to: `/communities?q=${value}` })}
-//         >
-//           Społeczności
-//         </button>
-//       </li>
-//     </ul>
-//   );
-// };
 
 export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   const [rotated, setRotated] = useState(false);
@@ -258,7 +219,6 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
           </div>
         )}
       </div>
-      {/* <SearchSections value={searchValue} isSearchingPosts={isSearchingPosts} /> */}
     </nav>
   );
 }

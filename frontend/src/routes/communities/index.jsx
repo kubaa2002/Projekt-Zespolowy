@@ -29,7 +29,6 @@ const Communities = () => {
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const { token } = useAuth();
-
   const navigate = useNavigate();
   const handleCommunityClick = (communityId) => {
     navigate({ to: `/communities/${communityId}` });
@@ -49,7 +48,7 @@ const Communities = () => {
         );
 
         setError(null);
-        const newData = response.data;
+        const newData = response.status === 204 ? [] : response.data;
         if (newData.length < amount) {
           setHasMore(false);
         }
@@ -63,18 +62,24 @@ const Communities = () => {
     [token]
   );
   useEffect(() => {
-    if (query.q !== undefined) {
+    const isValidQuery = query.q !== '';
+    if (isValidQuery) {
       setHasMore(true);
       setData([]);
       searchCommunities(query.q, data.length, pageSize);
+    } else{
+      setData([]);
+      setHasMore(false);
+      setError("Brak zapytania do wyszukania");
     }
   }, [query.q, token]);
 
   const handleLoadMore = () => {
     searchCommunities(query.q, data.length, pageSize);
   };
-
-  if (error) return <div>Error: {error}</div>;
+  if (error) {
+    return <div>Error: {typeof error === 'string' ? error : error.title || "Something went wrong"}</div>;
+  }
   return (
     <div>
       {loading && data.length === 0 && <p>Ładowanie...</p>}

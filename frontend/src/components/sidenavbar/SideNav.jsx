@@ -2,30 +2,6 @@ import getColor from "../../utils/getColor";
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "../../contexts/authProvider";
 import useGetCommunities from "../../hooks/useGetCommunities";
-const sideNavItems = [
-  {
-    icon: "bi bi-bar-chart-fill",
-    title: "Wszystkie posty",
-    subTitle: "Wszystkie posty w jednym miejscu",
-    linkTo: "/",
-  },
-  {
-    icon: "bi-house-door-fill",
-    title: "Strona główna",
-    subTitle: "Wszystkie posty w jednym miejscu",
-    linkTo: "/",
-  },
-  {
-    icon: "bi bi-bookmark-fill",
-    title: "Zapisane posty",
-    subTitle: "Twoje zapisane posty",
-  },
-  {
-    icon: "bi-person-plus-fill",
-    title: "Obserwowani użytkownicy",
-    subTitle: "Zobacz, co nowego u twoich obserwowanych",
-  },
-];
 
 
 const NavRow = ({ icon, title, subTitle, onClick, link }) => (
@@ -61,7 +37,7 @@ const CommunityRow = ({ title, numberOfUsers, link }) => {
             {numberOfUsers > 999
               ? Number((Math.abs(numberOfUsers) / 1000).toFixed(1)) + "k"
               : numberOfUsers}{" "}
-            użytkowników
+             {numberOfUsers == 1 ? "użytkownik" : "użytkowników" }
           </div>
         </div>
       </div>
@@ -72,7 +48,33 @@ const CommunityRow = ({ title, numberOfUsers, link }) => {
 export default function SideNav() {
   const { user } = useAuth();
   const {communities, isLoading, error} = useGetCommunities(user?.id); 
-
+  const sideNavItems = [
+    {
+      icon: "bi-house-door-fill",
+      title: "Strona główna",
+      subTitle: "Wszystkie posty w jednym miejscu",
+      linkTo: "/",
+    },
+    {
+      icon: "bi-person-plus-fill",
+      title: "Obserwowani użytkownicy",
+      subTitle: "Zobacz, co nowego u twoich obserwowanych",
+      linkTo: "/users/following"
+    },
+    {
+      icon: "bi bi-person-fill",
+      title: "Mój profil",
+      subTitle: "Podgląd własnego profilu",
+      linkTo: `/users/${user?.id}`
+    },
+    {
+      icon: "bi bi bi-gear-fill",
+      title: "Ustawienia",
+      subTitle: "Zmień ustawienia",
+      linkTo: "/settings"
+    },
+  ];
+  
   if (error) return <div>Error: {error.message}</div>;
   return (
     <div className="side-wrapper user-select-none">
@@ -84,7 +86,7 @@ export default function SideNav() {
               icon={item.icon}
               title={item.title}
               subTitle={item.subTitle}
-              link={item.linkTo || "/notImplemented"}
+              link={item.linkTo}
             />
           ))}
         </div>
@@ -97,7 +99,7 @@ export default function SideNav() {
                 key={community.name}
                 title={community.name}
                 link={`/communities/${community.id}`}
-                numberOfUsers={404} // endpoint doesn't return number of users
+                numberOfUsers={community.memberCount} 
               />
             ))}
           </div>

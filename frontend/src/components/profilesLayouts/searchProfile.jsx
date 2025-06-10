@@ -4,13 +4,12 @@ const SearchProfile = ({ user }) => {
   return (
     <div className="search-profile-container">
       <img
-        src={user.avatarUrl || 'avatar.svg'}
-        alt={`${user.username}'s avatar`}
+        src='/avatar.svg'
+        alt={`${user.userName}'s avatar`}
         className="avatar"
       />
       <div className="profile-info">
-        <h3 className="profile-username">{user.username}</h3>
-        <p className="profile-email">{user.email}</p>
+        <h3 className="profile-username">{user.userName}</h3>
       </div>
     </div>
   );

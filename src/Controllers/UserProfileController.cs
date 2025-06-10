@@ -120,7 +120,7 @@ public class UserProfileController : ControllerBase
 
         var communities = await _dbContext.Communities
             .Where(c => communityIds.Contains(c.Id))
-            .Select(c => new { c.Id, c.Name })
+            .Select(c => new { c.Id, c.Name, MemberCount = _dbContext.CommunityMembers.Count(cm => cm.CommunityId == c.Id)   })
             .ToListAsync();
 
         return Ok(communities);

@@ -9,18 +9,18 @@ import UserTag from "./UserTag";
 import Like from "./Like";
 import Dislike from "./Dislike";
 
-const CommentCard = ({ id, authorName, createdDateTime, text, likes, dislikes, isLied, isDisliked: isDislikedProp, replyCount,authorId,communityId }) => {
+const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, authorId, communityId, post: p1 }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLiked, setIsLiked] = useState(isLied); // Initialize with isLied
-  const [isDisliked, setIsDisliked] = useState(isDislikedProp); // Initialize with isDislikedProp
-  const [likesCount, setLikesCount] = useState(likes); // Track likes count
-  const [dislikesCount, setDislikesCount] = useState(dislikes); // Track dislikes count
-  const { token,user } = useAuth();
-  const post = { authorName, createdDateTime,authorId,id };
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisliked, setIsDisliked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+  const [dislikesCount, setDislikesCount] = useState(0);
+  const { token, user } = useAuth();
+  const post = {  createdDateTime, authorId, id };
 
   // Function to get auth headers
   const getAuthConfig = () => ({
@@ -28,7 +28,6 @@ const CommentCard = ({ id, authorName, createdDateTime, text, likes, dislikes, i
       Authorization: `Bearer ${token}`,
     },
   });
-
   // Fetch comments for the post
   const fetchPostComments = async (parentId, page = 1, pageSize = 10) => {
     setLoading(true);
@@ -48,55 +47,127 @@ const CommentCard = ({ id, authorName, createdDateTime, text, likes, dislikes, i
     }
   };
 
-  // Handle like/unlike
+  // Handle like (with switch behavior)
   const handleLike = async () => {
-    const reactionType = isLiked ? 3 : 1; // 3 to remove like, 1 to add like
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/posts/${id}/Like`,
-        { reactionType },
-        getAuthConfig()
-      );
-      console.log('Reaction processed:', response.data);
-      setIsLiked(!isLiked); // Toggle like state
-      setLikesCount((prev) => (reactionType === 1 ? prev + 1 : prev - 1)); // Update likes count
-      if (isDisliked && reactionType === 1) {
-        setIsDisliked(false); // Remove dislike if liking
-        setDislikesCount((prev) => prev - 1); // Decrement dislikes count
+      // If the post is disliked, remove the dislike first
+      if (isDisliked) {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/posts/${id}/unlike`,
+          {
+            appUserId: user.id,
+            postId: id,
+            reactionId: 2,
+          },
+          getAuthConfig()
+        );
       }
+
+      // If the post is not already liked, add a like
+      if (!isLiked) {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/posts/${id}/Like`,
+          {
+            appUserId: user.id,
+            postId: id,
+            reactionId: 1,
+          },
+          getAuthConfig()
+        );
+      } else {
+        // If the post is already liked, remove the like
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/posts/${id}/unlike`,
+          {
+            appUserId: user.id,
+            postId: id,
+            reactionId: 1,
+          },
+          getAuthConfig()
+        );
+      }
+
+      // Update the p1.likes array and state
+      setIsLiked(!isLiked);
+      setLikesCount((prev) => (!isLiked ? prev + 1 : prev - 1));
+      if (isDisliked) {
+        setIsDisliked(false);
+        setDislikesCount((prev) => prev - 1);
+      }
+
+      // Update p1.likes
+      p1.likes = isLiked
+        ? p1.likes.filter(p => p.appUserId !== user.id || p.reactionId !== 1)
+        : [...p1.likes.filter(p => p.appUserId !== user.id || p.reactionId !== 2), { appUserId: user.id, reactionId: 1 }];
     } catch (err) {
-      console.error('Error processing reaction:', err.response?.data || err.message);
+      console.error('Error processing like:', err.response?.data || err.message);
     }
   };
 
-  // Handle dislike/undislike
+  // Handle dislike (with switch behavior)
   const handleDislike = async () => {
-    const reactionType = isDisliked ? 3 : 2; // 3 to remove dislike, 2 to add dislike
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/posts/${id}/Like`,
-        { reactionType },
-        getAuthConfig()
-      );
-      console.log('Reaction processed:', response.data);
-      setIsDisliked(!isDisliked); // Toggle dislike state
-      setDislikesCount((prev) => (reactionType === 2 ? prev + 1 : prev - 1)); // Update dislikes count
-      if (isLiked && reactionType === 2) {
-        setIsLiked(false); // Remove like if disliking
-        setLikesCount((prev) => prev - 1); // Decrement likes count
+      // If the post is liked, remove the like first
+      if (isLiked) {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/posts/${id}/unlike`,
+          {
+            appUserId: user.id,
+            postId: id,
+            reactionId: 1,
+          },
+          getAuthConfig()
+        );
       }
+
+      // If the post is not already disliked, add a dislike
+      if (!isDisliked) {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/posts/${id}/Like`,
+          {
+            appUserId: user.id,
+            postId: id,
+            reactionId: 2,
+          },
+          getAuthConfig()
+        );
+      } else {
+        // If the post is already disliked, remove the dislike
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/posts/${id}/unlike`,
+          {
+            appUserId: user.id,
+            postId: id,
+            reactionId: 2,
+          },
+          getAuthConfig()
+        );
+      }
+
+      // Update the p1.likes array and state
+      setIsDisliked(!isDisliked);
+      setDislikesCount((prev) => (!isDisliked ? prev + 1 : prev - 1));
+      if (isLiked) {
+        setIsLiked(false);
+        setLikesCount((prev) => prev - 1);
+      }
+
+      // Update p1.likes
+      p1.likes = isDisliked
+        ? p1.likes.filter(p => p.appUserId !== user.id || p.reactionId !== 2)
+        : [...p1.likes.filter(p => p.appUserId !== user.id || p.reactionId !== 1), { appUserId: user.id, reactionId: 2 }];
     } catch (err) {
-      console.error('Error processing reaction:', err.response?.data || err.message);
+      console.error('Error processing dislike:', err.response?.data || err.message);
     }
   };
 
   // Sync state with props on rerender
   useEffect(() => {
-    setIsLiked(isLied);
-    setIsDisliked(isDislikedProp);
-    setLikesCount(likes);
-    setDislikesCount(dislikes);
-  }, [isLied, isDislikedProp, likes, dislikes]);
+    setIsLiked(p1.likes?.some(like => like.appUserId === user?.id && like.reactionId === 1) || false);
+    setIsDisliked(p1.likes?.some(like => like.appUserId === user?.id && like.reactionId === 2) || false);
+    setLikesCount(p1.likes?.filter(like => like.reactionId === 1).length || 0);
+    setDislikesCount(p1.likes?.filter(like => like.reactionId === 2).length || 0);
+  }, [p1.likes, user]);
 
   useEffect(() => {
     if (showReplies) {
@@ -142,27 +213,32 @@ const CommentCard = ({ id, authorName, createdDateTime, text, likes, dislikes, i
     <div>
       <div className="comment-card2">
         <div className="box">
-          <UserTag post={post} />
+          <UserTag post={p1} />
 
           <p className="comment-text">{text}</p>
 
           <div className="comment-footer">
             <div className="reactions">
-              <Like isLiked={isLiked} likesCount={likesCount} handleLike={handleLike} />
-              <Dislike isDisliked={isDisliked} handleDislike={handleDislike} dislikesCount={dislikesCount} />
-              
+              <Like
+                isLiked={isLiked}
+                likesCount={likesCount}
+                handleLike={handleLike}
+              />
+              <Dislike
+                isDisliked={isDisliked}
+                dislikesCount={dislikesCount}
+                handleDislike={handleDislike}
+              />
             </div>
             <div className="actions">
-              {(replyCount > 0 || comments.length >0 )&& (
+              {/*(replyCount > 0 || comments.length > 0) &&*/ (
                 <label
-                className="replies"
-                onClick={() => setShowReplies((p) => !p)}
-              >
-                Pokaż wszystkie odpowiedzi ({Math.max(replyCount, comments.length)})
-              </label>
-
+                  className="replies"
+                  onClick={() => setShowReplies((p) => !p)}
+                >
+                  Pokaż wszystkie odpowiedzi ({/*Math.max(replyCount, comments.length)*/})
+                </label>
               )}
-              
               <label className="reply" onClick={openModal}>
                 Odpowiedz
               </label>

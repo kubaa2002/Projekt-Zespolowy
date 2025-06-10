@@ -1,6 +1,5 @@
 import { useEffect, useState,useCallback  } from "react";
 import { useAuth } from "../../contexts/authProvider";
-
 import axios from "axios";
 
 export default function QuickModal({
@@ -11,10 +10,6 @@ export default function QuickModal({
   setContent,
    title, 
   setTitle,
-  file,
-  handleFileChange,
-  handleRemove,
-  fileInputRef,
   handlePublish,
   communityId,
   setCommunityId
@@ -153,54 +148,6 @@ export default function QuickModal({
                   {content.length}/{maxLength}
                 </div>
               </div>
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Dołącz zdjęcie</label>
-              <div className="d-flex">
-                <label
-                  className="btn btn-secondary"
-                  style={{
-                    cursor: file ? "not-allowed" : "pointer",
-                    opacity: file ? 0.4 : 1,
-                  }}
-                >
-                  <i className="bi bi-upload me-2"></i>
-                  Prześlij
-                  <input
-                    type="file"
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                    ref={fileInputRef}
-                    disabled={!!file}
-                  />
-                </label>
-              </div>
-              {file && (
-                <div className="card mt-2 p-2 position-relative">
-                  <div className="d-flex align-items-center">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt="preview"
-                      style={{
-                        width: "48px",
-                        height: "48px",
-                        objectFit: "cover",
-                      }}
-                    />
-                    <a href={URL.createObjectURL(file)} download>
-                      {file.name}
-                    </a>
-                    <button
-                      type="button"
-                      className="btn btn-link ms-auto"
-                      onClick={handleRemove}
-                    >
-                      <i className="bi bi-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
           <div className="modal-footer">
