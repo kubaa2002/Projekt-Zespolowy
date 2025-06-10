@@ -33,6 +33,8 @@ namespace Projekt_Zespolowy.Controllers;
                 .Where(p => !p.IsDeleted)
                 .Where(p => p.CommunityId == community_id)
                 .Include(p => p.Author)
+                .Include(p => p.Likes)
+                .ThenInclude(l => l.Reaction)
                 .GroupJoin(_context.Likes,
                     post => post.Id,
                     like => like.PostId,
@@ -73,6 +75,8 @@ namespace Projekt_Zespolowy.Controllers;
                 .Where(p => !p.IsDeleted)
                 .Where(p => p.AppUserId == user_id)
                 .Include(p => p.Author)
+                .Include(p => p.Likes)
+                .ThenInclude(l => l.Reaction)
                 .GroupJoin(_context.Likes,
                     post => post.Id,
                     like => like.PostId,
@@ -89,8 +93,7 @@ namespace Projekt_Zespolowy.Controllers;
                 .Take(amount ?? 10)
                 .Select(p => (PostDTO)p.Post)
                 .ToListAsync();
-
-            if (!results.Any())
+        if (!results.Any())
             {
                 return NoContent();
             }
