@@ -49,7 +49,7 @@ public class UserController : ControllerBase
                 UserName = model.UserName,
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                LockoutEnabled = true
+                IsDeleted = false,
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -78,7 +78,7 @@ public class UserController : ControllerBase
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
-                if (user.LockoutEnabled && user.LockoutEnd > DateTimeOffset.UtcNow)
+                if (user.IsDeleted)
                 {
                     var errors2 = new ErrorResponse { Status = 403 };
                     errors2.Errors["error"] = new List<string> { "Konto jest usunięte." };
@@ -231,8 +231,7 @@ public async Task<IActionResult> DeleteUser([FromBody] DeleteUserModel model)
         return Unauthorized(new { error = "Nieprawidłowe hasło." });
     }
 
-    user.LockoutEnabled = true;
-    user.LockoutEnd = DateTimeOffset.MaxValue;
+    user.IsDeleted = true;
 
     var result = await _userManager.UpdateAsync(user);
     if (!result.Succeeded)
