@@ -124,6 +124,8 @@ using (var scope = app.Services.CreateScope())
             context.Database.Migrate(); // Stosuje oczekuj�ce migracje
         }
 
+        Reaction.PopulateDB(context);
+
 
         // Tutaj potencjalnie mo�esz wywo�a� metod� do seedingu danych,
         // je�li nie robisz tego wy��cznie przez HasData w OnModelCreating
