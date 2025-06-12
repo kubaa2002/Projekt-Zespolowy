@@ -12,7 +12,7 @@ services:
        - sqlserver
       environment:
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true 
+       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PZ;User Id=sa;Password=${{ secrets.DB_PASSWORD }};TrustServerCertificate=True;MultipleActiveResultSets=true
       networks:
        - projektzespolowynetwork
       restart: always
@@ -20,7 +20,7 @@ services:
     sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
         environment:
-          SA_PASSWORD: "BazaDanych123!"
+          SA_PASSWORD: "${{ secrets.DB_PASSWORD }}"
           ACCEPT_EULA: "Y"
         ports:
          - "1433:1433"
