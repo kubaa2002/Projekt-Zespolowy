@@ -1,4 +1,5 @@
-﻿using Projekt_Zespolowy.Authentication;
+﻿using Microsoft.EntityFrameworkCore;
+using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Likes;
 using Projekt_Zespolowy.Models;
 
@@ -30,7 +31,7 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<List<Like>> GetOfPost(int postId)
         {
-            List<Like> likes = context.Likes.Where(x => x.PostId == postId).ToList();
+            List<Like> likes = context.Likes.Where(x => x.PostId == postId).Include(x => x.Reaction).ToList();
             if (likes.Count == 0)
             {
                 return new ServiceResponse<List<Like>>(StatusCodes.Status204NoContent, null);
@@ -39,7 +40,7 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<List<Like>> GetOfPostByType(int postId, int type)
         {
-            List<Like> likes = context.Likes.Where(x => x.PostId == postId).Where(x=>x.ReactionId == type).ToList();
+            List<Like> likes = context.Likes.Where(x => x.PostId == postId).Where(x=>x.ReactionId == type).Include(x => x.Reaction).ToList();
             if (likes.Count == 0)
             {
                 return new ServiceResponse<List<Like>>(StatusCodes.Status204NoContent, null);
@@ -55,6 +56,13 @@ namespace Projekt_Zespolowy.Services
         {
             List<Like> likes = context.Likes.Where(x => x.PostId == postId).ToList();
             return new ServiceResponse<int>(StatusCodes.Status200OK, likes.Count);
+        }
+        public ServiceResponse<string> Remove(Like like) 
+        {
+            
+            context.Likes.Remove(like);
+            context.SaveChanges();
+            return new ServiceResponse<string>(StatusCodes.Status200OK, "removed reaction");
         }
     }
 }

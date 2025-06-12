@@ -12,21 +12,33 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignupImport } from './routes/signup'
+import { Route as ShereImport } from './routes/shere'
 import { Route as SettingsImport } from './routes/settings'
 import { Route as ResetconfirmImport } from './routes/resetconfirm'
 import { Route as ResetImport } from './routes/reset'
+import { Route as PostImport } from './routes/post'
 import { Route as LoginImport } from './routes/login'
 import { Route as HeroImport } from './routes/hero'
 import { Route as CreateImport } from './routes/create'
 import { Route as IndexImport } from './routes/index'
-import { Route as CommunitesIndexImport } from './routes/communites/index'
-import { Route as CommunitesNewImport } from './routes/communites/new'
+import { Route as UsersIndexImport } from './routes/users/index'
+import { Route as CommunitiesIndexImport } from './routes/communities/index'
+import { Route as UsersFollowingImport } from './routes/users/following'
+import { Route as UsersUserIdImport } from './routes/users/$userId'
+import { Route as CommunitiesNewImport } from './routes/communities/new'
+import { Route as CommunitiesCommunityIdImport } from './routes/communities/$communityId'
 
 // Create/Update Routes
 
 const SignupRoute = SignupImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ShereRoute = ShereImport.update({
+  id: '/shere',
+  path: '/shere',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -45,6 +57,12 @@ const ResetconfirmRoute = ResetconfirmImport.update({
 const ResetRoute = ResetImport.update({
   id: '/reset',
   path: '/reset',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PostRoute = PostImport.update({
+  id: '/post',
+  path: '/post',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -72,15 +90,39 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const CommunitesIndexRoute = CommunitesIndexImport.update({
-  id: '/communites/',
-  path: '/communites/',
+const UsersIndexRoute = UsersIndexImport.update({
+  id: '/users/',
+  path: '/users/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const CommunitesNewRoute = CommunitesNewImport.update({
-  id: '/communites/new',
-  path: '/communites/new',
+const CommunitiesIndexRoute = CommunitiesIndexImport.update({
+  id: '/communities/',
+  path: '/communities/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const UsersFollowingRoute = UsersFollowingImport.update({
+  id: '/users/following',
+  path: '/users/following',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const UsersUserIdRoute = UsersUserIdImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CommunitiesNewRoute = CommunitiesNewImport.update({
+  id: '/communities/new',
+  path: '/communities/new',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CommunitiesCommunityIdRoute = CommunitiesCommunityIdImport.update({
+  id: '/communities/$communityId',
+  path: '/communities/$communityId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -116,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/post': {
+      id: '/post'
+      path: '/post'
+      fullPath: '/post'
+      preLoaderRoute: typeof PostImport
+      parentRoute: typeof rootRoute
+    }
     '/reset': {
       id: '/reset'
       path: '/reset'
@@ -137,6 +186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsImport
       parentRoute: typeof rootRoute
     }
+    '/shere': {
+      id: '/shere'
+      path: '/shere'
+      fullPath: '/shere'
+      preLoaderRoute: typeof ShereImport
+      parentRoute: typeof rootRoute
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -144,18 +200,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupImport
       parentRoute: typeof rootRoute
     }
-    '/communites/new': {
-      id: '/communites/new'
-      path: '/communites/new'
-      fullPath: '/communites/new'
-      preLoaderRoute: typeof CommunitesNewImport
+    '/communities/$communityId': {
+      id: '/communities/$communityId'
+      path: '/communities/$communityId'
+      fullPath: '/communities/$communityId'
+      preLoaderRoute: typeof CommunitiesCommunityIdImport
       parentRoute: typeof rootRoute
     }
-    '/communites/': {
-      id: '/communites/'
-      path: '/communites'
-      fullPath: '/communites'
-      preLoaderRoute: typeof CommunitesIndexImport
+    '/communities/new': {
+      id: '/communities/new'
+      path: '/communities/new'
+      fullPath: '/communities/new'
+      preLoaderRoute: typeof CommunitiesNewImport
+      parentRoute: typeof rootRoute
+    }
+    '/users/$userId': {
+      id: '/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof UsersUserIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/users/following': {
+      id: '/users/following'
+      path: '/users/following'
+      fullPath: '/users/following'
+      preLoaderRoute: typeof UsersFollowingImport
+      parentRoute: typeof rootRoute
+    }
+    '/communities/': {
+      id: '/communities/'
+      path: '/communities'
+      fullPath: '/communities'
+      preLoaderRoute: typeof CommunitiesIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/users/': {
+      id: '/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof UsersIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -168,12 +252,18 @@ export interface FileRoutesByFullPath {
   '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
+  '/post': typeof PostRoute
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
+  '/shere': typeof ShereRoute
   '/signup': typeof SignupRoute
-  '/communites/new': typeof CommunitesNewRoute
-  '/communites': typeof CommunitesIndexRoute
+  '/communities/$communityId': typeof CommunitiesCommunityIdRoute
+  '/communities/new': typeof CommunitiesNewRoute
+  '/users/$userId': typeof UsersUserIdRoute
+  '/users/following': typeof UsersFollowingRoute
+  '/communities': typeof CommunitiesIndexRoute
+  '/users': typeof UsersIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -181,12 +271,18 @@ export interface FileRoutesByTo {
   '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
+  '/post': typeof PostRoute
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
+  '/shere': typeof ShereRoute
   '/signup': typeof SignupRoute
-  '/communites/new': typeof CommunitesNewRoute
-  '/communites': typeof CommunitesIndexRoute
+  '/communities/$communityId': typeof CommunitiesCommunityIdRoute
+  '/communities/new': typeof CommunitiesNewRoute
+  '/users/$userId': typeof UsersUserIdRoute
+  '/users/following': typeof UsersFollowingRoute
+  '/communities': typeof CommunitiesIndexRoute
+  '/users': typeof UsersIndexRoute
 }
 
 export interface FileRoutesById {
@@ -195,12 +291,18 @@ export interface FileRoutesById {
   '/create': typeof CreateRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
+  '/post': typeof PostRoute
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
+  '/shere': typeof ShereRoute
   '/signup': typeof SignupRoute
-  '/communites/new': typeof CommunitesNewRoute
-  '/communites/': typeof CommunitesIndexRoute
+  '/communities/$communityId': typeof CommunitiesCommunityIdRoute
+  '/communities/new': typeof CommunitiesNewRoute
+  '/users/$userId': typeof UsersUserIdRoute
+  '/users/following': typeof UsersFollowingRoute
+  '/communities/': typeof CommunitiesIndexRoute
+  '/users/': typeof UsersIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -210,36 +312,54 @@ export interface FileRouteTypes {
     | '/create'
     | '/hero'
     | '/login'
+    | '/post'
     | '/reset'
     | '/resetconfirm'
     | '/settings'
+    | '/shere'
     | '/signup'
-    | '/communites/new'
-    | '/communites'
+    | '/communities/$communityId'
+    | '/communities/new'
+    | '/users/$userId'
+    | '/users/following'
+    | '/communities'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/create'
     | '/hero'
     | '/login'
+    | '/post'
     | '/reset'
     | '/resetconfirm'
     | '/settings'
+    | '/shere'
     | '/signup'
-    | '/communites/new'
-    | '/communites'
+    | '/communities/$communityId'
+    | '/communities/new'
+    | '/users/$userId'
+    | '/users/following'
+    | '/communities'
+    | '/users'
   id:
     | '__root__'
     | '/'
     | '/create'
     | '/hero'
     | '/login'
+    | '/post'
     | '/reset'
     | '/resetconfirm'
     | '/settings'
+    | '/shere'
     | '/signup'
-    | '/communites/new'
-    | '/communites/'
+    | '/communities/$communityId'
+    | '/communities/new'
+    | '/users/$userId'
+    | '/users/following'
+    | '/communities/'
+    | '/users/'
   fileRoutesById: FileRoutesById
 }
 
@@ -248,12 +368,18 @@ export interface RootRouteChildren {
   CreateRoute: typeof CreateRoute
   HeroRoute: typeof HeroRoute
   LoginRoute: typeof LoginRoute
+  PostRoute: typeof PostRoute
   ResetRoute: typeof ResetRoute
   ResetconfirmRoute: typeof ResetconfirmRoute
   SettingsRoute: typeof SettingsRoute
+  ShereRoute: typeof ShereRoute
   SignupRoute: typeof SignupRoute
-  CommunitesNewRoute: typeof CommunitesNewRoute
-  CommunitesIndexRoute: typeof CommunitesIndexRoute
+  CommunitiesCommunityIdRoute: typeof CommunitiesCommunityIdRoute
+  CommunitiesNewRoute: typeof CommunitiesNewRoute
+  UsersUserIdRoute: typeof UsersUserIdRoute
+  UsersFollowingRoute: typeof UsersFollowingRoute
+  CommunitiesIndexRoute: typeof CommunitiesIndexRoute
+  UsersIndexRoute: typeof UsersIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -261,12 +387,18 @@ const rootRouteChildren: RootRouteChildren = {
   CreateRoute: CreateRoute,
   HeroRoute: HeroRoute,
   LoginRoute: LoginRoute,
+  PostRoute: PostRoute,
   ResetRoute: ResetRoute,
   ResetconfirmRoute: ResetconfirmRoute,
   SettingsRoute: SettingsRoute,
+  ShereRoute: ShereRoute,
   SignupRoute: SignupRoute,
-  CommunitesNewRoute: CommunitesNewRoute,
-  CommunitesIndexRoute: CommunitesIndexRoute,
+  CommunitiesCommunityIdRoute: CommunitiesCommunityIdRoute,
+  CommunitiesNewRoute: CommunitiesNewRoute,
+  UsersUserIdRoute: UsersUserIdRoute,
+  UsersFollowingRoute: UsersFollowingRoute,
+  CommunitiesIndexRoute: CommunitiesIndexRoute,
+  UsersIndexRoute: UsersIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -283,12 +415,18 @@ export const routeTree = rootRoute
         "/create",
         "/hero",
         "/login",
+        "/post",
         "/reset",
         "/resetconfirm",
         "/settings",
+        "/shere",
         "/signup",
-        "/communites/new",
-        "/communites/"
+        "/communities/$communityId",
+        "/communities/new",
+        "/users/$userId",
+        "/users/following",
+        "/communities/",
+        "/users/"
       ]
     },
     "/": {
@@ -303,6 +441,9 @@ export const routeTree = rootRoute
     "/login": {
       "filePath": "login.jsx"
     },
+    "/post": {
+      "filePath": "post.jsx"
+    },
     "/reset": {
       "filePath": "reset.jsx"
     },
@@ -312,14 +453,29 @@ export const routeTree = rootRoute
     "/settings": {
       "filePath": "settings.jsx"
     },
+    "/shere": {
+      "filePath": "shere.jsx"
+    },
     "/signup": {
       "filePath": "signup.jsx"
     },
-    "/communites/new": {
-      "filePath": "communites/new.jsx"
+    "/communities/$communityId": {
+      "filePath": "communities/$communityId.jsx"
     },
-    "/communites/": {
-      "filePath": "communites/index.jsx"
+    "/communities/new": {
+      "filePath": "communities/new.jsx"
+    },
+    "/users/$userId": {
+      "filePath": "users/$userId.jsx"
+    },
+    "/users/following": {
+      "filePath": "users/following.jsx"
+    },
+    "/communities/": {
+      "filePath": "communities/index.jsx"
+    },
+    "/users/": {
+      "filePath": "users/index.jsx"
     }
   }
 }

@@ -9,7 +9,10 @@ public class AppUser : IdentityUser
     public string? Nickname { get; set; } 
 
     [PersonalData]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    [PersonalData]
+    public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<Post> PostsAuthored { get; set; } = new List<Post>();
     public virtual ICollection<CommunityMember> CommunityMemberships { get; set; } = new List<CommunityMember>();

@@ -13,6 +13,7 @@ namespace Projekt_Zespolowy.Likes
 
         public int ReactionId { get; set; }
 
+        public string ReactionName { get; set; }
         public DateTimeOffset CreatedDateTime { get; set; } = DateTimeOffset.UtcNow;
         public static implicit operator LikeDTO(Like x)
         {
@@ -21,7 +22,8 @@ namespace Projekt_Zespolowy.Likes
                 AppUserId = x.AppUserId,
                 PostId = x.PostId,
                 ReactionId = x.ReactionId,
-                CreatedDateTime = x.CreatedDateTime
+                CreatedDateTime = x.CreatedDateTime,
+                ReactionName = x.Reaction.Name
             };
         }
         public static implicit operator Like(LikeDTO x)

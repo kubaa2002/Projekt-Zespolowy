@@ -1,5 +1,4 @@
 import { useState } from "react";
-// Assuming this value state will be higher up in comp tree. Placeholder for now
 export default function SearchInput() {
     const [value, setValue] = useState('');
 

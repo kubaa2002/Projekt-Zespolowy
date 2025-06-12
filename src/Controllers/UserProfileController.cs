@@ -120,9 +120,97 @@ public class UserProfileController : ControllerBase
 
         var communities = await _dbContext.Communities
             .Where(c => communityIds.Contains(c.Id))
-            .Select(c => new { c.Id, c.Name })
+            .Select(c => new { c.Id, c.Name, MemberCount = _dbContext.CommunityMembers.Count(cm => cm.CommunityId == c.Id)   })
             .ToListAsync();
 
         return Ok(communities);
     }
+
+    [Authorize]
+    [HttpPost("follow/{userId}")]
+    public async Task<IActionResult> FollowUser(string userId)
+    {
+
+        var currentUser = User.FindFirstValue(ClaimTypes.Name);
+        var currentUserId = _userManager.Users
+            .Where(u => u.UserName == currentUser)
+            .Select(u => u.Id)
+            .FirstOrDefault();
+        if (currentUserId == null)
+        {
+            return Unauthorized(new { error = "Brak autoryzacji." });
+        }
+
+      
+        if (currentUserId == userId)
+        {
+            return BadRequest(new { error = "Nie możesz obserwować samego siebie." });
+        }
+
+       
+        var targetUser = await _userManager.FindByIdAsync(userId);
+        if (targetUser == null)
+        {
+            return NotFound(new { error = "Użytkownik nie istnieje." });
+        }
+
+        var alreadyFollowing = await _dbContext.Followers
+            .AnyAsync(f => f.FollowerId == currentUserId && f.FollowingId == userId);
+        if (alreadyFollowing)
+        {
+            return Ok(new { message = "Już obserwujesz tego użytkownika." });
+        }
+
+      
+        var follower = new Follower
+        {
+            FollowerId = currentUserId,
+            FollowingId = userId,
+            CreatedDateTime = DateTimeOffset.UtcNow
+        };
+
+        _dbContext.Followers.Add(follower);
+        await _dbContext.SaveChangesAsync();
+
+        return StatusCode(StatusCodes.Status201Created, new { message = "Użytkownik zaobserwowany." });
+    }
+
+    [Authorize]
+    [HttpDelete("unfollow/{userId}")]
+    public async Task<IActionResult> UnfollowUser(string userId)
+    {
+
+        var currentUser = User.FindFirstValue(ClaimTypes.Name);
+        var currentUserId = _userManager.Users
+            .Where(u => u.UserName == currentUser)
+            .Select(u => u.Id)
+            .FirstOrDefault();
+        if (currentUserId == null)
+        {
+            return Unauthorized(new { error = "Brak autoryzacji." });
+        }
+
+
+        var targetUser = await _userManager.FindByIdAsync(userId);
+        if (targetUser == null)
+        {
+            return NotFound(new { error = "Użytkownik nie istnieje." });
+        }
+
+
+        var follow = await _dbContext.Followers
+            .SingleOrDefaultAsync(f => f.FollowerId == currentUserId && f.FollowingId == userId);
+        if (follow == null)
+        {
+            return NotFound(new { error = "Nie obserwujesz tego użytkownika." });
+        }
+
+
+        _dbContext.Followers.Remove(follow);
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { message = "Przestałeś obserwować użytkownika." });
+    }
+
+
 }

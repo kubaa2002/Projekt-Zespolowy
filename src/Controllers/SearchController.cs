@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Models;
+
 namespace Projekt_Zespolowy.Controllers;
 
 
@@ -27,23 +29,27 @@ namespace Projekt_Zespolowy.Controllers;
                 return NotFound();
             }
 
-        var query = _context.Posts
-            .Where(p => p.CommunityId == community_id)
-            .GroupJoin(_context.Likes,
-                post => post.Id,
-                like => like.PostId,
-                (post, likes) => new
-                {
-                    Post = post,
-                    LikeCount = likes.Count()
-                })
-            .Where(p => p.Post.Content.Contains(q))
-            .OrderByDescending(p => p.LikeCount);
+            var query = _context.Posts
+                .Where(p => !p.IsDeleted)
+                .Where(p => p.CommunityId == community_id)
+                .Include(p => p.Author)
+                .Include(p => p.Likes)
+                .ThenInclude(l => l.Reaction)
+                .GroupJoin(_context.Likes,
+                    post => post.Id,
+                    like => like.PostId,
+                    (post, likes) => new
+                    {
+                        Post = post,
+                        LikeCount = likes.Count()
+                    })
+                .Where(p => p.Post.Content.Contains(q))
+                .OrderByDescending(p => p.LikeCount);
 
-        var results = await query
+            var results = await query
                 .Skip(start ?? 0)
                 .Take(amount ?? 10)
-                .Select(p => p.Post)
+                .Select(p => (PostDTO)p.Post)
                 .ToListAsync();
 
             if (!results.Any())
@@ -65,26 +71,29 @@ namespace Projekt_Zespolowy.Controllers;
                 return NotFound();
             }
 
-        var query = _context.Posts
-            .Where(p => p.AppUserId == user_id)
-            .GroupJoin(_context.Likes,
-                post => post.Id,
-                like => like.PostId,
-                (post, likes) => new
-                {
-                    Post = post,
-                    LikeCount = likes.Count()
-                })
-            .Where(p => p.Post.Content.Contains(q))
-            .OrderByDescending(p => p.LikeCount);
+            var query = _context.Posts
+                .Where(p => !p.IsDeleted)
+                .Where(p => p.AppUserId == user_id)
+                .Include(p => p.Author)
+                .Include(p => p.Likes)
+                .ThenInclude(l => l.Reaction)
+                .GroupJoin(_context.Likes,
+                    post => post.Id,
+                    like => like.PostId,
+                    (post, likes) => new
+                    {
+                        Post = post,
+                        LikeCount = likes.Count()
+                    })
+                .Where(p => p.Post.Content.Contains(q))
+                .OrderByDescending(p => p.LikeCount);
 
             var results = await query
                 .Skip(start ?? 0)
                 .Take(amount ?? 10)
-                .Select(p => p.Post)
+                .Select(p => (PostDTO)p.Post)
                 .ToListAsync();
-
-            if (!results.Any())
+        if (!results.Any())
             {
                 return NoContent();
             }
@@ -96,22 +105,28 @@ namespace Projekt_Zespolowy.Controllers;
         [HttpGet("user")]
         public async Task<IActionResult> SearchUsers([FromQuery] string q, [FromQuery] int? start = 0, [FromQuery] int? amount = 10)
         {
-        var query = _context.Users
-            .GroupJoin(_context.Followers,
-                user => user.Id,
-                follower => follower.FollowingId,
-                (user, followers) => new
-                {
-                    User = user,
-                    FollowerCount = followers.Count()
-                })
-            .Where(u => u.User.Nickname.Contains(q))
-            .OrderByDescending(u => u.FollowerCount);
+            var query = _context.Users
+                .GroupJoin(_context.Followers,
+                    user => user.Id,
+                    follower => follower.FollowingId,
+                    (user, followers) => new
+                    {
+                        User = user,
+                        FollowerCount = followers.Count()
+                    })
+                .Where(u => u.User.UserName.Contains(q))
+                .OrderByDescending(u => u.FollowerCount);
 
-        var results = await query
+            var results = await query
                 .Skip(start ?? 0)
                 .Take(amount ?? 10)
-                .Select(u => u.User)
+                .Select(u => new UserDTO
+                {
+                    CreatedAt = u.User.CreatedAt,
+                    Id = u.User.Id,
+                    Email = u.User.Email,
+                    UserName = u.User.UserName,
+                })
                 .ToListAsync();
 
             if (!results.Any())

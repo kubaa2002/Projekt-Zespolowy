@@ -103,7 +103,13 @@
 		color: map.get(colors.$text, obserwowane-groupimage-gray-500);
 	}
 }
-
+.input-group{
+	select{
+		max-width: 150px;
+		cursor: pointer;
+		user-select: none;
+	}
+}
 .hide-on-mobile {
   display: flex;
 }
@@ -177,3 +183,5 @@
 		margin-left: 10px;
 	}
 }
+
+

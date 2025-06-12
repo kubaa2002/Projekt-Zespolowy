@@ -1,42 +1,35 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import MainModal from "../modals/MainModal";
 import QuickModal from "../modals/QuickModal";
 import MainLayout from "./MainLayout";
 import PostsList from "../../PostsList";
 import { usePosts } from "../../contexts/PostsContext";
+import { useAuth } from "../../contexts/authProvider";
 
 export default function Main() {
   const [rotated, setRotated] = useState(false);
-  const [showSort, setShowSort] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
+  const [communityId, setCommunityId] = useState(null);
   const maxLength = 2000;
-  const [file, setFile] = useState(null);
-  const fileInputRef = useRef(null);
   const {createPost} = usePosts();
+  const {user} = useAuth();
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  const handleRemove = () => {
-    setFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
 
   const handlePublish = async (onClose) => {
     if (!content.trim()) {
       alert("Uzupełnij treść posta.");
       return;
     }
+    console.log("tytul "+title)
   
     const postData = {
       id: 0, // zakładamy, że backend sam nadaje ID
-      authorId: "123", // zakładamy, że masz dostęp do aktualnego użytkownika
+      authorId: user.id, // zakładamy, że masz dostęp do aktualnego użytkownika
       content: content.trim(),
-      communityId: null, // możesz zmienić na wartość z selecta, jeśli potrzebujesz
+      title: title.trim() || "Bez tytułu", // jeśli tytuł jest pusty, ustaw domyślny
+      communityId: communityId, // możesz zmienić na wartość z selecta, jeśli potrzebujesz
       createdDateTime: new Date().toISOString(),
       parentId: null,
       isDeleted: false,
@@ -55,7 +48,6 @@ export default function Main() {
       console.log("Post opublikowany:", createdPost);
       // Resetowanie stanu po publikacji
       setContent("");
-      handleRemove(); // usuń załączony plik
       onClose(); // zamknij modal
     } catch (err) {
       console.error("Błąd podczas publikacji posta:", err);
@@ -92,31 +84,31 @@ export default function Main() {
           </div>
             <QuickModal
             show={showModal}
-            onClose={() => {setShowModal(false); setContent(""); handleRemove();}}
+            onClose={() => {setShowModal(false); setContent("");}}
             maxLength={maxLength}
             content={content}
             setContent={setContent}
-            file={file}
-            handleFileChange={handleFileChange}
-            handleRemove={handleRemove}
-            fileInputRef={fileInputRef}
+            communityId={communityId}
+            setCommunityId={setCommunityId}
+            title={title}
+            setTitle={setTitle}
             handlePublish={handlePublish}
           />
         </div>
           <MainModal
             show={rotated}
-            onClose={() => {setRotated(false); setContent(""); handleRemove();}}
+            onClose={() => {setRotated(false); setContent("");}}
             maxLength={maxLength}
             content={content}
             setContent={setContent}
-            file={file}
-            handleFileChange={handleFileChange}
-            handleRemove={handleRemove}
-            fileInputRef={fileInputRef}
+            title={title}
+            setTitle={setTitle}
+            communityId={communityId}
+            setCommunityId={setCommunityId}
             handlePublish={handlePublish}
           />
         
-        <PostsList showSort={showSort} setShowSort={setShowSort} />
+        <PostsList urlWithoutQueryParams={`${import.meta.env.VITE_API_URL}/posts`}/> {/* solution for now? im lazy*/}
         
     </MainLayout>
   );

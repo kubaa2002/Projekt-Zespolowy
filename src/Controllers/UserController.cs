@@ -48,7 +48,8 @@ public class UserController : ControllerBase
             {
                 UserName = model.UserName,
                 Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                IsDeleted = false,
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -77,6 +78,13 @@ public class UserController : ControllerBase
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
+                if (user.IsDeleted)
+                {
+                    var errors2 = new ErrorResponse { Status = 403 };
+                    errors2.Errors["error"] = new List<string> { "Konto jest usunięte." };
+                    return StatusCode(403, errors2);
+                }
+
                 if (await _userManager.CheckPasswordAsync(user, model.Password))
                 {
                     var token = GenerateToken(user.UserName);
@@ -159,7 +167,7 @@ public class UserController : ControllerBase
             return Unauthorized(new { message = "Użytkownik nie istnieje" });
         }
 
-        return Ok(new { userName = user.UserName, email = user.Email });
+        return Ok(new { userName = user.UserName, email = user.Email, id = user.Id });
 
     }
 
@@ -201,4 +209,56 @@ public class UserController : ControllerBase
 
     return BadRequest(errors); // Zwracamy 400 dla innych błędów 
     }
+
+[Authorize]
+[HttpDelete("delete")]
+public async Task<IActionResult> DeleteUser([FromBody] DeleteUserModel model)
+{
+    var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+    if (string.IsNullOrEmpty(userName))
+    {
+        return Unauthorized(new { error = "Nie udało się ustalić tożsamości użytkownika." });
+    }
+
+    var user = await _userManager.FindByNameAsync(userName);
+    if (user == null)
+    {
+        return NotFound(new { error = "Użytkownik nie istnieje." });
+    }
+
+    if (!await _userManager.CheckPasswordAsync(user, model.CurrentPassword))
+    {
+        return Unauthorized(new { error = "Nieprawidłowe hasło." });
+    }
+
+    user.IsDeleted = true;
+
+    var result = await _userManager.UpdateAsync(user);
+    if (!result.Succeeded)
+    {
+       
+        return BadRequest();
+    }
+
+    var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+    if (!string.IsNullOrEmpty(token))
+    {
+        var revokedToken = new RevokedToken
+        {
+            Token = token,
+            RevokedAt = DateTime.UtcNow
+        };
+        _dbContext.RevokedTokens.Add(revokedToken);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    return Ok(new { message = "Konto zostało pomyślnie usunięte." });
+}
+
+
+}
+
+public class DeleteUserModel
+{
+    public string CurrentPassword { get; set; }
 }

@@ -5,7 +5,7 @@ export default function Settings() {
   return (
     <MainLayout>
         <div className="centered-container">
-            <div className="settings-container">
+            <div className="settings-container user-select-none">
                 
                 <AccountForm />
             </div>

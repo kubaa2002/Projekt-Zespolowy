@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Projekt_Zespolowy.Services
 {
@@ -15,6 +17,117 @@ namespace Projekt_Zespolowy.Services
         public PostsService(AppDbContext context)
         {
             this.context = context;
+
+        }
+        public ServiceResponse<List<Post>> GetPostsSortedByNewest(int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => !p.IsDeleted)
+                .Where(p => p.ParentId == null)
+                .Include(p => p.Likes)
+                .ThenInclude(l => l.Reaction)
+                .Include(p => p.Author)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetPostsSortedByPopularity(int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => !p.IsDeleted)
+                .Where(p => p.ParentId == null)
+                .Include(p => p.Likes)
+                .ThenInclude(l => l.Reaction)
+                .Include(p => p.Author)
+                .OrderByDescending(p => p.Likes.Count)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetCommunityPostsSortedByNewest(int communityId, int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => !p.IsDeleted)
+                .Where(p => p.ParentId == null && p.CommunityId == communityId)
+                .Include(p => p.Likes)
+                .ThenInclude(l => l.Reaction)
+                .Include(p => p.Author)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetCommunityPostsSortedByPopularity(int communityId, int start, int length)
+        {
+            var posts = context.Posts
+                .Where(p => !p.IsDeleted)
+                .Where(p => p.ParentId == null && p.CommunityId == communityId)
+                .Include(p => p.Likes)
+                .ThenInclude(l => l.Reaction)
+                .Include(p => p.Author)
+                .OrderByDescending(p => p.Likes.Count)
+                .Skip(start).Take(length)
+                .ToList();
+
+            return posts.Count == 0
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetObservedPostsSortedByNewest(string userId, int start, int length)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
+            }
+
+            var userCommunityIds = context.CommunityMembers
+                .Where(cm => cm.AppUserId == userId)
+                .Select(cm => cm.CommunityId);
+
+            var followedUserIds = context.Followers
+                .Where(f => f.FollowerId == userId)
+                .Select(f => f.FollowingId);
+
+            var query = context.Posts
+                .Where(p => !p.IsDeleted)
+                .Where(p => p.ParentId == null && p.AppUserId != userId)
+                .Join(followedUserIds,
+                    post => post.AppUserId,
+                    followedId => followedId,
+                    (post, followedId) => post)
+
+                .Join(userCommunityIds,
+                    post => post.CommunityId,
+                    communityId => communityId,
+                    (post, communityId) => post);
+
+            var posts = query
+                .Include(p => p.Likes)
+                .ThenInclude(l => l.Reaction)
+                .Include(p => p.Author)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Skip(start)
+                .Take(length)
+                .ToList();
+
+
+            return posts.Any()
+                ? new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts)
+                : new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
         {
@@ -22,7 +135,7 @@ namespace Projekt_Zespolowy.Services
             //ale jeśli jakieś posty zostałyby usunięte doprowadziłoby to do wyświetlenie mniejszej liczby postów niż length, nie sądzę,
             //żeby było to docelowe działanie
             //context.Posts.Where(x => x.Id >= start && x.Id < start + length); <--- to o czym myślę
-            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Include(x => x.Likes).ToList();
+            List<Post> foundPosts = context.Posts.Where(p => !p.IsDeleted).Where(x => x.ParentId == null).Include(x => x.Likes).ThenInclude(x => x.Reaction).Include(p => p.Author).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
@@ -34,7 +147,7 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<List<Post>> GetPostsFromRangeFromCommunity(int start, int length, int commnityId)
         {
-            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == commnityId).Include(x => x.Likes).ToList();
+            List<Post> foundPosts = context.Posts.Where(p => !p.IsDeleted).Where(x => x.ParentId == null).Where(x => x.CommunityId == commnityId).Include(x => x.Likes).ThenInclude(l => l.Reaction).Include(p => p.Author).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
@@ -46,7 +159,7 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<List<Post>> GetPostsFromRangeFromUser(int start, int length, string authorId)
         {
-            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == null).Where(x => x.CommunityId == null).Where(x => x.AppUserId == authorId).Include(x => x.Likes).ToList();
+            List<Post> foundPosts = context.Posts.Where(p => !p.IsDeleted).Where(x => x.ParentId == null).Where(x => x.CommunityId == null).Where(x => x.AppUserId == authorId).Include(x => x.Likes).ThenInclude(l => l.Reaction).Include(p => p.Author).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
@@ -58,7 +171,7 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<List<Post>> GetCommentsFromRangeFromPost(int start, int length, int parentId)
         {
-            List<Post> foundPosts = context.Posts.Where(x => x.ParentId == parentId).Include(x => x.Likes).ToList();
+            List<Post> foundPosts = context.Posts.Where(p => !p.IsDeleted).Where(x => x.ParentId == parentId).Include(x => x.Likes).ThenInclude(l => l.Reaction).Include(p => p.Author).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
@@ -71,7 +184,7 @@ namespace Projekt_Zespolowy.Services
 
         public ServiceResponse<IEnumerable<Post>> GetAll()
         {
-            var result = context.Posts.ToList();
+            var result = context.Posts.Include(p => p.Likes).ThenInclude(l => l.Reaction).Include(p => p.Author).ToList();
             if (result.Count() == 0)
             {
                 return new ServiceResponse<IEnumerable<Post>>(StatusCodes.Status204NoContent, null);
@@ -81,8 +194,8 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<Post> GetById(int id)
         {
-            var result = context.Posts.Include(x => x.Likes).SingleOrDefault(x => x.Id == id);
-            if (result == default)
+            var result = context.Posts.Include(x => x.Likes).ThenInclude(l => l.Reaction).Include(p => p.Author).SingleOrDefault(x => x.Id == id);
+            if (result == default || result.IsDeleted)
             {
                 return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
             }
@@ -158,7 +271,11 @@ namespace Projekt_Zespolowy.Services
             {
                 return new ServiceResponse<Post>(StatusCodes.Status400BadRequest, null);
             }
-            context.Posts.Update(post);
+            var exPost = GetById(post.Id).ResponseBody;
+            exPost.Content =  post.Content;
+            exPost.Title = post.Title;
+
+            context.Posts.Update(exPost);
             context.SaveChanges();
             return new ServiceResponse<Post>(StatusCodes.Status200OK, post);
         }
