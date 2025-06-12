@@ -62,6 +62,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 
+builder.Services.AddTransient<IEmailService, EmailService>();
+
 builder.Services.AddCors(options =>
 {
     var frontendUrl = builder.Configuration["FrontendUrl"];

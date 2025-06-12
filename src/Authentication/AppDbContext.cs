@@ -19,9 +19,11 @@ namespace Projekt_Zespolowy.Authentication
         public DbSet<Share> Shares { get; set; }
         public DbSet<Reaction> Reactions { get; set; }
 
+        public DbSet<PasswordReset> PasswordResets { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder); 
+            base.OnModelCreating(builder);
 
             // Konfiguracja dla Community
             builder.Entity<Community>()
@@ -35,7 +37,7 @@ namespace Projekt_Zespolowy.Authentication
 
             // Klucze złożone dla tabel łączących
             builder.Entity<CommunityMember>()
-                .HasKey(cm => new { cm.AppUserId, cm.CommunityId }); 
+                .HasKey(cm => new { cm.AppUserId, cm.CommunityId });
 
             builder.Entity<Follower>()
                 .HasKey(f => new { f.FollowerId, f.FollowingId });
@@ -44,9 +46,9 @@ namespace Projekt_Zespolowy.Authentication
                 .HasKey(l => new { l.AppUserId, l.PostId });
 
             builder.Entity<Share>()
-                .HasKey(s => new {s.AppUserId, s.PostId});
+                .HasKey(s => new { s.AppUserId, s.PostId });
 
-            
+
 
             // Relacje dla CommunityMember
             builder.Entity<CommunityMember>()
@@ -64,7 +66,7 @@ namespace Projekt_Zespolowy.Authentication
             // Relacje dla Post
             builder.Entity<Post>()
                 .HasOne(p => p.Author)
-                .WithMany(u => u.PostsAuthored) 
+                .WithMany(u => u.PostsAuthored)
                 .HasForeignKey(p => p.AppUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -72,18 +74,18 @@ namespace Projekt_Zespolowy.Authentication
                 .HasOne(p => p.ParentPost)
                 .WithMany(p => p.Replies)
                 .HasForeignKey(p => p.ParentId)
-                .OnDelete(DeleteBehavior.NoAction); 
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Relacje dla Follower
             builder.Entity<Follower>()
                 .HasOne(f => f.FollowerUser)
-                .WithMany(u => u.Following) 
+                .WithMany(u => u.Following)
                 .HasForeignKey(f => f.FollowerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Follower>()
                 .HasOne(f => f.FollowingUser)
-                .WithMany(u => u.Followers) 
+                .WithMany(u => u.Followers)
                 .HasForeignKey(f => f.FollowingId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -118,6 +120,6 @@ namespace Projekt_Zespolowy.Authentication
                 .WithMany()
                 .HasForeignKey(s => s.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
-            }
+        }
     }
 }
