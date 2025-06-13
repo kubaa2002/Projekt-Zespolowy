@@ -18,8 +18,8 @@ namespace Projekt_Zespolowy.Authentication
         public DbSet<Like> Likes { get; set; }
         public DbSet<Share> Shares { get; set; }
         public DbSet<Reaction> Reactions { get; set; }
-
         public DbSet<PasswordReset> PasswordResets { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

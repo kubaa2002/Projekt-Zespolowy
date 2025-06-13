@@ -36,6 +36,10 @@ namespace Projekt_Zespolowy.Models
 
         public bool IsDeleted { get; set; } = false;
 
+        public int? ImageId { get; set; }
+        [ForeignKey("ImageId")]
+        public virtual Image? Image { get; set; }
+
         public virtual ICollection<Post> Replies { get; set; } = new List<Post>();
         public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
     }
