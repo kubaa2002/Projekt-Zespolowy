@@ -279,11 +279,10 @@ public class UserController : ControllerBase
             return Ok(new { message = "Jeśli podany adres e-mail istnieje w naszej bazie, link do resetowania hasła zostanie wysłany." });
         }
 
-        // 1. Generowanie tokena resetującego hasło za pomocą ASP.NET Core Identity
+        // Generowanie tokena resetującego hasło za pomocą ASP.NET Core Identity
         var identityResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-        // 2. Unieważnij wszystkie poprzednie tokeny dla tego użytkownika (opcjonalnie, ale zalecane)
-        // To jest dodatkowa warstwa kontroli ponad Identity.
+        // Unieważnij wszystkie poprzednie tokeny dla tego użytkownika
         var existingTokens = await _dbContext.PasswordResets
                                              .Where(t => t.Email == request.Email && !t.Used)
                                              .ToListAsync();
@@ -291,21 +290,15 @@ public class UserController : ControllerBase
         {
             token.Used = true; 
         }
-        await _dbContext.SaveChangesAsync();
 
-        // 3. Zapisz ten token w swojej tabeli PasswordResets
+        // Zapisz ten token w swojej tabeli PasswordResets
         var createdAt = DateTime.UtcNow;
-        // Wygasanie tokena resetującego - powinno być dłuższe niż domyślne Identity (np. 1 dzień vs 1 godzina)
-        // lub równoległe do domyślnego czasu życia tokena Identity.
-        // Domyślny czas życia tokena Identity to 1 dzień, ale możesz go skonfigurować w Program.cs
-        // w opcjach Identity (np. services.Configure<DataProtectionTokenProviderOptions>).
-        // Tutaj ustawiam na 1 godzinę, ale możesz dostosować.
         var expiresAt = createdAt.AddHours(1); 
 
         var passwordResetEntity = new PasswordReset
         {
             Email = user.Email,
-            Token = identityResetToken, // Użyj tokena wygenerowanego przez Identity
+            Token = identityResetToken,
             CreatedAt = createdAt,
             ExpiresAt = expiresAt,
             Used = false
@@ -314,7 +307,7 @@ public class UserController : ControllerBase
         _dbContext.PasswordResets.Add(passwordResetEntity);
         await _dbContext.SaveChangesAsync();
 
-        // 4. Utwórz link do resetowania hasła
+        // Utwórz link do resetowania hasła
         var frontendBaseUrl = _configuration["FrontendUrl"];
         if (string.IsNullOrEmpty(frontendBaseUrl))
         {
@@ -323,7 +316,7 @@ public class UserController : ControllerBase
         }
         var resetLink = $"{frontendBaseUrl}/resetconfirm?token={identityResetToken}";
 
-        // 5. Wysyłka e-maila
+        // Wysyłka e-maila
         var subject = "Link do resetowania hasła do Twojego konta";
         var body = $"Cześć {user.UserName ?? user.Email},\n\nOtrzymaliśmy prośbę o zresetowanie hasła dla Twojego konta. Kliknij w poniższy link, aby zresetować swoje hasło:\n\n{resetLink}\n\nLink wygasa za 1 godzinę. Jeśli nie prosiłeś o resetowanie hasła, zignoruj tę wiadomość.\n\nPozdrawiamy,\nZespół Aplikacji Vibe";
 
@@ -348,7 +341,7 @@ public class UserController : ControllerBase
             return BadRequest(new { error = "Token i nowe hasło są wymagane." });
         }
 
-        // 1. Znajdź token w bazie danych i sprawdź jego status (użycie, wygaśnięcie)
+        // Znajdź token w bazie danych i sprawdź jego status (użycie, wygaśnięcie)
         var passwordResetEntity = await _dbContext.PasswordResets
                                                  .FirstOrDefaultAsync(t => t.Token == request.Token && !t.Used && t.ExpiresAt > DateTime.UtcNow);
 
@@ -357,7 +350,7 @@ public class UserController : ControllerBase
             return BadRequest(new { error = "Nieprawidłowy lub wygasły token resetowania hasła." });
         }
 
-        // 2. Znajdź użytkownika za pomocą emaila z tokena z bazy danych
+        // Znajdź użytkownika za pomocą emaila z tokena z bazy danych
         var user = await _userManager.FindByEmailAsync(passwordResetEntity.Email);
 
         if (user == null)
@@ -366,7 +359,7 @@ public class UserController : ControllerBase
             return NotFound(new { error = "Użytkownik nie znaleziony." }); 
         }
 
-        // 3. Zresetuj hasło za pomocą UserManager (UserManager sam zweryfikuje token)
+        // Zresetuj hasło za pomocą UserManager (UserManager sam zweryfikuje token)
         var resetResult = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
 
         if (!resetResult.Succeeded)
@@ -377,7 +370,7 @@ public class UserController : ControllerBase
             return BadRequest(errors); 
         }
 
-        // 4. Oznacz token w Twojej bazie danych jako użyty
+        // Oznacz token w Twojej bazie danych jako użyty
         passwordResetEntity.Used = true;
         await _dbContext.SaveChangesAsync();
 
@@ -392,20 +385,20 @@ public class DeleteUserModel
     public string CurrentPassword { get; set; }
 }
 
-    public class SendResetLinkRequest
-    {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-    }
+public class SendResetLinkRequest
+{
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+}
 
-    public class ResetPasswordRequest
-    {
-        [Required]
-        public string Token { get; set; } = string.Empty;
+public class ResetPasswordRequest
+{
+    [Required]
+    public string Token { get; set; } = string.Empty;
 
     [Required]
     [CustomPassword]
     [JsonPropertyName("newPassword")]
     public string NewPassword { get; set; } = string.Empty;
-    }
+}
