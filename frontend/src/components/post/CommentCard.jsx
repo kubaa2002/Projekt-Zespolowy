@@ -57,6 +57,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Dislike",
             reactionId: 2,
           },
           getAuthConfig()
@@ -70,6 +71,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Like",
             reactionId: 1,
           },
           getAuthConfig()
@@ -81,6 +83,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Like",
             reactionId: 1,
           },
           getAuthConfig()
@@ -114,6 +117,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Like",
             reactionId: 1,
           },
           getAuthConfig()
@@ -127,6 +131,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Dislike",
             reactionId: 2,
           },
           getAuthConfig()
@@ -138,6 +143,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Dislike",
             reactionId: 2,
           },
           getAuthConfig()
@@ -218,7 +224,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           <p className="comment-text">{text}</p>
 
           <div className="comment-footer">
-            <div className="reactions">
+            <div className="post-footer">
               <Like
                 isLiked={isLiked}
                 likesCount={likesCount}

@@ -143,3 +143,10 @@
   color: #000;
   filter: grayscale(0);
 }
+.post-content {
+  /* Ustaw maksymalną szerokość, aby ograniczyć kontener */
+  max-width: 100%;
+  /* Przenoszenie długich słów */
+  word-break: break-all; /* lub word-break: break-word; */
+  /* Alternatywnie: overflow-wrap: break-word; */
+}

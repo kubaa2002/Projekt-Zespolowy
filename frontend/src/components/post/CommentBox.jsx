@@ -60,9 +60,9 @@ const CommentBox = ({ id, comments, setComments }) => {
         onChange={(e) => setComment(e.target.value)}
       />
       <div className="chars">
-        <span className="char-count">{comment.length} / 100</span>
+        <span className="char-count user-select-none">{comment.length} / 100</span>
       </div>
-      {error && <span className="text-danger err">{error}</span>}
+      {error && <span className="text-danger err user-select-none">{error}</span>}
       <div className="comment-footer2">
         
         <button className="btn btn-primary btn-publish" onClick={handlePublish}>

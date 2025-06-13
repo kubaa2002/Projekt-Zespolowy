@@ -65,9 +65,12 @@ export default function NewCommunity() {
         },
         getAuthConfig()
       );
-
       if (response.status === 201) {
         setIsCreated(true);
+       setTimeout(()=> {
+        navigate({ to: `/communities/${response.data.id}`})
+       }, 1000)
+
       } else {
         setErrorMessage("Failed to connect to the server");
       }
@@ -105,7 +108,7 @@ export default function NewCommunity() {
       <div className="create-post-content">
         <div className="mb-3">
           <div className="form-item">
-            <label htmlFor="name" className="form-label">
+            <label htmlFor="name" className="form-label user-select-none">
               Nazwa społeczności <span className="text-danger">*</span>
             </label>
             <input
@@ -116,13 +119,13 @@ export default function NewCommunity() {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            {nameError && <div className="invalid-feedback">{nameError}</div>}
+            {nameError && <div className="invalid-feedback user-select-none">{nameError}</div>}
           </div>
         </div>
         <div className="mb-3">
           <div className="form-item">
-            <label htmlFor="description" className="form-label">
-              Opis <span className="text-danger">*</span>
+            <label htmlFor="description" className="form-label user-select-none">
+              Opis <span className="text-danger user-select-none">*</span>
             </label>
             <textarea
               rows="4"
@@ -145,11 +148,12 @@ export default function NewCommunity() {
                 fontSize: "12px",
                 color: description.length >= maxLength ? "red" : "#888",
               }}
+              className="user-select-none"
             >
               {description.length}/{maxLength}
             </div>
             {descriptionError && (
-              <div className="invalid-feedback">{descriptionError}</div>
+              <div className="invalid-feedback user-select-none">{descriptionError}</div>
             )}
           </div>
         </div>
@@ -160,14 +164,14 @@ export default function NewCommunity() {
         <div className="d-flex w-100 gap-2">
           <button
             type="button"
-            className="btn btn-outline-secondary w-100 btn-deny"
+            className="btn btn-outline-secondary w-100 btn-deny user-select-none"
             onClick={() => navigate({ to: "/" })}
           >
             Anuluj
           </button>
           <button
             type="button"
-            className="btn btn-primary w-100 btn-publish"
+            className="btn btn-primary w-100 btn-publish user-select-none"
             onClick={createCommunity}
           >
             Stwórz społeczność

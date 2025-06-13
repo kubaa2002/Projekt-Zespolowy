@@ -112,7 +112,7 @@ const UserTag = ({ post }) => {
   }, []);
 
   return (
-    <div className="post-header" style={{ backgroundColor: isDeleted ? '#ffcccc' : 'transparent' }}>
+    <div className="post-header user-select-none" style={{ backgroundColor: isDeleted ? '#ffcccc' : 'transparent' }}>
      
       
         {!isDeleted ? (<div className="post-author" onClick={() => navigate({to: `/users/${authorId}`})} >
