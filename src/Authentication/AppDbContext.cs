@@ -120,6 +120,18 @@ namespace Projekt_Zespolowy.Authentication
                 .WithMany()
                 .HasForeignKey(s => s.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<AppUser>()
+               .HasOne(a => a.ProfileImage) 
+               .WithOne() 
+               .HasForeignKey<AppUser>(a => a.ProfileImageId) 
+               .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Community>()
+                .HasOne(c => c.CommunityImage)
+                .WithOne()
+                .HasForeignKey<Community>(c => c.CommunityImageId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
