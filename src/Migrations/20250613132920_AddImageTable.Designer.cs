@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projekt_Zespolowy.Authentication;
 
@@ -11,13 +12,15 @@ using Projekt_Zespolowy.Authentication;
 namespace Projekt_Zespolowy.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250613132920_AddImageTable")]
+    partial class AddImageTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "8.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -206,9 +209,6 @@ namespace Projekt_Zespolowy.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProfileImageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -228,10 +228,6 @@ namespace Projekt_Zespolowy.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("ProfileImageId")
-                        .IsUnique()
-                        .HasFilter("[ProfileImageId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -264,9 +260,6 @@ namespace Projekt_Zespolowy.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CommunityImageId")
-                        .HasColumnType("int");
-
                     b.Property<DateTimeOffset>("CreatedDateTime")
                         .HasColumnType("datetimeoffset");
 
@@ -280,10 +273,6 @@ namespace Projekt_Zespolowy.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CommunityImageId")
-                        .IsUnique()
-                        .HasFilter("[CommunityImageId] IS NOT NULL");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -550,26 +539,6 @@ namespace Projekt_Zespolowy.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Projekt_Zespolowy.Authentication.AppUser", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Models.Image", "ProfileImage")
-                        .WithOne()
-                        .HasForeignKey("Projekt_Zespolowy.Authentication.AppUser", "ProfileImageId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("ProfileImage");
-                });
-
-            modelBuilder.Entity("Projekt_Zespolowy.Models.Community", b =>
-                {
-                    b.HasOne("Projekt_Zespolowy.Models.Image", "CommunityImage")
-                        .WithOne()
-                        .HasForeignKey("Projekt_Zespolowy.Models.Community", "CommunityImageId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("CommunityImage");
                 });
 
             modelBuilder.Entity("Projekt_Zespolowy.Models.CommunityMember", b =>

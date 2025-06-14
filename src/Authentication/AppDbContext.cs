@@ -18,8 +18,8 @@ namespace Projekt_Zespolowy.Authentication
         public DbSet<Like> Likes { get; set; }
         public DbSet<Share> Shares { get; set; }
         public DbSet<Reaction> Reactions { get; set; }
-
         public DbSet<PasswordReset> PasswordResets { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -120,6 +120,18 @@ namespace Projekt_Zespolowy.Authentication
                 .WithMany()
                 .HasForeignKey(s => s.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<AppUser>()
+               .HasOne(a => a.ProfileImage) 
+               .WithOne() 
+               .HasForeignKey<AppUser>(a => a.ProfileImageId) 
+               .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Community>()
+                .HasOne(c => c.CommunityImage)
+                .WithOne()
+                .HasForeignKey<Community>(c => c.CommunityImageId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
