@@ -65,6 +65,23 @@ namespace Projekt_Zespolowy.Controllers
             return StatusCode(response.ResponseCode, postsDTO);
         }
 
+        [HttpGet("hot")]
+        [Authorize]
+        public IActionResult GetPostsHot(int page, int pageSize)
+        {
+            int start = (page - 1) * pageSize;
+            var response = postsService.GetPostsSortedByHot(start, pageSize);
+
+            if (response.ResponseCode == StatusCodes.Status204NoContent)
+                return NoContent();
+
+            var postsDTO = response.ResponseBody
+                .Where(x => x.IsDeleted == false)
+                .Select(x => (PostDTO)x).ToList();
+
+            return StatusCode(response.ResponseCode, postsDTO);
+        }
+
         [HttpGet("community/{communityId}")]
         public IActionResult CommunityPosts(int communityId, int page, int pageSize, string? filter = null)
         {
