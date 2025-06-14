@@ -19,6 +19,24 @@ namespace Projekt_Zespolowy.Services
             this.context = context;
 
         }
+
+        public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
+        {
+            var posts = dbContext.Posts
+                .Where(p => p.ParentId == null)
+                .Include(p => p.Likes)
+                .Include(p => p.Community)
+                .OrderByDescending(p => p.CreationTime)
+                .Skip(start)
+                .Take(length)
+                .ToList();
+
+            if (posts.Count == 0)
+                return new ServiceResponse<List<Post>>(null, StatusCodes.Status204NoContent);
+
+            return new ServiceResponse<List<Post>>(posts, StatusCodes.Status200OK);
+        }
+        
         public ServiceResponse<List<Post>> GetPostsSortedByNewest(int start, int length)
         {
             var posts = context.Posts
@@ -51,6 +69,40 @@ namespace Projekt_Zespolowy.Services
             return posts.Count == 0
                 ? new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null)
                 : new ServiceResponse<List<Post>>(StatusCodes.Status200OK, posts);
+        }
+
+        public ServiceResponse<List<Post>> GetPostsSortedByHot(int start, int length)
+        {
+            var posts = dbContext.Posts
+                .Where(p => p.ParentId == null)
+                .Include(p => p.Likes)
+                .Include(p => p.Community)
+                .ToList();
+
+            var now = DateTime.UtcNow;
+
+            var sortedPosts = posts
+                .Select(p =>
+                {
+                    int likeCount = p.Likes.Count(l => l.ReactionId == 1);    
+                    int dislikeCount = p.Likes.Count(l => l.ReactionId == 2); 
+
+                    double score = likeCount - dislikeCount;
+                    double ageInHours = (now - p.CreationTime).TotalHours;
+                    double hotScore = score / Math.Pow(ageInHours + 2, 1.5);
+
+                    return new { Post = p, HotScore = hotScore };
+                })
+                .OrderByDescending(x => x.HotScore)
+                .Skip(start)
+                .Take(length)
+                .Select(x => x.Post)
+                .ToList();
+
+            if (sortedPosts.Count == 0)
+                return new ServiceResponse<List<Post>>(null, StatusCodes.Status204NoContent);
+
+            return new ServiceResponse<List<Post>>(sortedPosts, StatusCodes.Status200OK);
         }
 
         public ServiceResponse<List<Post>> GetCommunityPostsSortedByNewest(int communityId, int start, int length)
