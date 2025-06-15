@@ -6,7 +6,7 @@ function ProtectedRoute({ children }) {
     const auth = useAuth();
     useEffect(() => {
         if (!auth.token) {
-            navigate({ to: "/login" });
+            navigate({ to: "/hero" });
         }
     }, [auth.token, navigate]);
     

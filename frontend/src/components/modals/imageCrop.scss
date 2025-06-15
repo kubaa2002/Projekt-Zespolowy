@@ -1,0 +1,12 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+.image-crop-modal{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+    padding: 10px;
+    transform: translateX(-50%) translateY(-50%);
+    gap: 10px;
+}

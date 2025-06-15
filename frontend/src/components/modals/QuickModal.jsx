@@ -8,7 +8,7 @@ export default function QuickModal({
   maxLength,
   content,
   setContent,
-   title, 
+  title, 
   setTitle,
   handlePublish,
   communityId,
