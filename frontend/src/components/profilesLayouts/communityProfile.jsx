@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./profile.scss";
+import ImageCrop from "../modals/ImageCrop";
 
 const CommunityProfile = ({ community, communityId }) => {
   const [isMember, setIsMember] = useState(community.isMember); // Track membership status
@@ -8,9 +9,10 @@ const CommunityProfile = ({ community, communityId }) => {
   const [description, setDescription] = useState(community.description); // Track description
   const [editModalOpen, setEditModalOpen] = useState(false); // Track edit modal
   const [error, setError] = useState(null); // Handle API errors
-
+  const isOwner = community.role === "owner";
   // Assume token is stored in localStorage
   const token = localStorage.getItem("token") || "";
+  const [showCropModal, setShowCropModal] = useState(false);
 
   // Join community
   const handleJoin = async () => {
@@ -97,12 +99,28 @@ const CommunityProfile = ({ community, communityId }) => {
     "Rendering CommunityProfile component with community:",
     community
   );
+  const handleCommunityClick = (e) => {
+    e.stopPropagation();
+    if (!isOwner) return;
+    setShowCropModal(true);
+  };
 
   return (
     <div className="container mt-5">
       <div className="card shadow-sm">
         <div className="card-body">
           <div className="d-flex align-items-center mb-3">
+          <img
+                className="rounded-circle me-3"
+                src={"/avatar.svg"}
+                width={80}
+                height={80}
+                style={{
+                  objectFit: "cover",
+                  cursor: isOwner ? "pointer" : "default",
+                }}
+                onClick={handleCommunityClick}
+              />
             <div>
               <h2 className="card-title mb-1">{community.name}</h2>
               <p className="text-muted mb-0">
@@ -119,7 +137,7 @@ const CommunityProfile = ({ community, communityId }) => {
                 Edytuj opis
               </button>
             )}
-            {community.role !== "owner" && (
+            {!isOwner && (
               <button
                 className={`btn ${isMember ? "btn-secondary" : "btn-primary"} ms-auto`}
                 onClick={isMember ? handleLeave : handleJoin}
@@ -189,6 +207,12 @@ const CommunityProfile = ({ community, communityId }) => {
             </div>
           </div>
         </div>
+      )}
+      {showCropModal && (
+        <ImageCrop
+          show={showCropModal}
+          onClose={() => setShowCropModal(false)}
+        />
       )}
     </div>
   );

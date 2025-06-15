@@ -3,10 +3,16 @@
 @use "../../styles/colors" as colors;
 .image-crop-modal{
     position: absolute;
-    top: 50%;
+    top: 30%;
     left: 50%;
     border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
     padding: 10px;
     transform: translateX(-50%) translateY(-50%);
     gap: 10px;
+    z-index: 1000;
+    background-color: map.get(colors.$key-colors, white);
+}
+.image-preview{
+    max-height: 50vh;
+    max-width: 50vh;
 }

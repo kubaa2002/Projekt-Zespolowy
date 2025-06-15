@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import ReactCrop, {
   centerCrop,
   makeAspectCrop,
@@ -46,12 +46,26 @@ const setCanvasPreview = (image, canvas, crop) => {
   ctx.restore();
 };
 
-export default function ImageCrop() {
+export default function ImageCrop({show, onClose}) {
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
   const [imgSrc, setImgSrc] = useState("");
   const [crop, setCrop] = useState();
   const [error, setError] = useState("");
+  const imageCropRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (imageCropRef.current && !imageCropRef.current.contains(e.target)) {
+        setImgSrc("");
+        setCrop(null);
+        setError("");
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  })
 
   const onSelectFile = (e) => {
     const file = e.target.files?.[0];
@@ -92,13 +106,14 @@ export default function ImageCrop() {
     const centeredCrop = centerCrop(crop, width, height);
     setCrop(centeredCrop);
   };
+  if(!show) return null;
   return (
-    <>
-      <div className="image-crop-modal d-flex flex-column">
+      <div className="image-crop-modal d-flex flex-column" ref={imageCropRef}>
         <label htmlFor="image">Select image: </label>
         <input type="file" name="image" id="image" onChange={onSelectFile} />
+        <button className="btn-close" style={{position: 'absolute', top: '5px', right:'5px'}} onClick={onClose}></button>
         {imgSrc && (
-          <div className="image-preview">
+          <div className="image-preview align-self-center">
             <ReactCrop
               crop={crop}
               onChange={(pixelCrop, percentCrop) => setCrop(percentCrop)}
@@ -150,6 +165,5 @@ export default function ImageCrop() {
           />
         )}
       </div>
-    </>
   );
 }
