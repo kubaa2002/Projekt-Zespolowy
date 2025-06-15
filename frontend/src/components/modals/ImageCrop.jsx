@@ -53,7 +53,7 @@ export default function ImageCrop({show, onClose}) {
   const [crop, setCrop] = useState();
   const [error, setError] = useState("");
   const imageCropRef = useRef(null);
-
+  const inputRef = useRef(null);
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (imageCropRef.current && !imageCropRef.current.contains(e.target)) {
@@ -107,10 +107,14 @@ export default function ImageCrop({show, onClose}) {
     setCrop(centeredCrop);
   };
   if(!show) return null;
-  return (
+  return (<>
+  <div className="blur"></div>
       <div className="image-crop-modal d-flex flex-column" ref={imageCropRef}>
         <label htmlFor="image">Select image: </label>
-        <input type="file" name="image" id="image" onChange={onSelectFile} />
+       {!crop && <button className="btn btn-secondary mb-2" onClick={() => inputRef.current.click()}>
+          Wybierz zdjęcie
+        </button>} 
+        <input type="file" name="image" id="image" onChange={onSelectFile}  className="none" ref={inputRef}/>
         <button className="btn-close" style={{position: 'absolute', top: '5px', right:'5px'}} onClick={onClose}></button>
         {imgSrc && (
           <div className="image-preview align-self-center">
@@ -146,15 +150,16 @@ export default function ImageCrop({show, onClose}) {
                 )
               );
               const dataUrl = previewCanvasRef.current.toDataURL();
+              onClose()
             }}
           >
             Submit
           </button>
         )}
-        {crop && (
+        {crop  && (
           <canvas
             ref={previewCanvasRef}
-            className="align-self-center mt-3"
+            className="align-self-center mt-3 none"
             style={{
               borderRadius: '50%',
               border: "1px solid black",
@@ -165,5 +170,6 @@ export default function ImageCrop({show, onClose}) {
           />
         )}
       </div>
+      </>
   );
 }
