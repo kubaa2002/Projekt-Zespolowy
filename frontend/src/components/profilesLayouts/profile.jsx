@@ -184,7 +184,7 @@ const Profile = ({ user }) => {
                 Joined: {new Date(user.createdAt).toLocaleDateString()}
               </p>
             </div>
-            {isMe && (
+            {!isMe && (
               <button
                 className={`btn ${follow.some((p) => p.id === user.id) ? "btn-secondary" : "btn-primary"} ms-auto`}
                 onClick={
