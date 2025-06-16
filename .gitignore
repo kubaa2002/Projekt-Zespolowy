@@ -14,3 +14,6 @@ docker/bin/
 /.vs/Projekt-Zespolowy
 /.vs/ProjectEvaluation
 /src/.vs/Projekt-Zespolowy
+/src/appsettings.Development.json
+/src/appsettings.json
+/.gitignore
