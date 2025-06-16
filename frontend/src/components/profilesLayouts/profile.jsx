@@ -4,6 +4,7 @@ import "./profile.scss";
 import { useAuth } from "../../contexts/authProvider";
 import { useNavigate } from "@tanstack/react-router";
 import ImageCrop from "../modals/ImageCrop.jsx";
+import UserListItem from "./UserListItem.jsx";
 
 const Profile = ({ user }) => {
   const [activeModal, setActiveModal] = useState(null); // Track which modal is open
@@ -163,7 +164,7 @@ const Profile = ({ user }) => {
   console.log("Rendering Profile component with user:", user);
 
   return (
-    <div className="container mt-5">
+    <div className=" mt-5">
       <div className="card shadow-sm">
         <div className="card-body">
           <div className="d-flex align-items-center mb-3">
@@ -266,17 +267,14 @@ const Profile = ({ user }) => {
                     </div>
                   </div>
                 ) : followers.length > 0 ? (
-                  <ul className="list-group">
+                  <ul className="list-group community-list">
                     {followers.map((follower) => (
-                      <li
+                      <UserListItem
                         key={follower.id}
-                        onClick={() =>
-                          navigate({ to: `/users/${follower.id}` })
-                        }
-                        className="list-group-item cursor-pointer user-select-none"
-                      >
-                        {follower.userName}
-                      </li>
+                        url={`${import.meta.env.VITE_API_URL}/img/get/user/${follower?.id}`}
+                        name={follower?.userName}
+                        link={`/users/${follower?.id}`}
+                      />
                     ))}
                   </ul>
                 ) : (
@@ -327,17 +325,14 @@ const Profile = ({ user }) => {
                     </div>
                   </div>
                 ) : following.length > 0 ? (
-                  <ul className="list-group">
+                  <ul className="list-group community-list">
                     {following.map((followed) => (
-                      <li
+                      <UserListItem
                         key={followed.id}
-                        onClick={() =>
-                          navigate({ to: `/users/${followed.id}` })
-                        }
-                        className="list-group-item cursor-pointer user-select-none"
-                      >
-                        {followed.userName}
-                      </li>
+                        url={`${import.meta.env.VITE_API_URL}/img/get/user/${followed?.id}`}
+                        name={followed?.userName}
+                        link={`/users/${followed?.id}`}
+                      />
                     ))}
                   </ul>
                 ) : (
@@ -388,17 +383,14 @@ const Profile = ({ user }) => {
                     </div>
                   </div>
                 ) : communities.length > 0 ? (
-                  <ul className="list-group">
+                  <ul className="list-group community-list">
                     {communities.map((community) => (
-                      <li
+                      <UserListItem
                         key={community.id}
-                        onClick={() =>
-                          navigate({ to: `/communities/${community.id}` })
-                        }
-                        className="list-group-item cursor-pointer user-select-none"
-                      >
-                        {community.name}
-                      </li>
+                        url={`${import.meta.env.VITE_API_URL}/img/get/community/${community?.id}`}
+                        name={community.name}
+                        link={`/communities/${community.id}`}
+                      />
                     ))}
                   </ul>
                 ) : (

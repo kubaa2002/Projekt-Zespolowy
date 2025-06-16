@@ -106,7 +106,7 @@ const CommunityProfile = ({ community, communityId }) => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className=" mt-5">
       <div className="card shadow-sm">
         <div className="card-body">
           <div className="d-flex align-items-center mb-3">

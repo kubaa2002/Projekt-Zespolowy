@@ -209,6 +209,8 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 onClick={() => {
                   navigate({ to: `/users/${user.id}` });
                   setMobileMenuOpen(false);
+                  setRotated(false);
+
                 }}
               >
                 Profil
@@ -218,6 +220,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 onClick={() => {
                   navigate({ to: "/communities/new" });
                   setMobileMenuOpen(false);
+                  setRotated(false);
                 }}
               >
                 Stwórz społeczność
@@ -227,6 +230,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 onClick={() => {
                   navigate({ to: "/settings" });
                   setMobileMenuOpen(false);
+                  setRotated(false);
                 }}
               >
                 Ustawienia

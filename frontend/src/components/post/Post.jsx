@@ -116,6 +116,7 @@ const Post = ({ post, showReplies = true }) => {
         <UserTag post={post} />
 
         <div className="post-content">
+          <h2 className="post-title">{post.title}</h2>
           <div dangerouslySetInnerHTML={{ __html: previewText }} />
           {isLong && (
             <a href="#" className="read-more">
