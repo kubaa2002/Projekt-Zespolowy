@@ -112,7 +112,7 @@ const CommunityProfile = ({ community, communityId }) => {
           <div className="d-flex align-items-center mb-3">
           <img
                 className="rounded-circle me-3"
-                src={"/avatar.svg"}
+                src={`${import.meta.env.VITE_API_URL}/img/get/community/${communityId}?q=${Date.now()}`}
                 width={80}
                 height={80}
                 style={{
@@ -120,6 +120,10 @@ const CommunityProfile = ({ community, communityId }) => {
                   cursor: isOwner ? "pointer" : "default",
                 }}
                 onClick={handleCommunityClick}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/avatar.svg"; 
+                }}
               />
             <div>
               <h2 className="card-title mb-1">{community.name}</h2>
@@ -212,6 +216,8 @@ const CommunityProfile = ({ community, communityId }) => {
         <ImageCrop
           show={showCropModal}
           onClose={() => setShowCropModal(false)}
+          endPointUrl={`${import.meta.env.VITE_API_URL}/img/add/community`}
+          communityId={communityId}
         />
       )}
     </div>

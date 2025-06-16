@@ -100,7 +100,7 @@ export default function QuickModal({
                 onChange={handleSelectChange}
                 value={selectedOption.type === "user" ? "user" : selectedOption.id}
               >
-                <option value="user">{user?.userName || "Twoje konto"}</option>
+                <option value="user">Mój profil</option>
                 {communities.map((community) => (
                   <option key={community.id} value={community.id}>
                     {community.name}

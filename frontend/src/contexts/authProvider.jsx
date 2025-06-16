@@ -14,7 +14,7 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [follow, setFollow] = useState([]);
   const [postIds, setPostIds] = useState([]);
-
+  const [profilePictureVersion, setProfilePictureVersion] = useState(Date.now()); // Force image reload on profile picture change
   const loginAction = useCallback(async (email, password) => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/user/login`,
@@ -84,6 +84,12 @@ const AuthProvider = ({ children }) => {
         );
       });
   };
+  const getProfilePictureUrl = () => {
+    return `${import.meta.env.VITE_API_URL}/img/get/user/${user?.id}?v=${profilePictureVersion}`;
+  }
+  const updateProfilePicture = () => {
+    setProfilePictureVersion(Date.now()); 
+  }
 
   const fetchFollowedUsers = (id) => {
     return axios
@@ -156,6 +162,8 @@ const AuthProvider = ({ children }) => {
         setFollow,
         postIds,
         setPostIds,
+        updateProfilePicture,
+        getProfilePictureUrl
       }}
     >
       {children}

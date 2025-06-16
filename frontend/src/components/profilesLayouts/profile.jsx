@@ -14,7 +14,8 @@ const Profile = ({ user }) => {
   const [isLoading, setIsLoading] = useState(false); // Handle modal loading state
   const [isFollowLoading, setIsFollowLoading] = useState(false); // Handle follow button loading
   const [isFollowing, setIsFollowing] = useState(user.isFollowing); // Track follow state
-  const { user: authUser, follow, setFollow } = useAuth();
+  
+  const { user: authUser, follow, setFollow, getProfilePictureUrl, updateProfilePicture} = useAuth();
   const navigate = useNavigate();
   const [showCropModal, setShowCropModal] = useState(false);
   const isMe = authUser.id === user.id;
@@ -168,7 +169,7 @@ const Profile = ({ user }) => {
           <div className="d-flex align-items-center mb-3">
             <img
               className="rounded-circle me-3"
-              src={"/avatar.svg"}
+              src={getProfilePictureUrl()}
               alt={`${user.userName}'s avatar`}
               width={80}
               height={80}
@@ -177,6 +178,10 @@ const Profile = ({ user }) => {
                 cursor: isMe ? "pointer" : "default",
               }}
               onClick={handleProfileClick}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/avatar.svg"; 
+              }}
             />
             <div>
               <h2 className="card-title mb-1">{user.userName}</h2>
@@ -416,7 +421,11 @@ const Profile = ({ user }) => {
       {showCropModal && (
         <ImageCrop
           show={showCropModal}
-          onClose={() => setShowCropModal(false)}
+          onClose={() => {
+            setShowCropModal(false) ;
+            updateProfilePicture(); // I know it forces reload on every close, but who cares???
+          }}
+          endPointUrl={`${import.meta.env.VITE_API_URL}/img/add/user`}
         />
       )}
     </div>

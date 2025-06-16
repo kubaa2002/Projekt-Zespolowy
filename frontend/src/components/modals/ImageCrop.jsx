@@ -6,6 +6,8 @@ import ReactCrop, {
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import "./imageCrop.scss";
+import { useAuth } from "../../contexts/authProvider";
+import axios from "axios";
 
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
@@ -46,7 +48,7 @@ const setCanvasPreview = (image, canvas, crop) => {
   ctx.restore();
 };
 
-export default function ImageCrop({show, onClose}) {
+export default function ImageCrop({show, onClose, endPointUrl, communityId}) {
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
   const [imgSrc, setImgSrc] = useState("");
@@ -54,6 +56,7 @@ export default function ImageCrop({show, onClose}) {
   const [error, setError] = useState("");
   const imageCropRef = useRef(null);
   const inputRef = useRef(null);
+  const auth = useAuth();
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (imageCropRef.current && !imageCropRef.current.contains(e.target)) {
@@ -140,17 +143,47 @@ export default function ImageCrop({show, onClose}) {
           <button
             className="btn btn-info align-self-center"
             onClick={() => {
-              setCanvasPreview(
-                imgRef.current,
-                previewCanvasRef.current,
-                convertToPixelCrop(
-                  crop,
-                  imgRef.current.width,
-                  imgRef.current.height
-                )
+              const image = imgRef.current;
+              const canvas = previewCanvasRef.current;
+            
+              const pixelCrop = convertToPixelCrop(
+                crop,
+                image.width,
+                image.height
               );
-              const dataUrl = previewCanvasRef.current.toDataURL();
-              onClose()
+            
+              setCanvasPreview(image, canvas, pixelCrop);
+            
+              canvas.toBlob(async (blob) => {
+                if (!blob) {
+                  console.error("Conversion to blob failed");
+                  return;
+                }
+            
+                const formData = new FormData();
+                formData.append("file", blob, "avatar.jpg");
+                communityId && formData.append("communityId", communityId);
+                try {
+                  const res = await axios.post(endPointUrl, formData, {
+                    headers: {
+                      Authorization: `Bearer ${auth.token}`,
+                      "Content-Type": "multipart/form-data",
+                    },
+                  });
+            
+                  if (res.status !== 200) {
+                    console.error("Upload failed");
+                    alert("Wysłanie zdjęcia nie powiodło się.");
+                  } else {
+                    console.log("Image uploaded successfully");
+                    auth.updateProfilePicture();
+                    onClose(); 
+                  }
+                } catch (err) {
+                  console.error("Fetch error:", err);
+                  alert("Wystąpił błąd przy wysyłaniu zdjęcia.");
+                }
+              }, "image/jpeg", 0.95);
             }}
           >
             Submit

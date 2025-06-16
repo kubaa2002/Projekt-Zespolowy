@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import ImageCrop from "../components/modals/ImageCrop";
 export const Route = createFileRoute("/crop")({
-    component: RouteComponent,
+  component: RouteComponent,
 });
 
 function RouteComponent() {
-    return <ImageCrop />
+  return <ImageCrop />;
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/authProvider";
-import { useNavigate, useLocation } from "@tanstack/react-router";
+import { useNavigate, useLocation, useRouterState } from "@tanstack/react-router";
 import checkIfUserOrCommunityRoute from "../../utils/isUserOrCommunityRoute";
 const SearchInput = () => {
   const location = useLocation();
@@ -54,9 +54,10 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const modalRef = useRef();
   const mobileMenuRef = useRef(null);
-
+  const routerState = useRouterState();
+  const currentPath = routerState.location.pathname;
   const auth = useAuth();
-  const { user } = useAuth();
+  const { user, getProfilePictureUrl } = useAuth();
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 1600) {
@@ -129,7 +130,10 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             Stwórz społeczność
           </button>
           <div className="profile" onClick={handleProfileClick}>
-            <img src="/avatar.svg" alt="Avatar" />
+            <img className="profile-picture" src={getProfilePictureUrl()} alt="Avatar" onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/avatar.svg"; 
+                }}/>
             <i
               className="bi bi-triangle-fill"
               style={{
@@ -201,7 +205,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 {auth.user.userName}
               </li>
               <li
-                className="dropdown-menu-item"
+                className={`dropdown-menu-item ${currentPath === `/users/${user.id}` ? 'selected' : ''}`}
                 onClick={() => {
                   navigate({ to: `/users/${user.id}` });
                   setMobileMenuOpen(false);
@@ -210,7 +214,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 Profil
               </li>
               <li
-                className="dropdown-menu-item"
+                className={`dropdown-menu-item ${currentPath === '/communities/new' ? 'selected' : ''}`}
                 onClick={() => {
                   navigate({ to: "/communities/new" });
                   setMobileMenuOpen(false);
@@ -219,7 +223,7 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 Stwórz społeczność
               </li>
               <li
-                className="dropdown-menu-item"
+                className={`dropdown-menu-item ${currentPath === '/settings' ? 'selected' : ''}`}
                 onClick={() => {
                   navigate({ to: "/settings" });
                   setMobileMenuOpen(false);

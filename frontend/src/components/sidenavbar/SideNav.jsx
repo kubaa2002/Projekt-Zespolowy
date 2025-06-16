@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { useAuth } from "../../contexts/authProvider";
 import useGetCommunities from "../../hooks/useGetCommunities";
 
-
 const NavRow = ({ icon, title, subTitle, onClick, link }) => (
   <Link
     to={link}
@@ -21,23 +20,26 @@ const NavRow = ({ icon, title, subTitle, onClick, link }) => (
   </Link>
 );
 
-const CommunityRow = ({ title, numberOfUsers, link }) => {
+const CommunityRow = ({ title, numberOfUsers, id }) => {
   return (
-    <Link to={link} activeProps={{ className: `selected` }}>
+    <Link to={`/communities/${id}`} activeProps={{ className: `selected` }}>
       <div className={`community-row`}>
-        <div
-          className="community-icon-wrapper"
-          style={{ backgroundColor: getColor(title) }}
-        >
-          <i className="bi bi-person"></i>
-        </div>
+        <img
+          className="community-picture"
+          src={`${import.meta.env.VITE_API_URL}/img/get/community/${id}`}
+          alt="Community picture"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/avatar.svg";
+          }}
+        />
         <div className="community-info">
           <div className="community-title">{title}</div>
           <div className="community-users">
             {numberOfUsers > 999
               ? Number((Math.abs(numberOfUsers) / 1000).toFixed(1)) + "k"
               : numberOfUsers}{" "}
-             {numberOfUsers == 1 ? "użytkownik" : "użytkowników" }
+            {numberOfUsers == 1 ? "użytkownik" : "użytkowników"}
           </div>
         </div>
       </div>
@@ -47,7 +49,7 @@ const CommunityRow = ({ title, numberOfUsers, link }) => {
 
 export default function SideNav() {
   const { user } = useAuth();
-  const {communities, isLoading, error} = useGetCommunities(user?.id); 
+  const { communities, isLoading, error } = useGetCommunities(user?.id);
   const sideNavItems = [
     {
       icon: "bi-house-door-fill",
@@ -59,22 +61,22 @@ export default function SideNav() {
       icon: "bi-person-plus-fill",
       title: "Obserwowani użytkownicy",
       subTitle: "Zobacz, co nowego u twoich obserwowanych",
-      linkTo: "/users/following"
+      linkTo: "/users/following",
     },
     {
       icon: "bi bi-person-fill",
       title: "Mój profil",
       subTitle: "Podgląd własnego profilu",
-      linkTo: `/users/${user?.id}`
+      linkTo: `/users/${user?.id}`,
     },
     {
       icon: "bi bi bi-gear-fill",
       title: "Ustawienia",
       subTitle: "Zmień ustawienia",
-      linkTo: "/settings"
+      linkTo: "/settings",
     },
   ];
-  
+
   if (error) return <div>Error: {error.message}</div>;
   return (
     <div className="side-wrapper user-select-none">
@@ -94,12 +96,13 @@ export default function SideNav() {
           <div className="community-header">Obserwowane społeczności</div>
           <div className="community-list-wrapper">
             {isLoading && communities.length === 0 && <p>Ładowanie...</p>}
-            {communities.map(community => (
+            {communities.map((community) => (
               <CommunityRow
                 key={community.name}
                 title={community.name}
                 link={`/communities/${community.id}`}
-                numberOfUsers={community.memberCount} 
+                numberOfUsers={community.memberCount}
+                id={community.id}
               />
             ))}
           </div>

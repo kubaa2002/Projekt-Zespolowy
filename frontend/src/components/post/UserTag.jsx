@@ -8,7 +8,7 @@ const UserTag = ({ post }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isDeleted, setIsDeleted] = useState(post.isDeleted || false);
   const menuRef = useRef();
-  const { user, token,follow,setFollow } = useAuth();
+  const { user, token,follow,setFollow, getProfilePictureUrl } = useAuth();
   const navigate = useNavigate();
 
   const isPostOwner = authorId === user.id;
@@ -99,8 +99,6 @@ const UserTag = ({ post }) => {
   }
 };
 
-
-
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -116,7 +114,10 @@ const UserTag = ({ post }) => {
      
       
         {!isDeleted ? (<div className="post-author" onClick={() => navigate({to: `/users/${authorId}`})} >
-          <div className="author-avatar" />
+          <img className="author-avatar" src={authorId === user.id ? getProfilePictureUrl() : `${import.meta.env.VITE_API_URL}/img/get/user/${authorId}`} onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/avatar.svg"; 
+                }}/>
         <div>
           <div className="author-name">{authorName}</div>
           <div className="post-date">{formattedDate}</div>
