@@ -13,8 +13,10 @@ const PassReset2 = () => {
   const [wasSent, setWasSent] = useState(false);
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
-  const token = params.get("token");
-
+  let token = params.get("token");
+  if (token) {
+      token = token.replaceAll(' ', '+');
+  }
   const auth = useAuth();
 
 

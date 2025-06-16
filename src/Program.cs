@@ -62,6 +62,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 
+builder.Services.AddTransient<IEmailService, EmailService>();
+
 builder.Services.AddCors(options =>
 {
     var frontendUrl = builder.Configuration["FrontendUrl"];
@@ -80,6 +82,7 @@ builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<LikesService>();
 builder.Services.AddScoped<SharingService>();
+builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
