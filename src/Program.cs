@@ -82,6 +82,7 @@ builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<LikesService>();
 builder.Services.AddScoped<SharingService>();
+builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
