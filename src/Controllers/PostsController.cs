@@ -309,7 +309,7 @@ namespace Projekt_Zespolowy.Controllers
                 return Unauthorized();
             }
             var usrId = userManager.FindByNameAsync(usr).Result.Id;
-            if (postsService.GetById(id).ResponseBody.AppUserId != usrId)
+            if (postsService.GetByIdWithDeleted(id).ResponseBody.AppUserId != usrId)
             {
                 return Unauthorized();
             }

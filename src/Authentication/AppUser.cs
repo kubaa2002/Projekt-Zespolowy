@@ -13,7 +13,10 @@ public class AppUser : IdentityUser
 
     [PersonalData]
     public bool IsDeleted { get; set; } = false;
+    [PersonalData]
+    public int? ProfileImageId { get; set; }
 
+    public virtual Image? ProfileImage { get; set; }
     public virtual ICollection<Post> PostsAuthored { get; set; } = new List<Post>();
     public virtual ICollection<CommunityMember> CommunityMemberships { get; set; } = new List<CommunityMember>();
     public virtual ICollection<Like> LikesGiven { get; set; } = new List<Like>();

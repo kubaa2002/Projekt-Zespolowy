@@ -202,6 +202,16 @@ namespace Projekt_Zespolowy.Services
             else
                 return new ServiceResponse<Post>(StatusCodes.Status200OK, result);
         }
+        public ServiceResponse<Post> GetByIdWithDeleted(int id)
+        {
+            var result = context.Posts.Include(x => x.Likes).ThenInclude(l => l.Reaction).Include(p => p.Author).SingleOrDefault(x => x.Id == id);
+            if (result == default)
+            {
+                return new ServiceResponse<Post>(StatusCodes.Status404NotFound, null);
+            }
+            else
+                return new ServiceResponse<Post>(StatusCodes.Status200OK, result);
+        }
         public ServiceResponse<Post> Add(PostDTO newPost)
         {
             if (newPost.CreatedDateTime == default)
@@ -314,7 +324,7 @@ namespace Projekt_Zespolowy.Services
             {
                 return new ServiceResponse<string?>(StatusCodes.Status409Conflict, null);
             }
-            post.IsDeleted = true;
+            post.IsDeleted = false;
             context.Posts.Update(post);
             context.SaveChanges();
 
