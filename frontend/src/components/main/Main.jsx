@@ -22,7 +22,6 @@ export default function Main() {
       alert("Uzupełnij treść posta.");
       return;
     }
-    console.log("tytul "+title)
   
     const postData = {
       id: 0, // zakładamy, że backend sam nadaje ID
@@ -48,6 +47,7 @@ export default function Main() {
       console.log("Post opublikowany:", createdPost);
       // Resetowanie stanu po publikacji
       setContent("");
+      setTitle("");
       onClose(); // zamknij modal
     } catch (err) {
       console.error("Błąd podczas publikacji posta:", err);

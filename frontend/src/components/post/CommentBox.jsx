@@ -54,13 +54,13 @@ const CommentBox = ({ id, comments, setComments }) => {
     <div className="comment-container">
       <textarea
         className="form-control"
-        maxLength={100}
+        maxLength={500}
         placeholder="Dodaj coś od siebie..."
         value={comment}
         onChange={(e) => setComment(e.target.value)}
       />
       <div className="chars">
-        <span className="char-count user-select-none">{comment.length} / 100</span>
+        <span className="char-count user-select-none">{comment.length} / 500</span>
       </div>
       {error && <span className="text-danger err user-select-none">{error}</span>}
       <div className="comment-footer2">
