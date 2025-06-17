@@ -57,9 +57,9 @@ export default function Main() {
   return (
     <MainLayout>
         <div className={`main-think${rotated ? " main-think-open" : ""}`}>
-          <img src="avatar.svg" alt="Avatar" className="avatar" />
+          <img src={`${import.meta.env.VITE_API_URL}/img/get/user/${user?.id}`} alt="Avatar" className="avatar" />
           <span className="text-think">
-            Podziej się tym, co masz na myśli
+            Podziel się tym, co masz na myśli
           </span>
           <div className="buttons-think">
             <button

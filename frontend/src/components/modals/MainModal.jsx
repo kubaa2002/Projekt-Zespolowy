@@ -86,7 +86,7 @@ export default function MainModal({
         {!hideSelect && (
           <div className="mb-3">
             <div className="form-item">
-              <label htmlFor="community" className="form-label">
+              <label htmlFor="community" className="form-label user-select-none">
                 Gdzie chcesz umieścić? <span className="text-danger">*</span>
               </label>
               <select
@@ -95,7 +95,7 @@ export default function MainModal({
                 onChange={handleSelectChange}
                 value={selectedOption.type === "user" ? "user" : selectedOption.id}
               >
-                <option value="user">{user?.userName || "Twoje konto"}</option>
+                <option value="user">Mój profil</option>
                 {communities.map((community) => (
                   <option key={community.id} value={community.id}>
                     {community.name}
@@ -107,8 +107,8 @@ export default function MainModal({
         )}
         <div className="mb-3">
           <div className="form-item">
-            <label htmlFor="title" className="form-label">
-              Tytuł <span className="text-danger">*</span>
+            <label htmlFor="title" className="form-label user-select-none">
+              Tytuł <span className="text-danger user-select-none">*</span>
             </label>
             <input
               type="text"
@@ -122,8 +122,8 @@ export default function MainModal({
         </div>
         <div className="mb-3">
           <div className="form-item">
-            <label htmlFor="content" className="form-label">
-              Opis posta <span className="text-danger">*</span>
+            <label htmlFor="content" className="form-label user-select-none">
+              Opis posta <span className="text-danger ">*</span>
             </label>
             <TextEditor onContentChange={setContent} content={content} />
             <div
@@ -132,6 +132,7 @@ export default function MainModal({
                 fontSize: "12px",
                 color: content.length >= maxLength ? "red" : "#888",
               }}
+              className="user-select-none"
             >
               {content.length}/{maxLength}
             </div>

@@ -47,3 +47,28 @@
   color: #888888;
   margin-top: 4px;
 }
+
+
+.community-list {
+  max-height: 250px; 
+  overflow-y: auto; 
+  overflow-x: hidden; 
+}
+
+
+.community-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.community-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.community-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.community-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

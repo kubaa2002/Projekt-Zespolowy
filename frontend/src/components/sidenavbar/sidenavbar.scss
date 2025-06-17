@@ -36,7 +36,7 @@
 
 
     &:hover {
-      background-color: map.get(colors.$navbar, border-gray-400);
+      background-color: map.get(colors.$key-colors, light-pink);
     }
 
     &.selected {
@@ -101,7 +101,11 @@
       display: flex;
       gap: 15px;
       cursor: pointer;
-
+      
+      .community-picture{
+        width: 60px;
+        height: 60px;
+      }
 
       .community-icon-wrapper {
         display: flex;
@@ -135,4 +139,8 @@
     @include fonts.basic-text();
   }
 
+}
+
+.selected .info-subtitle {
+  color: rgb(49, 48, 48) !important;
 }

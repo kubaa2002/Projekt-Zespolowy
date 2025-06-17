@@ -8,7 +8,7 @@ export default function QuickModal({
   maxLength,
   content,
   setContent,
-   title, 
+  title, 
   setTitle,
   handlePublish,
   communityId,
@@ -85,13 +85,13 @@ export default function QuickModal({
       <div className="modal-dialog modal-dialog-custom">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Szybki post</h5>
+            <h5 className="modal-title user-select-none">Szybki post</h5>
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
           <div className="modal-body">
             <div className="mb-3">
               <div className="form-item">
-                <label htmlFor="title" className="form-label">
+                <label htmlFor="title" className="form-label user-select-none">
                   Gdzie chcesz umieścić? <span className="text-danger">*</span>
                 </label>
                 <select
@@ -100,7 +100,7 @@ export default function QuickModal({
                 onChange={handleSelectChange}
                 value={selectedOption.type === "user" ? "user" : selectedOption.id}
               >
-                <option value="user">{user?.userName || "Twoje konto"}</option>
+                <option value="user">Mój profil</option>
                 {communities.map((community) => (
                   <option key={community.id} value={community.id}>
                     {community.name}
@@ -111,7 +111,7 @@ export default function QuickModal({
             </div>
             <div className="mb-3">
               <div className="form-item">
-                <label htmlFor="title" className="form-label">
+                <label htmlFor="title" className="form-label user-select-none">
                   Tytuł <span className="text-danger">*</span>
                 </label>
                 <input
@@ -126,7 +126,7 @@ export default function QuickModal({
             </div>
             <div className="mb-3">
               <div className="form-item">
-                <label htmlFor="content" className="form-label">
+                <label htmlFor="content" className="form-label  user-select-none">
                   Opis posta <span className="text-danger">*</span>
                 </label>
                 <textarea
@@ -144,6 +144,7 @@ export default function QuickModal({
                     fontSize: "12px",
                     color: content.length >= maxLength ? "red" : "#888",
                   }}
+                  className="user-select-none"
                 >
                   {content.length}/{maxLength}
                 </div>

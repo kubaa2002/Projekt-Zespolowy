@@ -3,6 +3,8 @@ import axios from "axios";
 import "./profile.scss";
 import { useAuth } from "../../contexts/authProvider";
 import { useNavigate } from "@tanstack/react-router";
+import ImageCrop from "../modals/ImageCrop.jsx";
+import UserListItem from "./UserListItem.jsx";
 
 const Profile = ({ user }) => {
   const [activeModal, setActiveModal] = useState(null); // Track which modal is open
@@ -13,12 +15,15 @@ const Profile = ({ user }) => {
   const [isLoading, setIsLoading] = useState(false); // Handle modal loading state
   const [isFollowLoading, setIsFollowLoading] = useState(false); // Handle follow button loading
   const [isFollowing, setIsFollowing] = useState(user.isFollowing); // Track follow state
-const { user: authUser, follow, setFollow } = useAuth();
-const navigate = useNavigate();
+  
+  const { user: authUser, follow, setFollow, getProfilePictureUrl, updateProfilePicture} = useAuth();
+  const navigate = useNavigate();
+  const [showCropModal, setShowCropModal] = useState(false);
+  const isMe = authUser.id === user.id;
 
   // Assume token is stored in localStorage or passed via context
   const token = localStorage.getItem("token") || "";
-console.log("Token:", follow);
+  console.log("Token:", follow);
   // Fetch followers
   const fetchFollowers = async () => {
     try {
@@ -95,10 +100,13 @@ console.log("Token:", follow);
       );
       if (response.status === 201) {
         setIsFollowing(true);
-        setFollow(p => [...p, {
-        "id": user.id,
-        "userName": user.userName,
-    }])
+        setFollow((p) => [
+          ...p,
+          {
+            id: user.id,
+            userName: user.userName,
+          },
+        ]);
         setError(null);
       } else if (response.status === 200) {
         setError(response.data.message); // Already following
@@ -125,13 +133,14 @@ console.log("Token:", follow);
       );
       if (response.status === 200) {
         setIsFollowing(false);
-        setFollow(p => p.filter(author => author.id !== user.id));
+        setFollow((p) => p.filter((author) => author.id !== user.id));
         setError(null);
       }
     } catch (err) {
       console.error("Error unfollowing user:", err);
       setError(
-        err.response?.data?.error || "Nie udało się przestać obserwować użytkownika"
+        err.response?.data?.error ||
+          "Nie udało się przestać obserwować użytkownika"
       );
     } finally {
       setIsFollowLoading(false);
@@ -147,21 +156,33 @@ console.log("Token:", follow);
     console.log("No user data provided");
     return <div className="text-center mt-5">Loading...</div>;
   }
-
+  const handleProfileClick = (e) => {
+    e.stopPropagation();
+    if (!isMe) return;
+    setShowCropModal(true);
+  };
   console.log("Rendering Profile component with user:", user);
 
   return (
-    <div className="container mt-5">
+    <div className=" mt-5">
       <div className="card shadow-sm">
         <div className="card-body">
           <div className="d-flex align-items-center mb-3">
             <img
               className="rounded-circle me-3"
-              src={"/avatar.svg"}
+              src={isMe ? getProfilePictureUrl()  : `${import.meta.env.VITE_API_URL}/img/get/user/${user.id}`}
               alt={`${user.userName}'s avatar`}
               width={80}
               height={80}
-              style={{ objectFit: "cover" }}
+              style={{
+                objectFit: "cover",
+                cursor: isMe ? "pointer" : "default",
+              }}
+              onClick={handleProfileClick}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/avatar.svg"; 
+              }}
             />
             <div>
               <h2 className="card-title mb-1">{user.userName}</h2>
@@ -169,17 +190,21 @@ console.log("Token:", follow);
                 Joined: {new Date(user.createdAt).toLocaleDateString()}
               </p>
             </div>
-            {authUser.id !== user.id && (
+            {!isMe && (
               <button
-                className={`btn ${follow.some(p => p.id === user.id)  ? "btn-secondary" : "btn-primary"} ms-auto`}
-                onClick={follow.some(p => p.id === user.id)  ? handleUnfollow : handleFollow}
+                className={`btn ${follow.some((p) => p.id === user.id) ? "btn-secondary" : "btn-primary"} ms-auto`}
+                onClick={
+                  follow.some((p) => p.id === user.id)
+                    ? handleUnfollow
+                    : handleFollow
+                }
                 disabled={isFollowLoading}
               >
                 {isFollowLoading
                   ? "Ładowanie..."
-                  : follow.some(p => p.id === user.id) 
-                  ? "Przestań obserwować"
-                  : "Obserwuj"}
+                  : follow.some((p) => p.id === user.id)
+                    ? "Przestań obserwować"
+                    : "Obserwuj"}
               </button>
             )}
           </div>
@@ -197,7 +222,7 @@ console.log("Token:", follow);
               onClick={fetchFollowing}
               role="button"
             >
-              <strong>{follow.length}</strong> Obserwowanych
+              <strong>{user.followingCount}</strong> Obserwowanych
             </div>
             <div
               className="cursor-pointer text-primary"
@@ -216,7 +241,11 @@ console.log("Token:", follow);
       {activeModal === "followers" && (
         <div
           className="modal"
-          style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
           onClick={closeModal}
         >
           <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
@@ -238,11 +267,14 @@ console.log("Token:", follow);
                     </div>
                   </div>
                 ) : followers.length > 0 ? (
-                  <ul className="list-group">
+                  <ul className="list-group community-list">
                     {followers.map((follower) => (
-                      <li key={follower.id} onClick={() => navigate({ to: `/users/${follower.id}`})} className="list-group-item cursor-pointer user-select-none">
-                        {follower.userName}
-                      </li>
+                      <UserListItem
+                        key={follower.id}
+                        url={`${import.meta.env.VITE_API_URL}/img/get/user/${follower?.id}`}
+                        name={follower?.userName}
+                        link={`/users/${follower?.id}`}
+                      />
                     ))}
                   </ul>
                 ) : (
@@ -267,7 +299,11 @@ console.log("Token:", follow);
       {activeModal === "following" && (
         <div
           className="modal"
-          style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
           onClick={closeModal}
         >
           <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
@@ -289,11 +325,14 @@ console.log("Token:", follow);
                     </div>
                   </div>
                 ) : following.length > 0 ? (
-                  <ul className="list-group">
+                  <ul className="list-group community-list">
                     {following.map((followed) => (
-                      <li key={followed.id} onClick={() => navigate({ to: `/users/${followed.id}`})}  className="list-group-item cursor-pointer user-select-none">
-                        {followed.userName}
-                      </li>
+                      <UserListItem
+                        key={followed.id}
+                        url={`${import.meta.env.VITE_API_URL}/img/get/user/${followed?.id}`}
+                        name={followed?.userName}
+                        link={`/users/${followed?.id}`}
+                      />
                     ))}
                   </ul>
                 ) : (
@@ -318,7 +357,11 @@ console.log("Token:", follow);
       {activeModal === "communities" && (
         <div
           className="modal"
-          style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
           onClick={closeModal}
         >
           <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
@@ -340,11 +383,14 @@ console.log("Token:", follow);
                     </div>
                   </div>
                 ) : communities.length > 0 ? (
-                  <ul className="list-group">
+                  <ul className="list-group community-list">
                     {communities.map((community) => (
-                      <li key={community.id}  onClick={() => navigate({ to: `/communities/${community.id}`})}   className="list-group-item cursor-pointer user-select-none">
-                        {community.name}
-                      </li>
+                      <UserListItem
+                        key={community.id}
+                        url={`${import.meta.env.VITE_API_URL}/img/get/community/${community?.id}`}
+                        name={community.name}
+                        link={`/communities/${community.id}`}
+                      />
                     ))}
                   </ul>
                 ) : (
@@ -363,6 +409,16 @@ console.log("Token:", follow);
             </div>
           </div>
         </div>
+      )}
+      {showCropModal && (
+        <ImageCrop
+          show={showCropModal}
+          onClose={() => {
+            setShowCropModal(false) ;
+            updateProfilePicture(); // I know it forces reload on every close, but who cares???
+          }}
+          endPointUrl={`${import.meta.env.VITE_API_URL}/img/add/user`}
+        />
       )}
     </div>
   );

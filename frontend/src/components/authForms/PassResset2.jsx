@@ -174,7 +174,7 @@ const PassReset2 = () => {
             {errorMessage && <div className="error-message">{errorMessage}</div>}
             <form onSubmit={(e) => e.preventDefault()} noValidate>
               <button
-                onClick={() => navigate("/login")}
+                onClick={() => navigate({ to: "/login" })}
                 className="btn btn-primary login-register-button"
               >
                 Zaloguj

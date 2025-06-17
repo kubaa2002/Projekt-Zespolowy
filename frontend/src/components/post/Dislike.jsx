@@ -7,24 +7,24 @@ const Dislike = ({ isDisliked,handleDislike,dislikesCount }) => {
 
     if(isDisliked)
   return (
-    <>
+    <span onClick={handleDislike} className='user-select-none'>
     <FaThumbsDown
                     className={`icon active`}
-                    onClick={handleDislike}
+                    
                   />
-                  <span>{dislikesCount}</span>
-      </>
+                <span>{dislikesCount}</span>
+      </span>
   );
 
   if(!isDisliked)
     return (
-      <>
+      <span onClick={handleDislike} >
       <AiOutlineDislike
                       className={`icon}`}
-                      onClick={handleDislike}
+                      
                     />
-                    {dislikesCount}
-        </>
+                    <span>{dislikesCount}</span>
+        </span>
     );
 };
 

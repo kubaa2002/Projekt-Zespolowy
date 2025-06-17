@@ -19,6 +19,7 @@ import { Route as ResetImport } from './routes/reset'
 import { Route as PostImport } from './routes/post'
 import { Route as LoginImport } from './routes/login'
 import { Route as HeroImport } from './routes/hero'
+import { Route as CropImport } from './routes/crop'
 import { Route as CreateImport } from './routes/create'
 import { Route as IndexImport } from './routes/index'
 import { Route as UsersIndexImport } from './routes/users/index'
@@ -75,6 +76,12 @@ const LoginRoute = LoginImport.update({
 const HeroRoute = HeroImport.update({
   id: '/hero',
   path: '/hero',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CropRoute = CropImport.update({
+  id: '/crop',
+  path: '/crop',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -142,6 +149,13 @@ declare module '@tanstack/react-router' {
       path: '/create'
       fullPath: '/create'
       preLoaderRoute: typeof CreateImport
+      parentRoute: typeof rootRoute
+    }
+    '/crop': {
+      id: '/crop'
+      path: '/crop'
+      fullPath: '/crop'
+      preLoaderRoute: typeof CropImport
       parentRoute: typeof rootRoute
     }
     '/hero': {
@@ -250,6 +264,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
+  '/crop': typeof CropRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/post': typeof PostRoute
@@ -269,6 +284,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
+  '/crop': typeof CropRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/post': typeof PostRoute
@@ -289,6 +305,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
+  '/crop': typeof CropRoute
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/post': typeof PostRoute
@@ -310,6 +327,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/create'
+    | '/crop'
     | '/hero'
     | '/login'
     | '/post'
@@ -328,6 +346,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/create'
+    | '/crop'
     | '/hero'
     | '/login'
     | '/post'
@@ -346,6 +365,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/create'
+    | '/crop'
     | '/hero'
     | '/login'
     | '/post'
@@ -366,6 +386,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreateRoute: typeof CreateRoute
+  CropRoute: typeof CropRoute
   HeroRoute: typeof HeroRoute
   LoginRoute: typeof LoginRoute
   PostRoute: typeof PostRoute
@@ -385,6 +406,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateRoute: CreateRoute,
+  CropRoute: CropRoute,
   HeroRoute: HeroRoute,
   LoginRoute: LoginRoute,
   PostRoute: PostRoute,
@@ -413,6 +435,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/create",
+        "/crop",
         "/hero",
         "/login",
         "/post",
@@ -434,6 +457,9 @@ export const routeTree = rootRoute
     },
     "/create": {
       "filePath": "create.jsx"
+    },
+    "/crop": {
+      "filePath": "crop.jsx"
     },
     "/hero": {
       "filePath": "hero.jsx"

@@ -7,24 +7,24 @@ const Like = ({ isLiked,handleLike,likesCount }) => {
 
     if(isLiked)
   return (
-    <>
+    <span onClick={handleLike}>
     <FaThumbsUp
                     className={`icon active`}
-                    onClick={handleLike}
+                    
                   />
                   <span>{likesCount}</span>
-      </>
+      </span>
   );
 
   if(!isLiked)
     return (
-      <>
+      <span onClick={handleLike}>
       <AiOutlineLike
                       className={`icon}`}
-                      onClick={handleLike}
+             
                     />
-                    {likesCount}
-        </>
+                    <span>{likesCount}</span>
+        </span>
     );
 };
 

@@ -7,6 +7,7 @@ import axios from "axios";
 import { useAuth } from "../../contexts/authProvider";
 import MainLayout from "../main/MainLayout";
 import { useNavigate } from "@tanstack/react-router";
+import CommuityTag from "./CommuityTag";
 
 const Post = ({ post, showReplies = true }) => {
   const { token, postIds, setPostIds, user } = useAuth();
@@ -30,7 +31,7 @@ const Post = ({ post, showReplies = true }) => {
         `${import.meta.env.VITE_API_URL}/posts/${id}/Like`,
         {
           appUserId: user.id,
-
+          reactionName: "Like",
           postId: id,
 
           reactionId: reactionType,
@@ -42,7 +43,7 @@ const Post = ({ post, showReplies = true }) => {
         `${import.meta.env.VITE_API_URL}/posts/${id}/unlike`,
         {
           appUserId: user.id,
-
+          reactionName: "Like",
           postId: id,
 
           reactionId: reactionType,
@@ -109,13 +110,13 @@ const Post = ({ post, showReplies = true }) => {
 
   const isLong = false;
   const previewText = isLong ? content.slice(0, 300) + "..." : content;
-
   return (
     <div>
       <div className="post-container">
-        <UserTag post={post} />
+        {post?.communityId ? <CommuityTag post={post} /> :<UserTag post={post} />}
 
         <div className="post-content">
+          <h2 className="post-title">{post.title}</h2>
           <div dangerouslySetInnerHTML={{ __html: previewText }} />
           {isLong && (
             <a href="#" className="read-more">
@@ -126,7 +127,7 @@ const Post = ({ post, showReplies = true }) => {
 
         <div className="post-actions">
           <div>
-            <label className={`icon-checkbox ${liked ? "active" : ""}`}>
+            <label className={`icon-checkbox user-select-none ${liked ? "active" : ""}`}>
               <input type="checkbox" checked={liked} onChange={handleLike} />
               <svg
                 width="18"
@@ -145,7 +146,7 @@ const Post = ({ post, showReplies = true }) => {
             {showReplies && (
               <label
                 onClick={() => navigate({ to: `/post?id=${id}` })}
-                className="icon-checkbox"
+                className="icon-checkbox user-select-none"
               >
                 <svg
                   width="18"
@@ -172,12 +173,12 @@ const Post = ({ post, showReplies = true }) => {
             )}
           </div>
           {!postIds.includes(id) ? (
-            <span className="icon-checkbox" onClick={handleSharePost}>
+            <span className="icon-checkbox user-select-none" onClick={handleSharePost}>
               <i className="bi bi-share-fill" />
               Share
             </span>
           ) : (
-            <span className="icon-checkbox active" onClick={handleDeleteShare}>
+            <span className="icon-checkbox active user-select-none" onClick={handleDeleteShare}>
               <i className="bi bi-share-fill" />
               Shared
             </span>

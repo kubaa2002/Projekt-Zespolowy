@@ -16,6 +16,19 @@
   position: relative;
 }
 
+.post-header2 {
+  display: flex;
+  border: 1px solid #FD2FD9;
+    padding-right: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  .dots-button {
+    margin-top: 12px;
+  }
+
+}
+
 .post-author {
   display: flex;
   align-items: center;
@@ -26,10 +39,20 @@
 .author-avatar {
   width: 40px;
   height: 40px;
-  background-image: url('/avatar.svg');
-  background-size: cover;
   border-radius: 50%;
 }
+.author-avatar2 {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.post-avatar {
+  width: 64px;
+  height: 64px;
+}
+
+
 
 .author-name {
   color: #333;
@@ -142,4 +165,11 @@
 .action-button:hover {
   color: #000;
   filter: grayscale(0);
+}
+.post-content {
+  /* Ustaw maksymalną szerokość, aby ograniczyć kontener */
+  max-width: 100%;
+  /* Przenoszenie długich słów */
+  word-break: break-all; /* lub word-break: break-word; */
+  /* Alternatywnie: overflow-wrap: break-word; */
 }
