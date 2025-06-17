@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Projekt_Zespolowy.Likes;
 
 namespace Projekt_Zespolowy.Models
@@ -15,9 +16,10 @@ namespace Projekt_Zespolowy.Models
         public int ReactionCount { get; set; }
         public string? UserName { get; set; }
         public ICollection<LikeDTO> Likes { get; set; } = new List<LikeDTO>();
+        public int? CommentCount { get; set; }
         public static implicit operator PostDTO(Post? p)
         {
-            return new PostDTO() { Id = p.Id, Title = p.Title, Content = p.Content, CommunityId = p.CommunityId, AuthorId = p.AppUserId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId, Likes = p.Likes.Select(x => (LikeDTO)x).ToList(), ReactionCount = p.Likes.Count, UserName = p.Author.UserName };
+            return new PostDTO() { Id = p.Id, Title = p.Title, Content = p.Content, CommunityId = p.CommunityId, AuthorId = p.AppUserId, CreatedDateTime = p.CreatedDateTime, ParentId = p.ParentId, Likes = p.Likes.Select(x => (LikeDTO)x).ToList(), ReactionCount = p.Likes.Count, UserName = p.Author.UserName, CommentCount = p.Replies.Count };
         }
         public static implicit operator Post(PostDTO? p)
         {

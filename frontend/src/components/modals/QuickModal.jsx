@@ -12,7 +12,8 @@ export default function QuickModal({
   setTitle,
   handlePublish,
   communityId,
-  setCommunityId
+  setCommunityId,
+  hideSelect = false,
 }) {
   if (!show) return null;
   const { user, token } = useAuth();
@@ -89,7 +90,7 @@ export default function QuickModal({
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
           <div className="modal-body">
-            <div className="mb-3">
+            {!hideSelect && (<div className="mb-3">
               <div className="form-item">
                 <label htmlFor="title" className="form-label user-select-none">
                   Gdzie chcesz umieścić? <span className="text-danger">*</span>
@@ -108,7 +109,9 @@ export default function QuickModal({
                 ))}
               </select>
               </div>
-            </div>
+            </div>)}
+            
+
             <div className="mb-3">
               <div className="form-item">
                 <label htmlFor="title" className="form-label user-select-none">
@@ -121,6 +124,7 @@ export default function QuickModal({
                   placeholder="Zadaj pytanie lub podziel się myślą"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)} 
+                  autoFocus
                 />
               </div>
             </div>

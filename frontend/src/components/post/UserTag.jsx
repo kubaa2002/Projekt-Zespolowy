@@ -2,15 +2,16 @@ import  { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/authProvider';
 import axios from 'axios';
 import { useNavigate } from '@tanstack/react-router';
+import DeletePostModal from './DeletePostModal';
 
 const UserTag = ({ post }) => {
-  const { userName: authorName, createdDateTime, authorId, id } = post;
+  const { userName: authorName, createdDateTime, authorId, id, title} = post;
   const [showMenu, setShowMenu] = useState(false);
   const [isDeleted, setIsDeleted] = useState(post.isDeleted || false);
   const menuRef = useRef();
   const { user, token,follow,setFollow, getProfilePictureUrl } = useAuth();
   const navigate = useNavigate();
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const isPostOwner = authorId === user.id;
   const formattedDate = new Date(createdDateTime).toLocaleDateString('pl-PL', {
     day: 'numeric',
@@ -141,7 +142,7 @@ const UserTag = ({ post }) => {
                   Przywróć post
                 </button>
               ) : (
-                <button onClick={handleDeletePost}>
+                <button onClick={() => setShowDeleteModal(true)}>
                   Usuń post
                 </button>
               )
@@ -208,6 +209,7 @@ const UserTag = ({ post }) => {
           </div>
         )}
       </div>
+      <DeletePostModal title={title} onConfirm={handleDeletePost} show={showDeleteModal} setShow={setShowDeleteModal} />
     </div>
   );
 };

@@ -4,7 +4,6 @@ import { useNavigate, useLocation, useRouterState } from "@tanstack/react-router
 import checkIfUserOrCommunityRoute from "../../utils/isUserOrCommunityRoute";
 const SearchInput = () => {
   const location = useLocation();
-  console.log("location", location);
   const isUserOrCommunityRoute = checkIfUserOrCommunityRoute(location.pathname);
   const [searchType, setSearchType] = useState("users");
   const [searchValue, setSearchValue] = useState("");
@@ -27,6 +26,11 @@ const SearchInput = () => {
         placeholder={`Wpisz tutaj, aby wyszukać...`}
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSearch();
+          }
+        }}
       />
       <select
         name="searchType"
@@ -38,7 +42,6 @@ const SearchInput = () => {
         {isUserOrCommunityRoute && (
           <option value="inRoute">Posty w wątku</option>
         )}
-        {/* conditionally display this option */}
         <option value="users">Użytkownicy</option>
         <option value="communities">Społeczności</option>
       </select>

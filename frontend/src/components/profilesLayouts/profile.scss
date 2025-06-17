@@ -12,7 +12,6 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   }
 }
-
 .avatar {
   width: 64px;
   height: 64px;
@@ -24,7 +23,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-left: 16px;  // dodaj odstęp między avatarem a tekstem
+  margin-left: 16px;
 }
 
 .profile-username {

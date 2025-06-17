@@ -50,7 +50,7 @@ namespace Projekt_Zespolowy.Services
             return GetImage(post.ImageId.Value);
         }
 
-        public ServiceResponse<string?> AddImage(IFormFile file)
+        public ServiceResponse<string?> AddImage(IFormFile file, bool MaintainAspectRatio)
         {
             try
             {
@@ -60,7 +60,10 @@ namespace Projekt_Zespolowy.Services
                     {
                         // Upewnienie się że obraz jest odpowiedniej wielkości
                         uint size = 512;
-                        if (image.BaseHeight != size || image.BaseWidth != size)
+                        if (MaintainAspectRatio)
+                            if(image.BaseHeight > size || image.BaseWidth > size)
+                                image.Resize(new MagickGeometry($"{size}x{size}"));
+                        else if (image.BaseHeight != size || image.BaseWidth != size)
                         {
                             image.Resize(new MagickGeometry($"{size}x{size}^"));
                             image.Crop(size, size, Gravity.Center);
@@ -94,7 +97,7 @@ namespace Projekt_Zespolowy.Services
             if (user == default)
                 return new ServiceResponse<string?>(StatusCodes.Status404NotFound, "user doesn't exist");
 
-            var response = AddImage(file);
+            var response = AddImage(file, false);
             if (response.ResponseCode == StatusCodes.Status400BadRequest)
                 return response;
 
@@ -122,7 +125,7 @@ namespace Projekt_Zespolowy.Services
             if (member.Role != "owner")
                 return new ServiceResponse<string?>(StatusCodes.Status401Unauthorized, "user is not the owner of this community");
 
-            var response = AddImage(file);
+            var response = AddImage(file, false);
             if (response.ResponseCode == StatusCodes.Status400BadRequest)
                 return response;
 
@@ -143,7 +146,7 @@ namespace Projekt_Zespolowy.Services
             if (post.Author!.UserName != userName)
                 return new ServiceResponse<string?>(StatusCodes.Status401Unauthorized, "user is not the author of this post");
 
-            var response = AddImage(file);
+            var response = AddImage(file, true);
             if (response.ResponseCode == StatusCodes.Status400BadRequest)
                 return response;
 
@@ -155,6 +158,22 @@ namespace Projekt_Zespolowy.Services
             context.SaveChanges();
 
             return new ServiceResponse<string?>(StatusCodes.Status200OK, "Image uploaded");
+        }
+
+        public ServiceResponse<string?> AddGeneralImage(IFormFile file, string userName)
+        {
+            var user = context.Users.SingleOrDefault(u => u.UserName == userName);
+            if (user == default)
+                return new ServiceResponse<string?>(StatusCodes.Status404NotFound, "User doesn't exist");
+
+            var response = AddImage(file, true);
+            if (response.ResponseCode != StatusCodes.Status200OK)
+                return response;
+
+            var imageId = response.ResponseBody;
+            var imageUrl = $"/img/get/id/{imageId}"; // Relatywna ścieżka URL
+
+            return new ServiceResponse<string?>(StatusCodes.Status200OK, imageUrl);
         }
     }
 }

@@ -22,7 +22,6 @@ export default function Main() {
       alert("Uzupełnij treść posta.");
       return;
     }
-    console.log("tytul "+title)
   
     const postData = {
       id: 0, // zakładamy, że backend sam nadaje ID
@@ -48,6 +47,7 @@ export default function Main() {
       console.log("Post opublikowany:", createdPost);
       // Resetowanie stanu po publikacji
       setContent("");
+      setTitle("");
       onClose(); // zamknij modal
     } catch (err) {
       console.error("Błąd podczas publikacji posta:", err);
@@ -57,8 +57,11 @@ export default function Main() {
   return (
     <MainLayout>
         <div className={`main-think${rotated ? " main-think-open" : ""}`}>
-          <img src={`${import.meta.env.VITE_API_URL}/img/get/user/${user?.id}`} alt="Avatar" className="avatar" />
-          <span className="text-think">
+          <img src={`${import.meta.env.VITE_API_URL}/img/get/user/${user?.id}`} alt="Avatar" className="avatar" onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/avatar.svg"; 
+                }}/>
+          <span className="text-think user-select-none" onClick={() => setRotated((r) => !r)}>
             Podziel się tym, co masz na myśli
           </span>
           <div className="buttons-think">

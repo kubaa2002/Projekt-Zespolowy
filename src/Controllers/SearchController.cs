@@ -114,7 +114,8 @@ namespace Projekt_Zespolowy.Controllers;
                         User = user,
                         FollowerCount = followers.Count()
                     })
-                .Where(u => u.User.UserName.Contains(q))
+                .Where(u => !u.User.IsDeleted)
+                .Where(u => u.User.UserName!.Contains(q))
                 .OrderByDescending(u => u.FollowerCount);
 
             var results = await query
