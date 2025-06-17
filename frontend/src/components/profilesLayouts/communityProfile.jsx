@@ -6,6 +6,7 @@ import MainModal from "../modals/MainModal";
 import { useAuth } from "../../contexts/authProvider";
 import { usePosts } from "../../contexts/PostsContext";
 import QuickModal from "../modals/QuickModal";
+import ProfilePicture from "../primitives/profilePicture";
 
 const CommunityProfile = ({ community, communityId }) => {
   const [isMember, setIsMember] = useState(community.isMember); // Track membership status
@@ -161,21 +162,13 @@ const CommunityProfile = ({ community, communityId }) => {
       <div className="card shadow-sm">
         <div className="card-body">
           <div className="d-flex align-items-center mb-3">
-          <img
-                className="rounded-circle me-3"
-                src={`${import.meta.env.VITE_API_URL}/img/get/community/${communityId}?q=${Date.now()}`}
-                width={80}
-                height={80}
-                style={{
-                  objectFit: "cover",
-                  cursor: isOwner ? "pointer" : "default",
-                }}
-                onClick={handleCommunityClick}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/avatar.svg"; 
-                }}
-              />
+            <ProfilePicture
+              src={`${import.meta.env.VITE_API_URL}/img/get/community/${communityId}?q=${Date.now()}`}
+              alt={`${community.name}'s picture`}
+              isMe={isOwner}
+              onClick={handleCommunityClick}
+            />
+
             <div>
               <h2 className="card-title mb-1">{community.name}</h2>
               <p className="text-muted mb-0">

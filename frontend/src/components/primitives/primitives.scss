@@ -23,3 +23,20 @@
         color: map.get(colors.$text,unchanged-searchbar-gray-600); // kolor placeholdera;
     }
 }
+
+.pfp-wrapper{
+    position: relative;
+  }
+  .change-pfp{
+    display: flex;
+    bottom: 0;
+    right: 20px;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid black;
+    background-color: rgba(255, 255, 255, 0.808);
+  }

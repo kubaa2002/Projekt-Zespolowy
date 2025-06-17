@@ -84,7 +84,7 @@ export default function ImageCrop({show, onClose, endPointUrl, communityId}) {
         if (error) setError("");
         const { naturalWidth, naturalHeight } = e.currentTarget;
         if (naturalWidth < MIN_DIMENSION || naturalHeight < MIN_DIMENSION) {
-          setError("Image must be at least 150 x 150 pixels.");
+          setError("Zdjęcie nie może być mniejsze niż 150 x 150 px.");
           return setImgSrc("");
         }
       });
@@ -118,6 +118,7 @@ export default function ImageCrop({show, onClose, endPointUrl, communityId}) {
           Wybierz zdjęcie
         </button>} 
         <input type="file" name="image" id="image" onChange={onSelectFile}  className="none" ref={inputRef}/>
+        {error && <div className="alert alert-danger">{error}</div>}
         <button className="btn-close" style={{position: 'absolute', top: '5px', right:'5px'}} onClick={onClose}></button>
         {imgSrc && (
           <div className="image-preview align-self-center">
@@ -127,14 +128,14 @@ export default function ImageCrop({show, onClose, endPointUrl, communityId}) {
               circularCrop
               keepSelection
               aspect={1}
-              minWidth={75}
+              minWidth={35}
             >
               <img
                 ref={imgRef}
                 src={imgSrc}
                 alt="Crop me"
                 onLoad={onImageLoad}
-                style={{ maxWidth: "100%" }}
+                style={{ maxWidth: "100%", maxHeight: '300px' }}
               />
             </ReactCrop>
           </div>

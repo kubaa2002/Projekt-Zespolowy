@@ -6,7 +6,7 @@ export default function LoggedOutNavbar({ navigate, isHeroPage }) {
         <i className="bi bi-heart me-2"></i>
         Vibe
       </div>
-      <div className="navbar-subtitle">We absoluty do not copy reddit</div>
+      <div className="navbar-subtitle">We absolutely do not copy reddit</div>
     </div>
     <div className="d-flex">
       <button
