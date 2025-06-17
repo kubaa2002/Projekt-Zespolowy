@@ -5,7 +5,7 @@ import { useAuth } from "../../contexts/authProvider";
 import { useNavigate } from "@tanstack/react-router";
 import ImageCrop from "../modals/ImageCrop.jsx";
 import UserListItem from "./UserListItem.jsx";
-import ProfilePicture from "../primitives/profilePicture.jsx";
+import ProfilePicture from "../primitives/ProfilePicture.jsx";
 
 const Profile = ({ user }) => {
   const [activeModal, setActiveModal] = useState(null); // Track which modal is open
