@@ -60,14 +60,13 @@ namespace Projekt_Zespolowy.Services
                     {
                         // Upewnienie się że obraz jest odpowiedniej wielkości
                         uint size = 512;
-                        if (!MaintainAspectRatio && (image.BaseHeight != size || image.BaseWidth != size))
+                        if (MaintainAspectRatio)
+                            if(image.BaseHeight > size || image.BaseWidth > size)
+                                image.Resize(new MagickGeometry($"{size}x{size}"));
+                        else if (image.BaseHeight != size || image.BaseWidth != size)
                         {
                             image.Resize(new MagickGeometry($"{size}x{size}^"));
                             image.Crop(size, size, Gravity.Center);
-                        }
-                        else
-                        {
-                            image.Resize(new MagickGeometry($"{size}x{size}"));
                         }
 
                         // Usuwanie meta danych
