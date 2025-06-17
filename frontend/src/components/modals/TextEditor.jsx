@@ -1,11 +1,10 @@
-// TextEditor.js
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
 import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import Image from '@tiptap/extension-image';
-import Placeholder from '@tiptap/extension-placeholder'
+import Placeholder from '@tiptap/extension-placeholder';
 import { useCallback, useRef, useState, useEffect } from 'react';
 import {
   FaBold,
@@ -20,6 +19,7 @@ import {
   FaHeading,
 } from 'react-icons/fa';
 import './textEditor.scss';
+const BASE_URL = import.meta.env.VITE_API_URL; // Replace with your server URL or use environment variables
 
 const TextEditor = ({ onContentChange, content }) => {
   const [selectedColor, setSelectedColor] = useState('#000000');
@@ -33,7 +33,7 @@ const TextEditor = ({ onContentChange, content }) => {
       Color,
       Image.configure({
         inline: true,
-        allowBase64: true,
+        allowBase64: false, 
       }),
       Placeholder.configure({
         placeholder: 'Zacznij pisać...',
@@ -91,7 +91,7 @@ const TextEditor = ({ onContentChange, content }) => {
     [editor],
   );
 
-  // Image insertion
+  // Image insertion via URL
   const addImage = useCallback(() => {
     const url = window.prompt('Wprowadź URL obrazka:');
     if (url) {
@@ -99,16 +99,124 @@ const TextEditor = ({ onContentChange, content }) => {
     }
   }, [editor]);
 
-  const handleFileUpload = useCallback((event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        editor?.chain().focus().setImage({ src: e.target.result }).run();
+  // Image upload via file input
+  const handleFileUpload = useCallback(
+    async (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // Validate file size (5 MB) and type
+        if (file.size > 5242880) {
+          alert('Plik jest za duży. Maksymalny rozmiar to 5 MB.');
+          return;
+        }
+        if (!file.type.startsWith('image/')) {
+          alert('Proszę wybrać plik graficzny.');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file); // Match server's expected field name
+
+        try {
+          const response = await fetch(`${BASE_URL}/img/add/general`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`, // Adjust based on your auth setup
+            },
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to upload image');
+          }
+
+          const data = await response.json();
+          const relativeUrl = data.url; // e.g., "/img/get/id/123"
+          const imageUrl = `${BASE_URL}${relativeUrl}`; // Construct full URL
+
+          if (imageUrl && editor) {
+            editor.chain().focus().setImage({ src: imageUrl }).run();
+          } else {
+            console.error('No URL returned from server');
+            alert('Nie udało się przesłać obrazka.');
+          }
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          alert(`Nie udało się przesłać obrazka: ${error.message}`);
+        }
+      }
+    },
+    [editor],
+  );
+
+  // Handle pasted images
+  const handlePaste = useCallback(
+    async (event) => {
+      const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+      for (const item of items) {
+        if (item.type.indexOf('image') !== -1) {
+          event.preventDefault(); // Prevent default paste behavior
+          const file = item.getAsFile();
+          if (file) {
+            // Validate file size (5 MB) and type
+            if (file.size > 5242880) {
+              alert('Plik jest za duży. Maksymalny rozmiar to 5 MB.');
+              return;
+            }
+            if (!file.type.startsWith('image/')) {
+              alert('Proszę wkleić plik graficzny.');
+              return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file); // Match server's expected field name
+
+            try {
+              const response = await fetch(`${BASE_URL}/img/add/general`, {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem('token')}`, // Adjust based on your auth setup
+                },
+                body: formData,
+              });
+
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to upload image');
+              }
+
+              const data = await response.json();
+              const relativeUrl = data.url; // e.g., "/img/get/id/123"
+              const imageUrl = `${BASE_URL}${relativeUrl}`; // Construct full URL
+
+              if (imageUrl && editor) {
+                editor.chain().focus().setImage({ src: imageUrl }).run();
+              } else {
+                console.error('No URL returned from server');
+                alert('Nie udało się przesłać wklejonego obrazka.');
+              }
+            } catch (error) {
+              console.error('Error uploading pasted image:', error);
+              alert(`Nie udało się przesłać wklejonego obrazka: ${error.message}`);
+            }
+          }
+        }
+      }
+    },
+    [editor],
+  );
+
+  // Attach paste event listener
+  useEffect(() => {
+    if (editor) {
+      const editorElement = editor.view.dom;
+      editorElement.addEventListener('paste', handlePaste);
+      return () => {
+        editorElement.removeEventListener('paste', handlePaste);
       };
-      reader.readAsDataURL(file);
     }
-  }, [editor]);
+  }, [editor, handlePaste]);
 
   if (!editor) {
     return null;
@@ -127,7 +235,7 @@ const TextEditor = ({ onContentChange, content }) => {
         <button
           onClick={() => toggleHeading(2)}
           className={editor.isActive('heading', { level: 2 }) ? 'active' : ''}
-          title="Nagłówek 2"
+          title="Nagłówek 2" 
         >
           <FaHeading size={14} />
         </button>

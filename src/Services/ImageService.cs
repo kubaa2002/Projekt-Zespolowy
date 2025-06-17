@@ -156,5 +156,58 @@ namespace Projekt_Zespolowy.Services
 
             return new ServiceResponse<string?>(StatusCodes.Status200OK, "Image uploaded");
         }
+
+        public ServiceResponse<string?> AddImageWithoutCrop(IFormFile file)
+        {
+            try
+            {
+                byte[] imageData;
+                using (var inputStream = file.OpenReadStream())
+                using (var image = new MagickImage(inputStream))
+                {
+                    // Skalowanie do maksymalnych wymiarów 512 pikseli, zachowując proporcje
+                    uint maxSize = 512;
+                    if (image.BaseWidth > maxSize || image.BaseHeight > maxSize)
+                    {
+                        image.Resize(new MagickGeometry($"{maxSize}x{maxSize}")); // Bez ^, skaluje proporcjonalnie
+                    }
+
+                    // Usuwanie meta danych
+                    image.Strip();
+                    image.Format = MagickFormat.Jpeg;
+
+                    using (var ms = new MemoryStream())
+                    {
+                        image.Write(ms);
+                        imageData = ms.ToArray();
+                    }
+                }
+                Image newImage = new() { ContentType = "image/jpeg", ImageData = imageData };
+                context.Images.Add(newImage);
+                context.SaveChanges();
+
+                return new ServiceResponse<string?>(StatusCodes.Status200OK, $"{newImage.Id}");
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponse<string?>(StatusCodes.Status400BadRequest, ex.Message);
+            }
+        }
+
+        public ServiceResponse<string?> AddGeneralImage(IFormFile file, string userName)
+        {
+            var user = context.Users.SingleOrDefault(u => u.UserName == userName);
+            if (user == default)
+                return new ServiceResponse<string?>(StatusCodes.Status404NotFound, "User doesn't exist");
+
+            var response = AddImageWithoutCrop(file); // Używamy nowej metody bez przycinania
+            if (response.ResponseCode != StatusCodes.Status200OK)
+                return response;
+
+            var imageId = response.ResponseBody;
+            var imageUrl = $"/img/get/id/{imageId}"; // Relatywna ścieżka URL
+
+            return new ServiceResponse<string?>(StatusCodes.Status200OK, imageUrl);
+        }
     }
 }

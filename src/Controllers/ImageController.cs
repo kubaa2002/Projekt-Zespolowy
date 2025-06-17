@@ -20,6 +20,27 @@ namespace Projekt_Zespolowy.Controllers
             this.userManager = userManager;
         }
 
+        [Authorize]
+        [HttpPost("add/general")]
+        public IActionResult PostGeneralImage([FromForm] IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            if (file.Length > 5242880) // 5 MB limit
+                return BadRequest("File too large");
+
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            if (string.IsNullOrEmpty(userName))
+                return Unauthorized();
+
+            var response = imageService.AddGeneralImage(file, userName);
+            if (response.ResponseCode == StatusCodes.Status200OK)
+                return Ok(new { url = response.ResponseBody }); // Return URL in JSON format
+            else
+                return StatusCode(response.ResponseCode, response.ResponseBody);
+        }
+
         [HttpGet("get/id/{imageId}")]
         public IActionResult GetImage(int imageId)
         {
