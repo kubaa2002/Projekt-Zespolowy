@@ -170,7 +170,7 @@ const Profile = ({ user }) => {
           <div className="d-flex align-items-center mb-3">
             <img
               className="rounded-circle me-3"
-              src={getProfilePictureUrl()}
+              src={isMe ? getProfilePictureUrl()  : `${import.meta.env.VITE_API_URL}/img/get/user/${user.id}`}
               alt={`${user.userName}'s avatar`}
               width={80}
               height={80}
@@ -222,7 +222,7 @@ const Profile = ({ user }) => {
               onClick={fetchFollowing}
               role="button"
             >
-              <strong>{follow.length}</strong> Obserwowanych
+              <strong>{user.followingCount}</strong> Obserwowanych
             </div>
             <div
               className="cursor-pointer text-primary"

@@ -15,6 +15,7 @@ const AuthProvider = ({ children }) => {
   const [follow, setFollow] = useState([]);
   const [postIds, setPostIds] = useState([]);
   const [profilePictureVersion, setProfilePictureVersion] = useState(Date.now()); // Force image reload on profile picture change
+  const [names, setNames] = useState([]);
   const loginAction = useCallback(async (email, password) => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/user/login`,
@@ -163,7 +164,9 @@ const AuthProvider = ({ children }) => {
         postIds,
         setPostIds,
         updateProfilePicture,
-        getProfilePictureUrl
+        getProfilePictureUrl,
+        names,
+        setNames
       }}
     >
       {children}

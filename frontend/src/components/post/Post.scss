@@ -16,6 +16,19 @@
   position: relative;
 }
 
+.post-header2 {
+  display: flex;
+  border: 1px solid #FD2FD9;
+    padding-right: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  .dots-button {
+    margin-top: 12px;
+  }
+
+}
+
 .post-author {
   display: flex;
   align-items: center;
@@ -28,6 +41,18 @@
   height: 40px;
   border-radius: 50%;
 }
+.author-avatar2 {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.post-avatar {
+  width: 64px;
+  height: 64px;
+}
+
+
 
 .author-name {
   color: #333;

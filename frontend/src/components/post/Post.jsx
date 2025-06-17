@@ -7,6 +7,7 @@ import axios from "axios";
 import { useAuth } from "../../contexts/authProvider";
 import MainLayout from "../main/MainLayout";
 import { useNavigate } from "@tanstack/react-router";
+import CommuityTag from "./CommuityTag";
 
 const Post = ({ post, showReplies = true }) => {
   const { token, postIds, setPostIds, user } = useAuth();
@@ -109,11 +110,10 @@ const Post = ({ post, showReplies = true }) => {
 
   const isLong = false;
   const previewText = isLong ? content.slice(0, 300) + "..." : content;
-
   return (
     <div>
       <div className="post-container">
-        <UserTag post={post} />
+        {post?.communityId ? <CommuityTag post={post} /> :<UserTag post={post} />}
 
         <div className="post-content">
           <h2 className="post-title">{post.title}</h2>
