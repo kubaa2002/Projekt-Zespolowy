@@ -111,8 +111,11 @@ const Communities = () => {
     <>
       <CommunityProfile community={user} communityId={communityId} />
       {user.isMember && (<div className={`main-think${rotated ? " main-think-open" : ""}`} style={{ marginTop: "1rem" }}>
-                <img src={`${import.meta.env.VITE_API_URL}/img/get/user/${u2?.id}`} alt="Avatar" className="avatar" />
-                <span className="text-think user-select-none">
+                <img src={`${import.meta.env.VITE_API_URL}/img/get/user/${u2?.id}`} alt="Avatar" className="avatar" onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/avatar.svg"; 
+                }}/>
+                <span className="text-think user-select-none" onClick={() => setRotated((r) => !r)}>
                   Podziel się tym, co masz na myśli
                 </span>
                 <div className="buttons-think">

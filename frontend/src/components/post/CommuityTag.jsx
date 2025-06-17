@@ -2,15 +2,17 @@ import  { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/authProvider';
 import axios from 'axios';
 import { useNavigate } from '@tanstack/react-router';
+import DeletePostModal from './DeletePostModal';
 
 const CommuityTag = ({ post }) => {
-  const { userName: authorName, createdDateTime, authorId, id,communityId } = post;
+  const { userName: authorName, createdDateTime, authorId, id,communityId, title } = post;
   const [showMenu, setShowMenu] = useState(false);
   const [isDeleted, setIsDeleted] = useState(post.isDeleted || false);
   const menuRef = useRef();
   const { user, token,follow,setFollow, getProfilePictureUrl,names,setNames } = useAuth();
   const navigate = useNavigate();
   const [communityName, setCommunityName] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const isPostOwner = authorId === user.id;
   const formattedDate = new Date(createdDateTime).toLocaleDateString('pl-PL', {
@@ -152,8 +154,7 @@ const CommuityTag = ({ post }) => {
             <img className="author-avatar2" src={authorId === user.id ? getProfilePictureUrl() : `${import.meta.env.VITE_API_URL}/img/get/user/${authorId}`} onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "/avatar.svg"; 
-                }}/> {authorName}
-            {formattedDate}</div>
+                }}/> {authorName}  {formattedDate}</div>
         </div></div>
         ) : (<div></div>)}
       
@@ -174,7 +175,7 @@ const CommuityTag = ({ post }) => {
                   Przywróć post
                 </button>
               ) : (
-                <button onClick={handleDeletePost}>
+                <button onClick={() => setShowDeleteModal(true)}>
                   Usuń post
                 </button>
               )
@@ -241,6 +242,7 @@ const CommuityTag = ({ post }) => {
           </div>
         )}
       </div>
+      <DeletePostModal title={title} onConfirm={handleDeletePost} show={showDeleteModal} setShow={setShowDeleteModal} />
     </div>
   );
 };

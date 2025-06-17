@@ -1,20 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Post.scss";
 
-import Hidden from "./Hidden";
 import UserTag from "./UserTag";
 import axios from "axios";
 import { useAuth } from "../../contexts/authProvider";
-import MainLayout from "../main/MainLayout";
 import { useNavigate } from "@tanstack/react-router";
 import CommuityTag from "./CommuityTag";
 
 const Post = ({ post, showReplies = true }) => {
   const { token, postIds, setPostIds, user } = useAuth();
-  const { id, authorId, content, createdDateTime, isLied, likesCount,likes } = post;
+  const { id, authorId, content, createdDateTime, isLied, likesCount,likes, commentCount } = post;
   const [liked, setLiked] = useState(likes.some(like => like.appUserId === user.id));
  
-  
   const navigate = useNavigate();
 
   const getAuthConfig = () => ({
@@ -168,7 +165,7 @@ const Post = ({ post, showReplies = true }) => {
                     fill="black"
                   />
                 </svg>
-                Komentarze
+                {commentCount > 0 ? commentCount: "Komentarze"}
               </label>
             )}
           </div>

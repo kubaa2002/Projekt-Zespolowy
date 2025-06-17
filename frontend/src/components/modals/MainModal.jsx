@@ -1,4 +1,4 @@
-import { useEffect, useState,useCallback  } from "react";
+import { useEffect, useState,useCallback, useRef  } from "react";
 import { useAuth } from "../../contexts/authProvider";
 import TextEditor from "./TextEditor";
 import axios from "axios";
@@ -20,7 +20,6 @@ export default function MainModal({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedOption, setSelectedOption] = useState({ type: "user", id: user?.id || "" });
-  
   const getCommunities = useCallback(async () => {
     if (!user?.id) return;
 
@@ -117,6 +116,7 @@ export default function MainModal({
               placeholder="Zadaj pytanie lub podziel się myślą"
               value={title}
               onChange={(e) => setTitle(e.target.value)} 
+              autoFocus
             />
           </div>
         </div>

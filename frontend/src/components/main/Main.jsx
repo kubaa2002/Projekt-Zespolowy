@@ -57,8 +57,11 @@ export default function Main() {
   return (
     <MainLayout>
         <div className={`main-think${rotated ? " main-think-open" : ""}`}>
-          <img src={`${import.meta.env.VITE_API_URL}/img/get/user/${user?.id}`} alt="Avatar" className="avatar" />
-          <span className="text-think">
+          <img src={`${import.meta.env.VITE_API_URL}/img/get/user/${user?.id}`} alt="Avatar" className="avatar" onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/avatar.svg"; 
+                }}/>
+          <span className="text-think user-select-none" onClick={() => setRotated((r) => !r)}>
             Podziel się tym, co masz na myśli
           </span>
           <div className="buttons-think">

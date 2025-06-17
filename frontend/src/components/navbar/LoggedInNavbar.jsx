@@ -4,7 +4,6 @@ import { useNavigate, useLocation, useRouterState } from "@tanstack/react-router
 import checkIfUserOrCommunityRoute from "../../utils/isUserOrCommunityRoute";
 const SearchInput = () => {
   const location = useLocation();
-  console.log("location", location);
   const isUserOrCommunityRoute = checkIfUserOrCommunityRoute(location.pathname);
   const [searchType, setSearchType] = useState("users");
   const [searchValue, setSearchValue] = useState("");

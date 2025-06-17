@@ -100,7 +100,7 @@ public class UserController : ControllerBase
                 }
             }
             var errors = new ErrorResponse { Status = 401 };
-            errors.Errors["error"] = new List<string> { "Niepoprawna nazwa użytkownika lub hasło" };
+            errors.Errors["error"] = new List<string> { "Niepoprawny email lub hasło" };
             return Unauthorized(errors);
         }
         return BadRequest(ModelState);
