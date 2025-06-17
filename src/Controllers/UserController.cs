@@ -377,7 +377,30 @@ public class UserController : ControllerBase
         return Ok(new { message = "Hasło zostało pomyślnie zresetowane." });
     }
 
+    static public async Task AddDeletedUser(AppDbContext context, UserManager<AppUser> userManager)
+    {
+        if (!context.Users.Where(u => u.UserName == "<Konto usunięte>").Any())
+        {
+            var currentAllowed = userManager.Options.User.AllowedUserNameCharacters;
+            userManager.Options.User.AllowedUserNameCharacters = null;
 
+            var user = new AppUser
+            {
+                UserName = "<Konto usunięte>",
+                Email = "null@null.com",
+                IsDeleted = true,
+            };
+
+            var result = await userManager.CreateAsync(user);
+            userManager.Options.User.AllowedUserNameCharacters = currentAllowed;
+            if (!result.Succeeded)
+            {
+                throw new Exception(result.Errors.First().Description);
+            }
+        }
+
+        PostDTO.deletedUserId = context.Users.Single(u => u.UserName == "<Konto usunięte>").Id;
+    }
 }
 
 public class DeleteUserModel
