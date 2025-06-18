@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import CommentBox from "./CommentBox";
 import CommentCard from "./CommentCard";
@@ -15,7 +15,7 @@ const Hidden = () => {
   const { token } = useAuth();
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
-
+  const bottomRef = useRef(null);
   useEffect(() => {
     fetchPostComments(id);
   }, [id]);
@@ -72,7 +72,7 @@ const Hidden = () => {
     <div>
       <BackButton />
       <Post post={post} showReplies={false} />
-      <CommentBox id={id} comments={comments} setComments={setComments} />
+      <CommentBox id={id} comments={comments} setComments={setComments}  bottomRef={bottomRef} />
       {comments.map((comment) => (
         <CommentCard
           key={comment.id}
@@ -90,6 +90,7 @@ const Hidden = () => {
           post={comment}
         />
       ))}
+      <div ref={bottomRef} className="h100"/>
     </div>
   );
 };

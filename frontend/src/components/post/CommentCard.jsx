@@ -210,6 +210,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
       );
       await fetchPostComments(id);
       closeModal();
+      setShowReplies(true);
     } catch (err) {
       console.error('Error submitting reply:', err.response?.data || err.message);
     }

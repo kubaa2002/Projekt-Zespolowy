@@ -38,6 +38,9 @@ function FollowingUsers() {
           <SearchProfile user={user} />
         </div>
       ))}
+      {users.length === 0 && <div className="no-more-posts">
+          Nie obserwujesz nikogo.
+        </div>}
     </>
   );
     

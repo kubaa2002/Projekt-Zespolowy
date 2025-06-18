@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/authProvider";
 import { useNavigate, useLocation, useRouterState } from "@tanstack/react-router";
 import checkIfUserOrCommunityRoute from "../../utils/isUserOrCommunityRoute";
+
 const SearchInput = () => {
   const location = useLocation();
   const isUserOrCommunityRoute = checkIfUserOrCommunityRoute(location.pathname);
@@ -15,15 +16,17 @@ const SearchInput = () => {
       return navigate({ to: `/${location.pathname}?q=${searchValue}` });
     return navigate({ to: `/${searchType}?q=${searchValue}` });
   }
+
   useEffect(() => {
     setSearchType(isUserOrCommunityRoute ? "inRoute" : "users");
   }, [isUserOrCommunityRoute]);
+
   return (
     <div className="input-group search-group">
       <input
         type="text"
         className="form-control form-control-lg"
-        placeholder={`Wpisz tutaj, aby wyszukać...`}
+        placeholder="Wpisz tutaj, aby wyszukać..."
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
         onKeyDown={(e) => {
@@ -57,10 +60,11 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const modalRef = useRef();
   const mobileMenuRef = useRef(null);
+  const profileRef = useRef(null); // Ref for profile div
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
-  const auth = useAuth();
   const { user, getProfilePictureUrl } = useAuth();
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 1600) {
@@ -72,13 +76,19 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   useEffect(() => {
     const handleClickOutside = (e) => {
-      // Sprawdź, czy kliknięcie jest poza desktopowym menu
-      if (modalRef.current && !modalRef.current.contains(e.target)) {
+      // Close desktop dropdown only if click is outside both modal and profile
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(e.target) &&
+        profileRef.current &&
+        !profileRef.current.contains(e.target)
+      ) {
         setRotated(false);
       }
-      // Sprawdź, czy kliknięcie jest poza mobilnym menu
+      // Close mobile menu if click is outside mobileMenuRef
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
         setMobileMenuOpen(false);
       }
@@ -87,18 +97,21 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleProfileClick = () => {
-    setRotated((rotated) => !rotated);
+  const handleProfileClick = (e) => {
+    e.stopPropagation(); // Prevent bubbling to document
+    setRotated((prev) => {
+      console.log("Toggling rotated:", prev, "->", !prev); // Debug log
+      return !prev;
+    });
   };
 
-  const handleMobileMenuClick = () => {
-    setMobileMenuOpen((mobileMenuOpen) => !mobileMenuOpen);
+  const handleMobileMenuClick = (open) => {
+    setMobileMenuOpen(open);
   };
 
   return (
     <nav className={`${isHeroPage ? "" : "navbar-main"}`}>
       <div className="navbar navbar-logged">
-        {/* navigate to / or /hero? */}
         <div
           className="left-sidebar"
           style={{ visibility: isHeroPage ? "hidden" : "visible" }}
@@ -120,7 +133,6 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
           <SearchInput />
         </div>
         <div className="hide-on-mobile">
-          {/* change to community */}
           <button
             className="btn btn-primary btn-register btn-register-post"
             onClick={() => {
@@ -132,11 +144,16 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             <i className="bi bi-plus-circle me-2"></i>
             Stwórz społeczność
           </button>
-          <div className="profile" onClick={handleProfileClick}>
-            <img className="profile-picture" src={getProfilePictureUrl()} alt="Avatar" onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/avatar.svg"; 
-                }}/>
+          <div className="profile" ref={profileRef} onClick={handleProfileClick}>
+            <img
+              className="profile-picture"
+              src={getProfilePictureUrl()}
+              alt="Avatar"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/avatar.svg";
+              }}
+            />
             <i
               className="bi bi-triangle-fill"
               style={{
@@ -144,20 +161,27 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 color: "black",
                 cursor: "pointer",
               }}
+              onClick={handleProfileClick} // Explicit handler for triangle
             ></i>
           </div>
         </div>
-        {/* Ikona menu na mobile */}
-        <div className="show-on-mobile">
-          <i
-            className={`${mobileMenuOpen ? "bi bi-x" : "bi bi-list"} menu-toggle-icon`}
-            onClick={handleMobileMenuClick}
-          ></i>
+        <div className="show-on-mobile" ref={mobileMenuRef}>
+          {mobileMenuOpen ? (
+            <i
+              className="bi bi-x menu-toggle-icon"
+              onClick={() => handleMobileMenuClick(false)}
+            ></i>
+          ) : (
+            <i
+              className="bi bi-list menu-toggle-icon"
+              onClick={() => handleMobileMenuClick(true)}
+            ></i>
+          )}
           {mobileMenuOpen && (
-            <div className="dropdown-menu-profile" ref={mobileMenuRef}>
+            <div className="dropdown-menu-profile">
               <ul className="dropdown-menu-list">
                 <li className="dropdown-menu-item dropdown-menu-username">
-                  {auth.user.userName}
+                  {user.userName}
                 </li>
                 <li
                   className="dropdown-menu-item"
@@ -186,7 +210,6 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 >
                   Ustawienia
                 </li>
-
                 <li
                   className="dropdown-menu-item"
                   onClick={() => {
@@ -200,26 +223,28 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
             </div>
           )}
         </div>
-        {/* Dropdown na desktopie */}
         {rotated && (
           <div className="dropdown-menu-profile" ref={modalRef}>
             <ul className="dropdown-menu-list">
               <li className="dropdown-menu-item dropdown-menu-username">
-                {auth.user.userName}
+                {user.userName}
               </li>
               <li
-                className={`dropdown-menu-item ${currentPath === `/users/${user.id}` ? 'selected' : ''}`}
+                className={`dropdown-menu-item ${
+                  currentPath === `/users/${user.id}` ? "selected" : ""
+                }`}
                 onClick={() => {
                   navigate({ to: `/users/${user.id}` });
                   setMobileMenuOpen(false);
                   setRotated(false);
-
                 }}
               >
                 Profil
               </li>
               <li
-                className={`dropdown-menu-item ${currentPath === '/communities/new' ? 'selected' : ''}`}
+                className={`dropdown-menu-item ${
+                  currentPath === "/communities/new" ? "selected" : ""
+                }`}
                 onClick={() => {
                   navigate({ to: "/communities/new" });
                   setMobileMenuOpen(false);
@@ -229,7 +254,9 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
                 Stwórz społeczność
               </li>
               <li
-                className={`dropdown-menu-item ${currentPath === '/settings' ? 'selected' : ''}`}
+                className={`dropdown-menu-item ${
+                  currentPath === "/settings" ? "selected" : ""
+                }`}
                 onClick={() => {
                   navigate({ to: "/settings" });
                   setMobileMenuOpen(false);
@@ -238,7 +265,6 @@ export default function LoggedInNavbar({ logOut, navigate, isHeroPage }) {
               >
                 Ustawienia
               </li>
-
               <li
                 className="dropdown-menu-item"
                 onClick={() => {

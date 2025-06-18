@@ -277,7 +277,7 @@ const CommunityProfile = ({ community, communityId }) => {
                   <button
                     className="btn btn-plus"
                     type="button"
-                    onClick={() => setShowModal((prev) => !prev)}
+                    onClick={() => setRotated((prev) => !prev)}
                     disabled={rotated}
                   >
                     <i className="bi bi-plus"></i>
