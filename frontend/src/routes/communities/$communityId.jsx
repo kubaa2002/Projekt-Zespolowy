@@ -69,7 +69,7 @@ const Communities = () => {
       <PostsList
         key={communityId + searchParams}
         urlWithoutQueryParams={`${import.meta.env.VITE_API_URL}/${searchParams ? "search" : "posts"}/community/${communityId}`}
-        searchParams={searchParams}
+        searchParams={searchParams} observedCanBeDisplayed={false}
       />
     </>
   );
