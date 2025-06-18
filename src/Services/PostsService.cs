@@ -108,7 +108,7 @@ namespace Projekt_Zespolowy.Services
             var query = context.Posts
                 .Where(p => !p.IsDeleted)
                 .Where(p => p.ParentId == null && p.AppUserId != userId)
-                .Where(p => followedUserIds.Contains(p.AppUserId) || userCommunityIds.Contains(p.CommunityId!.Value));
+                .Where(p => followedUserIds.Contains(p.AppUserId) || userCommunityIds.Contains(p.CommunityId.HasValue ? p.CommunityId.Value : 0));
 
             var posts = query
                 .Include(p => p.Likes)
