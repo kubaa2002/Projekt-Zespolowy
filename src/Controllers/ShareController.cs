@@ -26,16 +26,17 @@ namespace Projekt_Zespolowy.Controllers
         [HttpPost("{postId}")]
         public IActionResult SharePost(int postId)
         {
-            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (usr == null)
-            {
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            if (userName == null)
                 return Unauthorized();
-            }
-            string userId = userManager.FindByNameAsync(usr).Result!.Id;
+            var user = userManager.FindByNameAsync(userName).Result;
+            if (user == null)
+                return Unauthorized();
+            string userId = user.Id;
             var response = sharingService.SharePost(postId, userId);
 
             if (response.ResponseCode == StatusCodes.Status201Created)
-                return Created($"/shares/{postId}/{userId}", (ShareDTO)response.ResponseBody);
+                return Created($"/shares/{postId}/{userId}", (ShareDTO)response.ResponseBody!);
             if (response.ResponseCode == StatusCodes.Status409Conflict)
                 return Conflict("Dany użytkownik udostępnił już ten post!");
             if (response.ResponseCode == StatusCodes.Status400BadRequest)
@@ -74,12 +75,13 @@ namespace Projekt_Zespolowy.Controllers
         [HttpDelete("[action]/{postId}")]
         public IActionResult DeleteShare(int postId)
         {
-            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (usr == null)
-            {
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            if (userName == null)
                 return Unauthorized();
-            }
-            string userId = userManager.FindByNameAsync(usr).Result.Id;
+            var user = userManager.FindByNameAsync(userName).Result;
+            if (user == null)
+                return Unauthorized();
+            string userId = user.Id;
             var response = sharingService.DeleteShare(postId, userId);
             if (response.ResponseCode == 404)
                 return NotFound(response.ResponseBody);

@@ -12,23 +12,23 @@ namespace Projekt_Zespolowy.Services
             this.context = context;
         }
 
-        public ServiceResponse<ShareDTO> SharePost(int postId, string userId)
+        public ServiceResponse<ShareDTO?> SharePost(int postId, string userId)
         {
             var post = context.Posts.FirstOrDefault(p => p.Id == postId);
             if (post == null)
             {
                 Console.WriteLine("Dany post nie istnieje");
-                return new ServiceResponse<ShareDTO>(StatusCodes.Status404NotFound, null);
+                return new ServiceResponse<ShareDTO?>(StatusCodes.Status404NotFound, null);
             }
             if (post.AppUserId == userId)
-                return new ServiceResponse<ShareDTO>(StatusCodes.Status400BadRequest, null);
+                return new ServiceResponse<ShareDTO?>(StatusCodes.Status400BadRequest, null);
             if (context.Users.FirstOrDefault(u => u.Id == userId) == null)
             {
                 Console.WriteLine("Dany user nie istnieje");
-                return new ServiceResponse<ShareDTO>(StatusCodes.Status404NotFound, null);
+                return new ServiceResponse<ShareDTO?>(StatusCodes.Status404NotFound, null);
             }
             if (context.Shares.Any(s => s.PostId == postId && s.AppUserId == userId))
-                return new ServiceResponse<ShareDTO>(StatusCodes.Status409Conflict, null);
+                return new ServiceResponse<ShareDTO?>(StatusCodes.Status409Conflict, null);
             
             Share share = new()
             {
@@ -37,18 +37,18 @@ namespace Projekt_Zespolowy.Services
             };
             context.Shares.Add(share);
             context.SaveChanges();
-            return new ServiceResponse<ShareDTO>(StatusCodes.Status201Created, share);
+            return new ServiceResponse<ShareDTO?>(StatusCodes.Status201Created, share);
         }
         /// <summary>
         /// You get list od id's of Posts shared by User with given UserId.
         /// </summary>
         /// <param name="UserId"></param>
         /// <returns></returns>
-        public ServiceResponse<ICollection<int>> GetSharedPostsIds(string userId)
+        public ServiceResponse<ICollection<int>?> GetSharedPostsIds(string userId)
         {
 
             if (context.Users.FirstOrDefault(u => u.Id == userId) == default)
-                return new ServiceResponse<ICollection<int>>(404, null);
+                return new ServiceResponse<ICollection<int>?>(404, null);
 
             var postIds = context.Shares
                 .Where(sp => sp.AppUserId == userId)
@@ -56,9 +56,9 @@ namespace Projekt_Zespolowy.Services
                 .ToList();
 
             if (postIds.Count() == 0)
-                return new ServiceResponse<ICollection<int>>(204, null);
+                return new ServiceResponse<ICollection<int>?>(204, null);
 
-            return new ServiceResponse<ICollection<int>>(200, postIds);
+            return new ServiceResponse<ICollection<int>?>(200, postIds);
         }
         ///// <summary>
         ///// You get list of PostDTO's shared by User with given UserId.
