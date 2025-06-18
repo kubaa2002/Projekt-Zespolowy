@@ -36,7 +36,7 @@ const LoginForm = () => {
           setPasswordError(errors.Password?.[0] || "");
         }
       } else {
-        setErrorMessage("Failed to connect to the server");
+        setErrorMessage("Nie udało się połączyć z serwerem");
       }
     }
   };

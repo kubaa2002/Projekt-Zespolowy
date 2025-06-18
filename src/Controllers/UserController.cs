@@ -86,16 +86,15 @@ public class UserController : ControllerBase
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
-                if (user.IsDeleted)
-                {
-                    var errors2 = new ErrorResponse { Status = 403 };
-                    errors2.Errors["error"] = new List<string> { "Konto jest usunięte." };
-                    return StatusCode(403, errors2);
-                }
-
                 if (await _userManager.CheckPasswordAsync(user, model.Password))
                 {
-                    var token = GenerateToken(user.UserName);
+                    if (user.IsDeleted)
+                    {
+                        var errors2 = new ErrorResponse { Status = 403 };
+                        errors2.Errors["error"] = new List<string> { "Konto jest usunięte." };
+                        return StatusCode(403, errors2);
+                    }
+                    var token = GenerateToken(user.UserName!);
                     return Ok(new { token, user.UserName });
                 }
             }
