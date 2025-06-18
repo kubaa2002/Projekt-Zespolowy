@@ -59,11 +59,11 @@ const Post = ({ post, showReplies = true }) => {
   const handleDeleteShare = async () => {
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/share/DeleteShare/${id}/${user.id}`,
+        `${import.meta.env.VITE_API_URL}/share/DeleteShare/${id}`,
         getAuthConfig()
       );
 
-      if (response.status === 200) {
+      if (response.status === 204) {
         console.log(
           `Usunięto udostępnienie posta ${id} przez użytkownika ${user.id}.`
         );
@@ -83,7 +83,7 @@ const Post = ({ post, showReplies = true }) => {
   const handleSharePost = async () => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/share/${id}/${user.id}`,
+        `${import.meta.env.VITE_API_URL}/share/${id}`,
         {}, // Empty payload as endpoint doesn't require a body
         getAuthConfig()
       );
