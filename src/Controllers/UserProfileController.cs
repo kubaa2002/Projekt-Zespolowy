@@ -30,7 +30,7 @@ public class UserProfileController : ControllerBase
     public async Task<IActionResult> GetUserProfile(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
+        if (user == null || user.IsDeleted)
             return NotFound(new { message = "Użytkownik nie istnieje" });
 
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

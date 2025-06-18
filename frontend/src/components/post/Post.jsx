@@ -172,12 +172,12 @@ const Post = ({ post, showReplies = true }) => {
           {!postIds.includes(id) ? (
             <span className="icon-checkbox user-select-none" onClick={handleSharePost}>
               <i className="bi bi-share-fill" />
-              Share
+              Udostępnij
             </span>
           ) : (
             <span className="icon-checkbox active user-select-none" onClick={handleDeleteShare}>
               <i className="bi bi-share-fill" />
-              Shared
+              Udostępnione
             </span>
           )}
         </div>

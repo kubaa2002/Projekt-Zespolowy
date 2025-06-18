@@ -6,7 +6,7 @@ import MainModal from "../modals/MainModal";
 import { useAuth } from "../../contexts/authProvider";
 import { usePosts } from "../../contexts/PostsContext";
 import QuickModal from "../modals/QuickModal";
-import ProfilePicture from "../primitives/profilePicture";
+import ProfilePicture from "../primitives/ProfilePicture";
 
 const CommunityProfile = ({ community, communityId }) => {
   const [isMember, setIsMember] = useState(community.isMember); // Track membership status
