@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
 namespace Projekt_Zespolowy.Services
