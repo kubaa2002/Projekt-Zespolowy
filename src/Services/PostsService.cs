@@ -100,24 +100,16 @@ namespace Projekt_Zespolowy.Services
 
             var userCommunityIds = context.CommunityMembers
                 .Where(cm => cm.AppUserId == userId)
-                .Select(cm => cm.CommunityId);
+                .Select(cm => cm.CommunityId).ToList();
 
             var followedUserIds = context.Followers
                 .Where(f => f.FollowerId == userId)
-                .Select(f => f.FollowingId);
+                .Select(f => f.FollowingId).ToList();
 
             var query = context.Posts
                 .Where(p => !p.IsDeleted)
                 .Where(p => p.ParentId == null && p.AppUserId != userId)
-                .Join(followedUserIds,
-                    post => post.AppUserId,
-                    followedId => followedId,
-                    (post, followedId) => post)
-
-                .Join(userCommunityIds,
-                    post => post.CommunityId,
-                    communityId => communityId,
-                    (post, communityId) => post);
+                .Where(p => followedUserIds.Contains(p.AppUserId) || userCommunityIds.Contains(p.CommunityId!.Value));
 
             var posts = query
                 .Include(p => p.Likes)
