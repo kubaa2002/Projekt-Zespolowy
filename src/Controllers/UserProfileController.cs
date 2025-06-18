@@ -49,8 +49,8 @@ public class UserProfileController : ControllerBase
             IsMe = currentUserId == user.Id,
             IsFollowing = isFollowing,
             IsFollower = isFollower,
-            FollowersCount = await _dbContext.Followers.CountAsync(f => f.FollowingId == user.Id),
-            FollowingCount = await _dbContext.Followers.CountAsync(f => f.FollowerId == user.Id),
+            FollowersCount = await _dbContext.Followers.Include(f => f.FollowerUser).Where(f => !f.FollowerUser!.IsDeleted).CountAsync(f => f.FollowingId == user.Id),
+            FollowingCount = await _dbContext.Followers.Include(f => f.FollowingUser).Where(f => !f.FollowingUser!.IsDeleted).CountAsync(f => f.FollowerId == user.Id),
             CommunitiesCount = await _dbContext.CommunityMembers.CountAsync(cm => cm.AppUserId == user.Id)
         };
 
@@ -73,6 +73,7 @@ public class UserProfileController : ControllerBase
             return NoContent();
 
         var fans = await _userManager.Users
+            .Where(u => !u.IsDeleted)
             .Where(u => followerIds.Contains(u.Id))
             .Select(u => new { u.Id, u.UserName })
             .ToListAsync();
@@ -96,6 +97,7 @@ public class UserProfileController : ControllerBase
             return NoContent();
 
         var follows = await _userManager.Users
+            .Where(u => !u.IsDeleted)
             .Where(u => followingIds.Contains(u.Id))
             .Select(u => new { u.Id, u.UserName })
             .ToListAsync();
