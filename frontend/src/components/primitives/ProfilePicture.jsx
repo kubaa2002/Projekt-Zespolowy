@@ -18,9 +18,10 @@ export default function ProfilePicture({ src, alt, isMe, onClick }) {
           e.target.src = "/avatar.svg";
         }}
       />
-      <div className="change-pfp">
+      {isMe && (<div className="change-pfp">
         <i class="bi bi-camera"></i>
-      </div>
+      </div>)}
+      
     </div>
   );
 }

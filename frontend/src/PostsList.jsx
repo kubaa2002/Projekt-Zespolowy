@@ -5,7 +5,7 @@ import Post from "./components/post/Post";
 import { usePosts } from "./contexts/PostsContext";
 import { Link, useLocation } from '@tanstack/react-router'
 
-const PostsList = ({urlWithoutQueryParams, searchParams}) => {
+const PostsList = ({urlWithoutQueryParams, searchParams, observedCanBeDisplayed=true}) => {
   const { token, setFollow, user } = useAuth();
   const {setPosts,posts} = usePosts(); 
   const [loading, setLoading] = useState(false);
@@ -134,12 +134,14 @@ const PostsList = ({urlWithoutQueryParams, searchParams}) => {
           >
             Popularne
           </li>
-          <li
-            className="dropdown-item"
-            onClick={() => handleSortChange("observed")}
-          >
-            Obserwowane
-          </li>
+          {observedCanBeDisplayed  && (
+            <li
+              className="dropdown-item"
+              onClick={() => handleSortChange("observed")}
+            >
+              Obserwowane
+            </li>
+          )}
         </ul>
       </div>
 
