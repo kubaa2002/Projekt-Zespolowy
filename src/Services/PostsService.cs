@@ -158,7 +158,7 @@ namespace Projekt_Zespolowy.Services
             var authorPostsIds = context.Posts.Where(p => !p.IsDeleted).Where(x => x.ParentId == null).Where(x => x.AppUserId == authorId).Select(p => p.Id);
             var sharedPostsIds = context.Shares.Where(sp => sp.AppUserId == authorId).Include(sp => sp.Post).Where(sp => !sp.Post!.IsDeleted).Where(sp => sp.Post!.ParentId == null).Select(sp => sp.Post!.Id);
             var foundPostsIds = authorPostsIds.Union(sharedPostsIds).ToList();
-            var foundPosts = context.Posts.Where(p => foundPostsIds.Contains(p.Id)).Include(x => x.Likes).ThenInclude(l => l.Reaction).Include(p => p.Author).Include(p => p.Replies).ToList();
+            var foundPosts = context.Posts.Where(p => foundPostsIds.Contains(p.Id)).Include(x => x.Likes).ThenInclude(l => l.Reaction).Include(p => p.Author).Include(p => p.Replies).OrderByDescending(p => p.CreatedDateTime).ToList();
             // When no posts
             if (start > foundPosts.Count)
                 return new ServiceResponse<List<Post>>(StatusCodes.Status204NoContent, null);
