@@ -4,14 +4,16 @@ import axios from 'axios';
 import { useNavigate } from '@tanstack/react-router';
 import DeletePostModal from './DeletePostModal';
 
-const UserTag = ({ post }) => {
-  const { userName: authorName, createdDateTime, authorId, id, title} = post;
+const CommuityTag = ({ post }) => {
+  const { userName: authorName, createdDateTime, authorId, id,communityId, title } = post;
   const [showMenu, setShowMenu] = useState(false);
   const [isDeleted, setIsDeleted] = useState(post.isDeleted || false);
   const menuRef = useRef();
-  const { user, token,follow,setFollow, getProfilePictureUrl } = useAuth();
+  const { user, token,follow,setFollow, getProfilePictureUrl,names,setNames } = useAuth();
   const navigate = useNavigate();
+  const [communityName, setCommunityName] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const isPostOwner = authorId === user.id;
   const formattedDate = new Date(createdDateTime).toLocaleDateString('pl-PL', {
     day: 'numeric',
@@ -110,18 +112,49 @@ const UserTag = ({ post }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+   useEffect(() => {
+    const fetchCommunityName = async () => {
+      names.forEach(element => {
+        if (element.id === communityId) {
+          setCommunityName(element.name);
+          return;
+        }
+      });
+      if (communityName) return;
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/community/${communityId}`,
+          getAuthConfig()
+        );
+        setCommunityName(response.data.name);
+        setNames(prevNames => [...prevNames, { id: communityId, name: response.data.name }]);
+      } catch (err) {
+        console.error('Błąd podczas pobierania nazwy społeczności:', err.response?.data?.error || err.message);
+      }
+    };
+
+    if (communityId  && !communityName) {
+      fetchCommunityName();
+    }
+  }, [communityName]);
+
   return (
-    <div className="post-header user-select-none" style={{ backgroundColor: isDeleted ? '#ffcccc' : 'transparent' }}>
+    <div className={`${isDeleted ? 'post-header' : 'post-header2'}  user-select-none`} style={{ backgroundColor: isDeleted ? '#ffcccc' : 'transparent' }}>
      
       
-        {!isDeleted ? (<div className="post-author" onClick={() => navigate({to: `/users/${authorId}`})} >
-          <img className="author-avatar" src={authorId === user.id ? getProfilePictureUrl() : `${import.meta.env.VITE_API_URL}/img/get/user/${authorId}`} onError={(e) => {
+        {!isDeleted ? (<div className="post-author"  >
+          <img className="post-avatar" src={ `${import.meta.env.VITE_API_URL}/img/get/community/${post.communityId}`} onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "/avatar.svg"; 
-                }}/>
+                }} onClick={() => navigate({to: `/communities/${post.communityId}`})}/>
+          
         <div>
-          <div className="author-name">{authorName}</div>
-          <div className="post-date">{formattedDate}</div>
+          <div className="author-name" onClick={() => navigate({to: `/communities/${post.communityId}`})}>{communityName}</div>
+          <div className="post-date" onClick={() => navigate({to: `/users/${authorId}`})}>
+            <img className="author-avatar2" src={authorId === user.id ? getProfilePictureUrl() : `${import.meta.env.VITE_API_URL}/img/get/user/${authorId}`} onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/avatar.svg"; 
+                }}/> {authorName}  {formattedDate}</div>
         </div></div>
         ) : (<div></div>)}
       
@@ -214,4 +247,4 @@ const UserTag = ({ post }) => {
   );
 };
 
-export default UserTag;
+export default CommuityTag;

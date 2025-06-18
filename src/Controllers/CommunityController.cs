@@ -156,7 +156,7 @@ public class CommunityController : ControllerBase
 
         await _dbContext.SaveChangesAsync();
 
-        return StatusCode(201);
+        return Created($"/api/communities/{community.Id}", new { community.Id });
     }
 }
 

@@ -140,7 +140,7 @@ const PostsProvider = ({ children }) => {
         postData,
         getAuthConfig()
       );
-      setPosts((prev) => [...prev, response.data]);
+      setPosts((prev) => [ response.data, ...prev]);
       setError(null);
       return response.data;
     } catch (err) {

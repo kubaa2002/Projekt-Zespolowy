@@ -86,7 +86,7 @@ const Hidden = () => {
           dislikes={comment.dislikesCount || 0}
           isDisliked={comment.isDisliked || false}
           isLied={comment.isLied || false}
-          replyCount={comment.replyCount || 0}
+          replyCount={comment.commentCount || 0}
           post={comment}
         />
       ))}

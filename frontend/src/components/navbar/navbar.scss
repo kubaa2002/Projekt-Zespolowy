@@ -75,6 +75,11 @@
 	gap: 15px;
 	user-select: none;
 	cursor: pointer;
+	.profile-picture{
+		border-radius: 50%;
+		width: 70px;
+		height: 70px;
+	}
 }
 
 
@@ -159,7 +164,11 @@
 	user-select: text;
 	overflow-wrap: anywhere;
 }
-.dropdown-menu-item:not(.dropdown-menu-username):hover {
+.dropdown-menu-item:not(.dropdown-menu-username):hover{
+  background-color: map.get(colors.$key-colors, light-pink);
+  color: map.get(colors.$key-colors, black);
+}
+.dropdown-menu-list > .dropdown-menu-item.selected{
   background-color: map.get(colors.$key-colors, razacy-rozowy);
   color: map.get(colors.$key-colors, white);
 }

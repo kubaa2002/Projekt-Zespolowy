@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Controllers;
 using Projekt_Zespolowy.Models;
 using Projekt_Zespolowy.Services;
 using System.Text;
@@ -15,7 +16,6 @@ builder.Services.AddControllers(options =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//var connectionString = "Data Source=localhost,1433;Database=PZ;User Id=sa;Password=BazaDanych123!;TrustServerCertificate=True;MultipleActiveResultSets=true";
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentityCore<AppUser>()
@@ -82,6 +82,7 @@ builder.Services.AddScoped<PostsService>();
 builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<LikesService>();
 builder.Services.AddScoped<SharingService>();
+builder.Services.AddScoped<ImageService>();
 
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
@@ -128,6 +129,8 @@ using (var scope = app.Services.CreateScope())
 
         Reaction.PopulateDB(context);
 
+        var userManager = services.GetRequiredService<UserManager<AppUser>>();
+        await UserController.AddDeletedUser(context, userManager);
 
         // Tutaj potencjalnie mo�esz wywo�a� metod� do seedingu danych,
         // je�li nie robisz tego wy��cznie przez HasData w OnModelCreating

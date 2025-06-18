@@ -1,0 +1,33 @@
+@use "sass:color";
+@use "sass:map";
+@use "../../styles/colors" as colors;
+.image-crop-modal{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid map.get(colors.$key-colors, razacy-rozowy);
+    padding: 1rem;
+    transform: translateX(-50%) translateY(-50%);
+    gap: 10px;
+    z-index: 1000;
+    background-color: map.get(colors.$key-colors, white);
+    min-width: 300px;
+}
+.image-preview{
+    max-height: 50vh;
+    max-width: 50vh;
+}
+
+.none{
+    display: none;
+}
+
+.blur {
+    backdrop-filter: blur(2px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+}

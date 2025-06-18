@@ -64,6 +64,7 @@ const PostReplies = ({ posts }) => {
           {
             appUserId: user.id,
             postId,
+            reactionName: "Dislike",
             reactionId: 2,
           },
           getAuthConfig()
@@ -77,6 +78,7 @@ const PostReplies = ({ posts }) => {
           {
             appUserId: user.id,
             postId,
+            reactionName: "Like",
             reactionId: 1,
           },
           getAuthConfig()
@@ -88,6 +90,7 @@ const PostReplies = ({ posts }) => {
           {
             appUserId: user.id,
             postId,
+            reactionName: "Like",
             reactionId: 1,
           },
           getAuthConfig()
@@ -145,6 +148,7 @@ const PostReplies = ({ posts }) => {
           {
             appUserId: user.id,
             postId,
+            reactionName: "Like",
             reactionId: 1,
           },
           getAuthConfig()
@@ -158,6 +162,7 @@ const PostReplies = ({ posts }) => {
           {
             appUserId: user.id,
             postId,
+            reactionName: "Dislike",
             reactionId: 2,
           },
           getAuthConfig()
@@ -169,6 +174,7 @@ const PostReplies = ({ posts }) => {
           {
             appUserId: user.id,
             postId,
+            reactionName: "Dislike",
             reactionId: 2,
           },
           getAuthConfig()
@@ -216,20 +222,20 @@ const PostReplies = ({ posts }) => {
           <div className="post-content">{post.content}</div>
           <hr />
           <div className="post-footer">
-            <span>
+           
               <Like
                 isLiked={reactions[post.id]?.isLiked}
                 likesCount={reactions[post.id]?.likesCount ?? 0}
                 handleLike={() => handleLike(post.id)}
               />
-            </span>
-            <span>
+            
+            
               <Dislike
                 isDisliked={reactions[post.id]?.isDisliked}
                 dislikesCount={reactions[post.id]?.dislikesCount ?? 0}
                 handleDislike={() => handleDislike(post.id)}
               />
-            </span>
+           
           </div>
         </div>
       ))}

@@ -3,9 +3,9 @@ import { useAuth } from "./contexts/authProvider";
 import axios from "axios";
 import Post from "./components/post/Post";
 import { usePosts } from "./contexts/PostsContext";
-// Patrk if this solution is bad, pls don't kill me :///////
-// I dunno for now if we should pass something like "isMyPost" to differentiate them
-const PostsList = ({urlWithoutQueryParams}) => {
+import { Link, useLocation } from '@tanstack/react-router'
+
+const PostsList = ({urlWithoutQueryParams, searchParams}) => {
   const { token, setFollow, user } = useAuth();
   const {setPosts,posts} = usePosts(); 
   const [loading, setLoading] = useState(false);
@@ -13,9 +13,27 @@ const PostsList = ({urlWithoutQueryParams}) => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [hasMore, setHasMore] = useState(true);
-  const [sortOption, setSortOption] = useState("Najnowsze");
+  const [sortOption, setSortOption] = useState("new");
   const [showSort, setShowSort] = useState(false);
   const observer = useRef(); 
+  const location = useLocation();
+   const menuRef = useRef();
+
+  const p = {
+    "new": "Nowe",
+    "popular": "Popularne",
+    "observed": "Obserwowane"
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowSort(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   const lastPostElementRef = useCallback(
     (node) => {
       if (loading || !hasMore) return; 
@@ -30,26 +48,27 @@ const PostsList = ({urlWithoutQueryParams}) => {
     [loading, hasMore]
   );
 
-  const getAuthConfig = () => ({
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
   const fetchPosts = async (pageNum) => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${urlWithoutQueryParams}?page=${pageNum}&pageSize=${pageSize}`,
-        getAuthConfig()
-      );
+      const response = await axios.get(urlWithoutQueryParams, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          ...(searchParams ? { q: searchParams } : {}),
+          page: pageNum,
+          pageSize: pageSize,
+          filter: sortOption,
+        },
+      });
       const newPosts = response.data;
       if(Array.isArray(newPosts)){
         newPosts.forEach(obj => {
           obj.isDeleted = false;
         });
       }
-      console.log("Fetched posts:", newPosts);
+ 
       setPosts((prev) => (pageNum === 1 ? newPosts : [...prev, ...newPosts]));
       setHasMore(newPosts.length === pageSize);
       setError(null);
@@ -63,13 +82,13 @@ const PostsList = ({urlWithoutQueryParams}) => {
 
   useEffect(() => {
     fetchPosts(1); 
-  }, []);
+  }, [sortOption]);
 
   useEffect(() => {
     if (page > 1) {
       fetchPosts(page); 
     }
-  }, [page]);
+  }, [page, sortOption]);
 
   const handleSortChange = (option) => {
     setSortOption(option);
@@ -80,29 +99,21 @@ const PostsList = ({urlWithoutQueryParams}) => {
   };
 
   const sortedPosts = [...posts]
-    .filter((post) => post.parentId === null)
-    .sort((a, b) => {
-      if (sortOption === "Najnowsze") {
-        return new Date(b.createdDateTime) - new Date(a.createdDateTime);
-      } else if (sortOption === "Najbardziej lubiane") {
-        return (b.likesCount || 0) - (a.likesCount || 0);
-      }
-      return 0;
-    });
 
   if (loading && page === 1) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-      <div className="dropdown-sort">
+      <div className="dropdown-sort user-select-none" ref={menuRef}>
         <button
           className="btn btn-secondary dropdown-toggle btn-sort"
           type="button"
           onClick={() => setShowSort((o) => !o)}
         >
-          {sortOption}
+          {p[sortOption] || "Sortuj"}
         </button>
+       {searchParams && <Link to={location.pathname}>Wszytkie posty</Link>}
         <ul
           className="dropdown-menu dropdown-menu-custom"
           style={{
@@ -113,15 +124,21 @@ const PostsList = ({urlWithoutQueryParams}) => {
           <li className="dropdown-item dropdown-item-sort">Sortuj według</li>
           <li
             className="dropdown-item"
-            onClick={() => handleSortChange("Najnowsze")}
+            onClick={() => handleSortChange("new")}
           >
-            Najnowsze
+            Nowe
           </li>
           <li
             className="dropdown-item"
-            onClick={() => handleSortChange("Najbardziej lubiane")}
+            onClick={() => handleSortChange("popular")}
           >
-            Najbardziej lubiane
+            Popularne
+          </li>
+          <li
+            className="dropdown-item"
+            onClick={() => handleSortChange("observed")}
+          >
+            Obserwowane
           </li>
         </ul>
       </div>

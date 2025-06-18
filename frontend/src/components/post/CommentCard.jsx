@@ -57,6 +57,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Dislike",
             reactionId: 2,
           },
           getAuthConfig()
@@ -70,6 +71,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Like",
             reactionId: 1,
           },
           getAuthConfig()
@@ -81,6 +83,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Like",
             reactionId: 1,
           },
           getAuthConfig()
@@ -114,6 +117,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Like",
             reactionId: 1,
           },
           getAuthConfig()
@@ -127,6 +131,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Dislike",
             reactionId: 2,
           },
           getAuthConfig()
@@ -138,6 +143,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           {
             appUserId: user.id,
             postId: id,
+            reactionName: "Dislike",
             reactionId: 2,
           },
           getAuthConfig()
@@ -218,7 +224,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
           <p className="comment-text">{text}</p>
 
           <div className="comment-footer">
-            <div className="reactions">
+            <div className="post-footer">
               <Like
                 isLiked={isLiked}
                 likesCount={likesCount}
@@ -231,12 +237,12 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
               />
             </div>
             <div className="actions">
-              {/*(replyCount > 0 || comments.length > 0) &&*/ (
+              {(replyCount > 0 || comments.length > 0) && (
                 <label
                   className="replies"
                   onClick={() => setShowReplies((p) => !p)}
                 >
-                  Pokaż wszystkie odpowiedzi ({/*Math.max(replyCount, comments.length)*/})
+                  Pokaż wszystkie odpowiedzi ({Math.max(replyCount, comments.length)})
                 </label>
               )}
               <label className="reply" onClick={openModal}>
