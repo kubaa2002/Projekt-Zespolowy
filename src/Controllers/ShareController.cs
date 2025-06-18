@@ -1,5 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Projekt_Zespolowy.Services;
+using Microsoft.AspNetCore.Authorization;
+using Projekt_Zespolowy.Authentication;
+using Projekt_Zespolowy.Models;
+
 
 namespace Projekt_Zespolowy.Controllers
 {
@@ -9,18 +15,28 @@ namespace Projekt_Zespolowy.Controllers
     {
         SharingService sharingService;
 
-        public ShareController(SharingService sharingService)
+        private readonly UserManager<AppUser> userManager;
+
+        public ShareController(SharingService sharingService, UserManager<AppUser> userManager)
         {
+            this.userManager = userManager;
             this.sharingService = sharingService;
         }
 
-        [HttpPost("{postId}/{userId}")]
-        public IActionResult SharePost(int postId, string userId)
+        [Authorize]
+        [HttpPost("{postId}")]
+        public IActionResult SharePost(int postId)
         {
+            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
+            if (usr == null)
+            {
+                return Unauthorized();
+            }
+            string userId = userManager.FindByNameAsync(usr).Result.Id;
             var response = sharingService.SharePost(postId, userId);
 
             if (response.ResponseCode == 201)
-                return Created($"/shares/{postId}/{userId}", response.ResponseBody);
+                return Created($"/shares/{postId}/{userId}", (ShareDTO)response.ResponseBody);
             
             if (response.ResponseCode == StatusCodes.Status409Conflict)
                 return Conflict("Dany użytkownik udostępnił już ten post!");
@@ -54,14 +70,21 @@ namespace Projekt_Zespolowy.Controllers
         //    else return Ok(response);
         //}
 
-        [HttpDelete("[action]/{postId}/{userId}")]
-        public IActionResult DeleteShare(int postId, string userId)
+        [Authorize]
+        [HttpDelete("[action]/{postId}")]
+        public IActionResult DeleteShare(int postId)
         {
+            var usr = User.FindFirst(ClaimTypes.Name)?.Value;
+            if (usr == null)
+            {
+                return Unauthorized();
+            }
+            string userId = userManager.FindByNameAsync(usr).Result.Id;
             var response = sharingService.DeleteShare(postId, userId);
             if (response.ResponseCode == 404)
                 return NotFound(response.ResponseBody);
 
-            else return Ok(response);
+            else return NoContent();
         }
     }
 }

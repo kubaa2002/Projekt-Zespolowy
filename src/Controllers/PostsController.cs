@@ -172,7 +172,7 @@ namespace Projekt_Zespolowy.Controllers
             var response = postsService.Add(postDTO);
             if (response.ResponseCode == 201)
             {
-                return Created($"/posts/{postDTO.Id}", (PostDTO)response.ResponseBody);
+                return Created($"/posts/{response.ResponseBody.Id}", (PostDTO)response.ResponseBody);
             }
             if (response.ResponseCode == 413)
             {
@@ -212,7 +212,7 @@ namespace Projekt_Zespolowy.Controllers
             }
             if (response.ResponseCode == 201)
             {
-                return Created($"/posts/{postDTO.Id}", (PostDTO)response.ResponseBody);
+                return Created($"/posts/{response.ResponseBody.Id}", (PostDTO)response.ResponseBody);
             }
             else
             {
@@ -236,7 +236,7 @@ namespace Projekt_Zespolowy.Controllers
             }
             if (response.ResponseCode == 201)
             {
-                return Created($"/posts/{postDTO.Id}", (PostDTO)response.ResponseBody);
+                return Created($"/posts/{response.ResponseBody.Id}", (PostDTO)response.ResponseBody);
             }
             else
             {

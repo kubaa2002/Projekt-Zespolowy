@@ -110,7 +110,7 @@ namespace Projekt_Zespolowy.Services
             }
             context.Shares.Remove(share);
             context.SaveChanges();
-            return new ServiceResponse<string>(200, "Usunięto udostępnienie posta");
+            return new ServiceResponse<string>(204, "Usunięto udostępnienie posta");
         }
     }
 }
