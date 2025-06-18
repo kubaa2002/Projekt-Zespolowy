@@ -37,14 +37,14 @@ const PrivacyPolicy = () => (
         <h2>Przechowywanie danych</h2>
         <p>
             Twoje dane będą przechowywane tak długo, jak jest to konieczne do realizacji celów, dla których zostały zebrane na podstawie twojej zgody.
-        </ul>
+        </p>
         <h2>Ochrona danych</h2>
         <p>
             Wykorzystujemy odpowiednie środki techniczne i organizacyjne, aby chronić Twoje dane osobowe przed nieuprawnionym dostępem, utratą lub zniszczeniem.
         </p>
         <h2>Dane kontaktowe</h2>
         <p>
-            Swoje prawa możesz realizować kontaktując się z nami pod adresem email: <a href="mailto:iod@klonreddita.pl">
+            Swoje prawa możesz realizować kontaktując się z nami pod adresem email: <a href="mailto:iod@klonreddita.pl">iod@klonreddita.pl</a>
         </p>
     </div>
 );
