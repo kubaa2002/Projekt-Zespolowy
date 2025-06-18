@@ -23,9 +23,28 @@ const AccountForm = () => {
     const newErrors = {};
 
     if (formData.password) {
+
       if (formData.password.length < 8) {
         newErrors.password = 'Hasło musi mieć co najmniej 8 znaków';
       }
+
+      else if (!/[a-z]/.test(formData.password)) {
+        newErrors.password = 'Hasło musi zawierać co najmniej jedną małą literę';
+      }
+
+      else if (!/[A-Z]/.test(formData.password)) {
+        newErrors.password = 'Hasło musi zawierać co najmniej jedną dużą literę';
+      }
+
+      else if (!/[0-9]/.test(formData.password)) {
+        newErrors.password = 'Hasło musi zawierać co najmniej jedną cyfrę';
+      }
+
+      else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(formData.password)) {
+        newErrors.password = 'Hasło musi zawierać co najmniej jeden znak specjalny';
+      }
+
+
       if (formData.confirmPassword !== formData.password) {
         newErrors.confirmPassword = 'Hasła nie są zgodne';
       }
@@ -37,7 +56,7 @@ const AccountForm = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+};
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,14 +109,10 @@ const AccountForm = () => {
             currentPassword: '',
           }));
         } else {
-          if (data.Status === 401) {
-            setErrorMessage(data.Errors?.PasswordError?.[0] || 'Nieprawidłowe aktualne hasło.');
-          } else {
-            setErrorMessage(data.message || 'Błąd podczas zmiany hasła.');
-          }
+          setErrorMessage('Wpisano niepoprawne aktualne hasło.');
         }
       } catch (error) {
-        setErrorMessage('Wystąpił błąd podczas zmiany hasła. Spróbuj ponownie.');
+        setErrorMessage('Wystąpił błąd podczas zmiany hasła. Spróbuj ponownie.', error);
         console.error('Error:', error);
       }
     } else {
