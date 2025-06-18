@@ -13,28 +13,31 @@ export default function NewCommunity() {
   const [isCreated, setIsCreated] = useState(false);
   const navigate = useNavigate();
   const { token } = useAuth();
-
+const [touched, setTouched] = useState({ name: false, description: false });
   const getAuthConfig = () => ({
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
-  useEffect(() => {
-    const validateRealtime = () => {
-      setIsCreated(false);
+ useEffect(() => {
+  const validateRealtime = () => {
+    setIsCreated(false);
+    if (touched.name) {
       setNameError(name.trim() ? "" : "Nazwa społeczności jest wymagana.");
+    }
+    if (touched.description) {
       setDescriptionError(description.trim() ? "" : "Opis jest wymagany.");
       if (description.length > maxLength) {
         setDescriptionError(`Opis nie może przekraczać ${maxLength} znaków.`);
       }
-    };
-
-    if (name || description) {
-        validateRealtime();
     }
+  };
 
-  }, [name, description]);
+  if (touched.name || touched.description) {
+    validateRealtime();
+  }
+}, [name, description, touched]);
 
   const createCommunity = async () => {
     setIsCreated(false);
@@ -118,6 +121,7 @@ export default function NewCommunity() {
               placeholder="Nazwa społeczności"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              onBlur={() => setTouched((prev) => ({ ...prev, name: true }))}
             />
             {nameError && <div className="invalid-feedback user-select-none">{nameError}</div>}
           </div>
@@ -136,6 +140,8 @@ export default function NewCommunity() {
               placeholder="Opis"
               value={description}
               onChange={(e) => setDescritption(e.target.value)}
+              
+              onBlur={() => setTouched((prev) => ({ ...prev, description: true }))}
               style={{
                 resize: "vertical",
                 maxHeight: "250px",

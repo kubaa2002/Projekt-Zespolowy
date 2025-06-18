@@ -19,7 +19,8 @@ import {
   FaHeading,
 } from 'react-icons/fa';
 import './textEditor.scss';
-const BASE_URL = import.meta.env.VITE_API_URL; // Replace with your server URL or use environment variables
+
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const TextEditor = ({ onContentChange, content }) => {
   const [selectedColor, setSelectedColor] = useState('#000000');
@@ -33,30 +34,116 @@ const TextEditor = ({ onContentChange, content }) => {
       Color,
       Image.configure({
         inline: true,
-        allowBase64: false, 
+        allowBase64: false,
       }),
       Placeholder.configure({
         placeholder: 'Zacznij pisać...',
       }),
     ],
-    content: content, // Initialize with content prop
+    content: content,
     onUpdate: ({ editor }) => {
       if (onContentChange && typeof onContentChange === 'function') {
-        onContentChange(editor.getHTML()); // Call onContentChange with HTML
+        onContentChange(editor.getHTML());
       }
+    },
+    editorProps: {
+      handlePaste: (view, event) => {
+        handlePaste(event);
+        return true; // Blokuje domyślną obsługę Tiptap
+      },
     },
   });
 
   const fileInputRef = useRef(null);
 
-  // Update editor content when content prop changes
   useEffect(() => {
     if (editor && content && editor.getHTML() !== content) {
       editor.commands.setContent(content);
     }
   }, [editor, content]);
 
-  // Formatting functions
+  const uploadImage = useCallback(
+    async (file) => {
+      if (file) {
+        if (file.size > 5242880) {
+          alert('Plik jest za duży. Maksymalny rozmiar to 5 MB.');
+          return null;
+        }
+        if (!file.type.startsWith('image/')) {
+          alert('Proszę wybrać plik graficzny.');
+          return null;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+          const response = await fetch(`${BASE_URL}/img/add/general`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to upload image');
+          }
+
+          const data = await response.json();
+          const relativeUrl = data.url;
+          const imageUrl = `${BASE_URL}${relativeUrl}`;
+          return imageUrl;
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          alert(`Nie udało się przesłać obrazka: ${error.message}`);
+          return null;
+        }
+      }
+      return null;
+    },
+    [],
+  );
+
+  const handlePaste = useCallback(
+    async (event) => {
+      event.preventDefault();
+      const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+
+      for (const item of items) {
+        if (item.type.indexOf('image') !== -1) {
+          const file = item.getAsFile();
+          if (file) {
+            const imageUrl = await uploadImage(file);
+            if (imageUrl && editor) {
+              editor.chain().focus().setImage({ src: imageUrl }).run();
+            }
+            return; // Zakończ po przetworzeniu obrazu
+          }
+        }
+      }
+
+      // Obsłuż wklejanie tekstu, jeśli nie ma obrazu
+      const text = event.clipboardData.getData('text/plain');
+      if (text && editor) {
+        editor.chain().focus().insertContent(text).run();
+      }
+    },
+    [editor, uploadImage],
+  );
+
+  const handleFileUpload = useCallback(
+    async (event) => {
+      const file = event.target.files[0];
+      const imageUrl = await uploadImage(file);
+      if (imageUrl && editor) {
+        editor.chain().focus().setImage({ src: imageUrl }).run();
+      }
+    },
+    [editor, uploadImage],
+  );
+
   const toggleBold = useCallback(() => {
     editor?.chain().focus().toggleBold().run();
   }, [editor]);
@@ -77,12 +164,10 @@ const TextEditor = ({ onContentChange, content }) => {
     editor?.chain().focus().toggleOrderedList().run();
   }, [editor]);
 
-  // Text alignment
   const setTextAlign = useCallback((align) => {
     editor?.chain().focus().setTextAlign(align).run();
   }, [editor]);
 
-  // Text color
   const setTextColor = useCallback(
     (color) => {
       editor?.chain().focus().setColor(color).run();
@@ -91,132 +176,12 @@ const TextEditor = ({ onContentChange, content }) => {
     [editor],
   );
 
-  // Image insertion via URL
   const addImage = useCallback(() => {
     const url = window.prompt('Wprowadź URL obrazka:');
     if (url) {
       editor?.chain().focus().setImage({ src: url }).run();
     }
   }, [editor]);
-
-  // Image upload via file input
-  const handleFileUpload = useCallback(
-    async (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        // Validate file size (5 MB) and type
-        if (file.size > 5242880) {
-          alert('Plik jest za duży. Maksymalny rozmiar to 5 MB.');
-          return;
-        }
-        if (!file.type.startsWith('image/')) {
-          alert('Proszę wybrać plik graficzny.');
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', file); // Match server's expected field name
-
-        try {
-          const response = await fetch(`${BASE_URL}/img/add/general`, {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`, // Adjust based on your auth setup
-            },
-            body: formData,
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to upload image');
-          }
-
-          const data = await response.json();
-          const relativeUrl = data.url; // e.g., "/img/get/id/123"
-          const imageUrl = `${BASE_URL}${relativeUrl}`; // Construct full URL
-
-          if (imageUrl && editor) {
-            editor.chain().focus().setImage({ src: imageUrl }).run();
-          } else {
-            console.error('No URL returned from server');
-            alert('Nie udało się przesłać obrazka.');
-          }
-        } catch (error) {
-          console.error('Error uploading image:', error);
-          alert(`Nie udało się przesłać obrazka: ${error.message}`);
-        }
-      }
-    },
-    [editor],
-  );
-
-  // Handle pasted images
-  const handlePaste = useCallback(
-    async (event) => {
-      const items = (event.clipboardData || event.originalEvent.clipboardData).items;
-      for (const item of items) {
-        if (item.type.indexOf('image') !== -1) {
-          event.preventDefault(); // Prevent default paste behavior
-          const file = item.getAsFile();
-          if (file) {
-            // Validate file size (5 MB) and type
-            if (file.size > 5242880) {
-              alert('Plik jest za duży. Maksymalny rozmiar to 5 MB.');
-              return;
-            }
-            if (!file.type.startsWith('image/')) {
-              alert('Proszę wkleić plik graficzny.');
-              return;
-            }
-
-            const formData = new FormData();
-            formData.append('file', file); // Match server's expected field name
-
-            try {
-              const response = await fetch(`${BASE_URL}/img/add/general`, {
-                method: 'POST',
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem('token')}`, // Adjust based on your auth setup
-                },
-                body: formData,
-              });
-
-              if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to upload image');
-              }
-
-              const data = await response.json();
-              const relativeUrl = data.url; // e.g., "/img/get/id/123"
-              const imageUrl = `${BASE_URL}${relativeUrl}`; // Construct full URL
-
-              if (imageUrl && editor) {
-                editor.chain().focus().setImage({ src: imageUrl }).run();
-              } else {
-                console.error('No URL returned from server');
-                alert('Nie udało się przesłać wklejonego obrazka.');
-              }
-            } catch (error) {
-              console.error('Error uploading pasted image:', error);
-              alert(`Nie udało się przesłać wklejonego obrazka: ${error.message}`);
-            }
-          }
-        }
-      }
-    },
-    [editor],
-  );
-
-  // Attach paste event listener
-  useEffect(() => {
-    if (editor) {
-      const editorElement = editor.view.dom;
-      editorElement.addEventListener('paste', handlePaste);
-      return () => {
-        editorElement.removeEventListener('paste', handlePaste);
-      };
-    }
-  }, [editor, handlePaste]);
 
   if (!editor) {
     return null;
@@ -235,7 +200,7 @@ const TextEditor = ({ onContentChange, content }) => {
         <button
           onClick={() => toggleHeading(2)}
           className={editor.isActive('heading', { level: 2 }) ? 'active' : ''}
-          title="Nagłówek 2" 
+          title="Nagłówek 2"
         >
           <FaHeading size={14} />
         </button>

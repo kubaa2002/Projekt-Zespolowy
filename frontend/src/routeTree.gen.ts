@@ -16,6 +16,7 @@ import { Route as ShereImport } from './routes/shere'
 import { Route as SettingsImport } from './routes/settings'
 import { Route as ResetconfirmImport } from './routes/resetconfirm'
 import { Route as ResetImport } from './routes/reset'
+import { Route as PrivacypolicyImport } from './routes/privacypolicy'
 import { Route as PostImport } from './routes/post'
 import { Route as LoginImport } from './routes/login'
 import { Route as HeroImport } from './routes/hero'
@@ -58,6 +59,12 @@ const ResetconfirmRoute = ResetconfirmImport.update({
 const ResetRoute = ResetImport.update({
   id: '/reset',
   path: '/reset',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PrivacypolicyRoute = PrivacypolicyImport.update({
+  id: '/privacypolicy',
+  path: '/privacypolicy',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -179,6 +186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostImport
       parentRoute: typeof rootRoute
     }
+    '/privacypolicy': {
+      id: '/privacypolicy'
+      path: '/privacypolicy'
+      fullPath: '/privacypolicy'
+      preLoaderRoute: typeof PrivacypolicyImport
+      parentRoute: typeof rootRoute
+    }
     '/reset': {
       id: '/reset'
       path: '/reset'
@@ -268,6 +282,7 @@ export interface FileRoutesByFullPath {
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/post': typeof PostRoute
+  '/privacypolicy': typeof PrivacypolicyRoute
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
@@ -288,6 +303,7 @@ export interface FileRoutesByTo {
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/post': typeof PostRoute
+  '/privacypolicy': typeof PrivacypolicyRoute
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
@@ -309,6 +325,7 @@ export interface FileRoutesById {
   '/hero': typeof HeroRoute
   '/login': typeof LoginRoute
   '/post': typeof PostRoute
+  '/privacypolicy': typeof PrivacypolicyRoute
   '/reset': typeof ResetRoute
   '/resetconfirm': typeof ResetconfirmRoute
   '/settings': typeof SettingsRoute
@@ -331,6 +348,7 @@ export interface FileRouteTypes {
     | '/hero'
     | '/login'
     | '/post'
+    | '/privacypolicy'
     | '/reset'
     | '/resetconfirm'
     | '/settings'
@@ -350,6 +368,7 @@ export interface FileRouteTypes {
     | '/hero'
     | '/login'
     | '/post'
+    | '/privacypolicy'
     | '/reset'
     | '/resetconfirm'
     | '/settings'
@@ -369,6 +388,7 @@ export interface FileRouteTypes {
     | '/hero'
     | '/login'
     | '/post'
+    | '/privacypolicy'
     | '/reset'
     | '/resetconfirm'
     | '/settings'
@@ -390,6 +410,7 @@ export interface RootRouteChildren {
   HeroRoute: typeof HeroRoute
   LoginRoute: typeof LoginRoute
   PostRoute: typeof PostRoute
+  PrivacypolicyRoute: typeof PrivacypolicyRoute
   ResetRoute: typeof ResetRoute
   ResetconfirmRoute: typeof ResetconfirmRoute
   SettingsRoute: typeof SettingsRoute
@@ -410,6 +431,7 @@ const rootRouteChildren: RootRouteChildren = {
   HeroRoute: HeroRoute,
   LoginRoute: LoginRoute,
   PostRoute: PostRoute,
+  PrivacypolicyRoute: PrivacypolicyRoute,
   ResetRoute: ResetRoute,
   ResetconfirmRoute: ResetconfirmRoute,
   SettingsRoute: SettingsRoute,
@@ -439,6 +461,7 @@ export const routeTree = rootRoute
         "/hero",
         "/login",
         "/post",
+        "/privacypolicy",
         "/reset",
         "/resetconfirm",
         "/settings",
@@ -469,6 +492,9 @@ export const routeTree = rootRoute
     },
     "/post": {
       "filePath": "post.jsx"
+    },
+    "/privacypolicy": {
+      "filePath": "privacypolicy.jsx"
     },
     "/reset": {
       "filePath": "reset.jsx"
