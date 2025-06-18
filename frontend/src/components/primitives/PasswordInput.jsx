@@ -1,6 +1,6 @@
 import  {useState} from "react";
 
-const PasswordInput = ({ id, value, onChange, placeholder, className = "", error }) => {
+const PasswordInput = ({ id, value, onChange, placeholder, className = "", error,onBlur }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -16,6 +16,7 @@ const PasswordInput = ({ id, value, onChange, placeholder, className = "", error
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        onBlur={onBlur}
       />
       <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
         <i className={`bi ${isPasswordVisible ? "bi-eye-slash" : "bi-eye"}`}></i>

@@ -16,40 +16,38 @@ const SignupForm = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [isUsernameValid, setIsUsernameValid] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState(false);
   const navigate = useNavigate();
   const auth = useAuth();
 
+  const validateField = (field, value, additionalFields = {}) => {
+    const errors = validateRegister({ [field]: value, ...additionalFields });
+    return errors[field] || "";
+  };
 
+  const handleFieldChange = (value, setValue) => {
+    setValue(value);
+  };
+
+  const handleFieldBlur = (field, value, setError, additionalFields = {}) => {
+    const error = validateField(field, value, additionalFields);
+    setError(error);
+  };
 
   useEffect(() => {
-
-  const validateRealtime = () => {
     const errors = validateRegister({ username, email, password, confirmPassword });
-
-    setEmailError(errors.email || "");
-    setUsernameError(errors.username || "");
-    setPasswordError(errors.password || "");
-    setConfirmPasswordError(errors.confirmPassword || "");
-
-    setIsEmailValid(!errors.email && !!email);
-    setIsUsernameValid(!errors.username && !!username);
-    setIsPasswordValid(!errors.password && !!password);
     setIsFormValid(Object.keys(errors).length === 0);
-  }
+  }, [username, email, password, confirmPassword]);
 
-   const timer = setTimeout(async () => {
-     if (username || email || password || confirmPassword) {
-       validateRealtime();
-     }
-   }, 500);
-   return () => clearTimeout(timer);
- }, [username, email, password, confirmPassword]);
-
- const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const errors = validateRegister({ username, email, password, confirmPassword });
+    if (Object.keys(errors).length > 0) {
+      setEmailError(errors.email || "");
+      setUsernameError(errors.username || "");
+      setPasswordError(errors.password || "");
+      setConfirmPasswordError(errors.confirmPassword || "");
+      return;
+    }
     try {
       const response = await auth.registerAction(email, username, password);
       if (response.status === 201) {
@@ -59,9 +57,8 @@ const SignupForm = () => {
       setIsFormValid(false);
       if (error.response) {
         const errors = error.response.data.errors || {};
-    
-        setEmailError(errors.Email?.[0]|| "");
-        setUsernameError(errors.UserName?.[0]|| "");
+        setEmailError(errors.Email?.[0] || "");
+        setUsernameError(errors.UserName?.[0] || "");
         setPasswordError(errors.Password?.[0] || "");
       } else {
         setErrorMessage("Failed to connect to the server");
@@ -86,31 +83,83 @@ const SignupForm = () => {
               <label htmlFor="username" className="form-label">
                 Nazwa użytkownika <span className="text-danger">*</span>
               </label>
-              <input type="username" placeholder="Wpisz nazwę" className={`form-control${usernameError ? " is-invalid" : ""} ${isUsernameValid && !usernameError ? " is-valid" : ""}`} id="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+              <input
+                type="text"
+                placeholder="Wpisz nazwę"
+                className={`form-control ${usernameError ? " is-invalid" : ""} ${
+                  !usernameError && username ? " is-valid" : ""
+                }`}
+                id="username"
+                value={username}
+                onChange={(e) => handleFieldChange(e.target.value, setUsername)}
+                onBlur={() => handleFieldBlur("username", username, setUsernameError)}
+              />
               {usernameError && <div className="invalid-feedback">{usernameError}</div>}
             </div>
             <div className="mb-3">
               <label htmlFor="email" className="form-label">
                 Email <span className="text-danger">*</span>
               </label>
-              <input type="email" placeholder="Wpisz swój email" className={`form-control ${emailError ? " is-invalid" : ""} ${isEmailValid && !emailError ? " is-valid" : ""}`} id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+              <input
+                type="email"
+                placeholder="Wpisz swój email"
+                className={`form-control ${emailError ? " is-invalid" : ""} ${
+                  !emailError && email ? " is-valid" : ""
+                }`}
+                id="email"
+                value={email}
+                onChange={(e) => handleFieldChange(e.target.value, setEmail)}
+                onBlur={() => handleFieldBlur("email", email, setEmailError)}
+              />
               {emailError && <div className="invalid-feedback">{emailError}</div>}
             </div>
             <div className="mb-3">
               <label htmlFor="password" className="form-label">
                 Hasło <span className="text-danger">*</span>
               </label>
-              <PasswordInput className={`form-control ${passwordError ? " is-invalid" : ""} ${isPasswordValid && !passwordError ? " is-valid" : ""}`} error={passwordError} placeholder="Hasło" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+              <PasswordInput
+                className={`form-control ${passwordError ? " is-invalid" : ""} ${
+                  !passwordError && password ? " is-valid" : ""
+                }`}
+                error={passwordError}
+                placeholder="Hasło"
+                id="password"
+                value={password}
+                onChange={(e) => handleFieldChange(e.target.value, setPassword)}
+                onBlur={() =>
+                  handleFieldBlur("password", password, setPasswordError, { confirmPassword })
+                }
+              />
             </div>
             <div className="mb-3">
               <label htmlFor="confirm-password" className="form-label">
                 Powtórz hasło <span className="text-danger">*</span>
               </label>
-              <PasswordInput className={`form-control ${confirmPasswordError ? " is-invalid" : ""} ${isPasswordValid && !confirmPasswordError ? " is-valid" : ""}`} error={confirmPasswordError} placeholder="Powtórzone hasło" id="confirm-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
+              <PasswordInput
+                className={`form-control ${confirmPasswordError ? " is-invalid" : ""} ${
+                  !confirmPasswordError && confirmPassword ? " is-valid" : ""
+                }`}
+                error={confirmPasswordError}
+                placeholder="Powtórzone hasło"
+                id="confirm-password"
+                value={confirmPassword}
+                onChange={(e) => handleFieldChange(e.target.value, setConfirmPassword)}
+                onBlur={() =>
+                  handleFieldBlur("confirmPassword", confirmPassword, setConfirmPasswordError, {
+                    password,
+                  })
+                }
+              />
             </div>
-            <button type="submit" className="btn btn-primary login-register-button register-button" disabled={!isFormValid}>Zarejestruj</button>
+            <button
+              type="submit"
+              className="btn btn-primary login-register-button register-button"
+              disabled={!isFormValid}
+            >
+              Zarejestruj
+            </button>
             <p className="doesnt-have-account">
-            Czy masz istniejące konto? <Link to="/login">Zaloguj się</Link>
+              Czy masz istniejące konto? <Link to="/login">Zaloguj się</Link>
             </p>
           </form>
         </div>
