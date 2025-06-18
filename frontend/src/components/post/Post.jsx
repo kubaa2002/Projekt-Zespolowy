@@ -169,7 +169,7 @@ const Post = ({ post, showReplies = true }) => {
               </label>
             )}
           </div>
-          {!postIds.includes(id) ? (
+          {user.id !== authorId && (!postIds.includes(id) ? (
             <span className="icon-checkbox user-select-none" onClick={handleSharePost}>
               <i className="bi bi-share-fill" />
               Udostępnij
@@ -179,7 +179,7 @@ const Post = ({ post, showReplies = true }) => {
               <i className="bi bi-share-fill" />
               Udostępnione
             </span>
-          )}
+          ))}
         </div>
       </div>
     </div>

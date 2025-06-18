@@ -13,8 +13,7 @@ namespace Projekt_Zespolowy.Controllers
     [Route("share")]
     public class ShareController : Controller
     {
-        SharingService sharingService;
-
+        private readonly SharingService sharingService;
         private readonly UserManager<AppUser> userManager;
 
         public ShareController(SharingService sharingService, UserManager<AppUser> userManager)
@@ -32,14 +31,15 @@ namespace Projekt_Zespolowy.Controllers
             {
                 return Unauthorized();
             }
-            string userId = userManager.FindByNameAsync(usr).Result.Id;
+            string userId = userManager.FindByNameAsync(usr).Result!.Id;
             var response = sharingService.SharePost(postId, userId);
 
-            if (response.ResponseCode == 201)
+            if (response.ResponseCode == StatusCodes.Status201Created)
                 return Created($"/shares/{postId}/{userId}", (ShareDTO)response.ResponseBody);
-            
             if (response.ResponseCode == StatusCodes.Status409Conflict)
                 return Conflict("Dany użytkownik udostępnił już ten post!");
+            if (response.ResponseCode == StatusCodes.Status400BadRequest)
+                return BadRequest("Użytkownik nie może udostępnić swoje posta");
 
             return NotFound("Użytkownik lub post nie istnieją!");
         }

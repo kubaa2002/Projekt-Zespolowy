@@ -14,12 +14,14 @@ namespace Projekt_Zespolowy.Services
 
         public ServiceResponse<ShareDTO> SharePost(int postId, string userId)
         {
-            if (context.Posts.FirstOrDefault(p => p.Id == postId) == null)
+            var post = context.Posts.FirstOrDefault(p => p.Id == postId);
+            if (post == null)
             {
                 Console.WriteLine("Dany post nie istnieje");
                 return new ServiceResponse<ShareDTO>(StatusCodes.Status404NotFound, null);
-
             }
+            if (post.AppUserId == userId)
+                return new ServiceResponse<ShareDTO>(StatusCodes.Status400BadRequest, null);
             if (context.Users.FirstOrDefault(u => u.Id == userId) == null)
             {
                 Console.WriteLine("Dany user nie istnieje");
