@@ -35,7 +35,7 @@ export default function CookieGDPRConsent() {
       <span>
         Ta strona używa niezbędnych plików cookie, aby zapewnić podstawową funkcjonalność korzystania z serwisu. Dodatkowo 
         przechowujemy informacje które zostaną nam podane przy rejestracji. Więcej informacji na temat przetwarzania danych
-        osobowych znajdziesz w naszej <a href="/privacy-policy" style={{ color: "#4CAF50" }}>Polityce Prywatności</a>.
+        osobowych znajdziesz w naszej <a href="/privacypolicy" style={{ color: "#4CAF50" }}>Polityce Prywatności</a>.
       </span>
       <button className="btn btn-primary" onClick={acceptCookies}>
         Akceptuję
