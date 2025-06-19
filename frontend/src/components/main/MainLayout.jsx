@@ -1,4 +1,5 @@
 import SideNav from "../sidenavbar/SideNav";
+import SideNav2 from "../sidenavbar/SideNav2";
 
 export default function MainLayout({ children, centered }) {
   return (
@@ -7,6 +8,7 @@ export default function MainLayout({ children, centered }) {
       <div className={`main-wrapper${centered ? " main-wrapper-centered" : ""}`}>
         {children}
       </div>
+      <SideNav2 />
     </div>
   );
 }

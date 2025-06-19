@@ -20,7 +20,7 @@ const NavRow = ({ icon, title, subTitle, onClick, link }) => (
   </Link>
 );
 
-const CommunityRow = ({ title, numberOfUsers, id }) => {
+export const CommunityRow = ({ title, numberOfUsers, id }) => {
   return (
     <Link to={`/communities/${id}`} activeProps={{ className: `selected` }}>
       <div className={`community-row`}>
@@ -64,6 +64,12 @@ export default function SideNav() {
       linkTo: "/users/following",
     },
     {
+      icon: "bi bi-people-fill",
+      title: "Społeczności",
+      subTitle: "Zobacz wszystkie społeczności",
+      linkTo: "/communities/list",
+    },
+    {
       icon: "bi bi-person-fill",
       title: "Mój profil",
       subTitle: "Podgląd własnego profilu",
@@ -92,7 +98,7 @@ export default function SideNav() {
             />
           ))}
         </div>
-        <div className="sidebar-card user-select-none">
+        <div className="sidebar-card user-select-none b1">
           <div className="community-header">Obserwowane społeczności</div>
           <div className="community-list-wrapper">
             {isLoading && communities.length === 0 && <p>Ładowanie...</p>}

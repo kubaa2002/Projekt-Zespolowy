@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './PostReplies.css';
-import UserTag from './UserTag';
 import axios from 'axios';
 import { useAuth } from '../../contexts/authProvider';
-import Like from './Like';
-import Dislike from './Dislike';
+import PostReply from './PostReply';
 
-const PostReplies = ({ posts }) => {
+const PostReplies = ({ posts, line=false }) => {
   const { token, user } = useAuth();
 
   // Initialize reactions state based on posts
@@ -18,7 +16,7 @@ const PostReplies = ({ posts }) => {
         isDisliked: post.likes?.some(like => like.appUserId === user?.id && like.reactionId === 2) || false,
         likesCount: post.likes?.filter(like => like.reactionId === 1).length || 0,
         dislikesCount: post.likes?.filter(like => like.reactionId === 2).length || 0,
-        likes: post.likes || [], // Store the likes array for each post
+        likes: post.likes || [],
       },
     }), {})
   );
@@ -118,7 +116,7 @@ const PostReplies = ({ posts }) => {
           [postId]: {
             ...prev[postId],
             isLiked: !current.isLiked,
-            isDisliked: false, // Ensure dislike is removed
+            isDisliked: false,
             likesCount: current.isLiked ? current.likesCount - 1 : current.likesCount + 1,
             dislikesCount: current.isDisliked ? current.dislikesCount - 1 : current.dislikesCount,
             likes: updatedLikes,
@@ -202,7 +200,7 @@ const PostReplies = ({ posts }) => {
           [postId]: {
             ...prev[postId],
             isDisliked: !current.isDisliked,
-            isLiked: false, // Ensure like is removed
+            isLiked: false,
             dislikesCount: current.isDisliked ? current.dislikesCount - 1 : current.dislikesCount + 1,
             likesCount: current.isLiked ? current.likesCount - 1 : current.likesCount,
             likes: updatedLikes,
@@ -215,29 +213,16 @@ const PostReplies = ({ posts }) => {
   };
 
   return (
-    <div className="post-container22">
-      {posts.map((post) => (
-        <div className="post-card2" key={post.id}>
-          <UserTag post={post} />
-          <div className="post-content">{post.content}</div>
-          <hr />
-          <div className="post-footer">
-           
-              <Like
-                isLiked={reactions[post.id]?.isLiked}
-                likesCount={reactions[post.id]?.likesCount ?? 0}
-                handleLike={() => handleLike(post.id)}
-              />
-            
-            
-              <Dislike
-                isDisliked={reactions[post.id]?.isDisliked}
-                dislikesCount={reactions[post.id]?.dislikesCount ?? 0}
-                handleDislike={() => handleDislike(post.id)}
-              />
-           
-          </div>
-        </div>
+    <div className="post-container22" style={{ borderLeft: line ? '1px solid #ccc' : 'none' }}>
+      {posts.sort((a, b) => new Date(b.createdDateTime) - new Date(a.createdDateTime))
+      .map((post) => (
+        <PostReply
+          key={post.id}
+          post={post}
+          reactions={reactions}
+          handleLike={handleLike}
+          handleDislike={handleDislike}
+        />
       ))}
     </div>
   );

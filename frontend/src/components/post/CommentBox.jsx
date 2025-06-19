@@ -3,7 +3,7 @@ import axios from "axios";
 import "./CommentBox.scss";
 import { useAuth } from "../../contexts/authProvider"; 
 
-const CommentBox = ({ id, comments, setComments }) => {
+const CommentBox = ({ id, comments, setComments, bottomRef }) => {
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const { token,user } = useAuth(); 
@@ -27,7 +27,7 @@ const CommentBox = ({ id, comments, setComments }) => {
       authorId: user.id,
       content: comment.trim(),
       communityId: null,
-      title: "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+      title: "komentarz do posta",
       createdDateTime: new Date().toISOString(),
       parentId: id,
       isDeleted: false,
@@ -43,12 +43,21 @@ const CommentBox = ({ id, comments, setComments }) => {
       setComments((prevComments) => [...prevComments, response.data]); 
       setComment(""); 
       setError(""); 
+      scrollToBottom();
     } catch (err) {
       location.reload();
       //console.error("Błąd podczas publikacji komentarza:", err);
       //setError(err.response?.data || "Błąd podczas publikacji komentarza");
     }
   };
+
+  const scrollToBottom = () => {
+  setTimeout(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, 0);
+};
 
   return (
     <div className="comment-container">

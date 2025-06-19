@@ -2,7 +2,7 @@ export default function LoggedOutNavbar({ navigate, isHeroPage }) {
   return (
   <nav className={`navbar ${isHeroPage ? "" : "navbar-main"}`}>
     <div className="left-sidebar" style={{ visibility: isHeroPage ? "hidden" : "visible" }}>
-      <div className="headline-navbar-title">
+      <div className="headline-navbar-title" onClick={() => navigate({ to: "/hero" })}>
         <i className="bi bi-heart me-2"></i>
         Vibe
       </div>

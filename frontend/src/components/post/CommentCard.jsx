@@ -210,6 +210,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
       );
       await fetchPostComments(id);
       closeModal();
+      setShowReplies(true);
     } catch (err) {
       console.error('Error submitting reply:', err.response?.data || err.message);
     }
@@ -223,7 +224,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
 
           <p className="comment-text">{text}</p>
 
-          <div className="comment-footer">
+          <div className="comment-footer user-select-none">
             <div className="post-footer">
               <Like
                 isLiked={isLiked}
@@ -242,7 +243,7 @@ const CommentCard = ({ id, authorName, createdDateTime, text, replyCount, author
                   className="replies"
                   onClick={() => setShowReplies((p) => !p)}
                 >
-                  Pokaż wszystkie odpowiedzi ({Math.max(replyCount, comments.length)})
+                  {showReplies ? 'Ukryj wszystkie odpowiedzi' : 'Pokaż wszystkie odpowiedzi'} ({Math.max(replyCount, comments.length)})
                 </label>
               )}
               <label className="reply" onClick={openModal}>
