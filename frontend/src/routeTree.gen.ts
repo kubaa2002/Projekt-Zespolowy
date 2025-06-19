@@ -28,6 +28,7 @@ import { Route as CommunitiesIndexImport } from './routes/communities/index'
 import { Route as UsersFollowingImport } from './routes/users/following'
 import { Route as UsersUserIdImport } from './routes/users/$userId'
 import { Route as CommunitiesNewImport } from './routes/communities/new'
+import { Route as CommunitiesListImport } from './routes/communities/list'
 import { Route as CommunitiesCommunityIdImport } from './routes/communities/$communityId'
 
 // Create/Update Routes
@@ -134,6 +135,12 @@ const CommunitiesNewRoute = CommunitiesNewImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CommunitiesListRoute = CommunitiesListImport.update({
+  id: '/communities/list',
+  path: '/communities/list',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const CommunitiesCommunityIdRoute = CommunitiesCommunityIdImport.update({
   id: '/communities/$communityId',
   path: '/communities/$communityId',
@@ -235,6 +242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunitiesCommunityIdImport
       parentRoute: typeof rootRoute
     }
+    '/communities/list': {
+      id: '/communities/list'
+      path: '/communities/list'
+      fullPath: '/communities/list'
+      preLoaderRoute: typeof CommunitiesListImport
+      parentRoute: typeof rootRoute
+    }
     '/communities/new': {
       id: '/communities/new'
       path: '/communities/new'
@@ -289,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/shere': typeof ShereRoute
   '/signup': typeof SignupRoute
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
+  '/communities/list': typeof CommunitiesListRoute
   '/communities/new': typeof CommunitiesNewRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/users/following': typeof UsersFollowingRoute
@@ -310,6 +325,7 @@ export interface FileRoutesByTo {
   '/shere': typeof ShereRoute
   '/signup': typeof SignupRoute
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
+  '/communities/list': typeof CommunitiesListRoute
   '/communities/new': typeof CommunitiesNewRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/users/following': typeof UsersFollowingRoute
@@ -332,6 +348,7 @@ export interface FileRoutesById {
   '/shere': typeof ShereRoute
   '/signup': typeof SignupRoute
   '/communities/$communityId': typeof CommunitiesCommunityIdRoute
+  '/communities/list': typeof CommunitiesListRoute
   '/communities/new': typeof CommunitiesNewRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/users/following': typeof UsersFollowingRoute
@@ -355,6 +372,7 @@ export interface FileRouteTypes {
     | '/shere'
     | '/signup'
     | '/communities/$communityId'
+    | '/communities/list'
     | '/communities/new'
     | '/users/$userId'
     | '/users/following'
@@ -375,6 +393,7 @@ export interface FileRouteTypes {
     | '/shere'
     | '/signup'
     | '/communities/$communityId'
+    | '/communities/list'
     | '/communities/new'
     | '/users/$userId'
     | '/users/following'
@@ -395,6 +414,7 @@ export interface FileRouteTypes {
     | '/shere'
     | '/signup'
     | '/communities/$communityId'
+    | '/communities/list'
     | '/communities/new'
     | '/users/$userId'
     | '/users/following'
@@ -417,6 +437,7 @@ export interface RootRouteChildren {
   ShereRoute: typeof ShereRoute
   SignupRoute: typeof SignupRoute
   CommunitiesCommunityIdRoute: typeof CommunitiesCommunityIdRoute
+  CommunitiesListRoute: typeof CommunitiesListRoute
   CommunitiesNewRoute: typeof CommunitiesNewRoute
   UsersUserIdRoute: typeof UsersUserIdRoute
   UsersFollowingRoute: typeof UsersFollowingRoute
@@ -438,6 +459,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShereRoute: ShereRoute,
   SignupRoute: SignupRoute,
   CommunitiesCommunityIdRoute: CommunitiesCommunityIdRoute,
+  CommunitiesListRoute: CommunitiesListRoute,
   CommunitiesNewRoute: CommunitiesNewRoute,
   UsersUserIdRoute: UsersUserIdRoute,
   UsersFollowingRoute: UsersFollowingRoute,
@@ -468,6 +490,7 @@ export const routeTree = rootRoute
         "/shere",
         "/signup",
         "/communities/$communityId",
+        "/communities/list",
         "/communities/new",
         "/users/$userId",
         "/users/following",
@@ -513,6 +536,9 @@ export const routeTree = rootRoute
     },
     "/communities/$communityId": {
       "filePath": "communities/$communityId.jsx"
+    },
+    "/communities/list": {
+      "filePath": "communities/list.jsx"
     },
     "/communities/new": {
       "filePath": "communities/new.jsx"

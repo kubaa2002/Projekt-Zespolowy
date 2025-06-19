@@ -167,4 +167,32 @@ namespace Projekt_Zespolowy.Controllers;
 
             return Ok(results);
         }
+
+        [HttpGet("communities")]
+        public async Task<IActionResult> GetAllCommunities([FromQuery] int? start = 0, [FromQuery] int? amount = 10)
+        {
+            var query = _context.Communities
+                .GroupJoin(_context.CommunityMembers,
+                    community => community.Id,
+                    member => member.CommunityId,
+                    (community, members) => new
+                    {
+                        Community = community,
+                        MemberCount = members.Count()
+                    })
+                .OrderByDescending(c => c.MemberCount);
+
+            var results = await query
+                .Skip(start ?? 0)
+                .Take(amount ?? 10)
+                .Select(c => c.Community)
+                .ToListAsync();
+
+            if (!results.Any())
+            {
+                return NoContent();
+            }
+
+            return Ok(results);
+        }
     }

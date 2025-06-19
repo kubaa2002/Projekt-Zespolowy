@@ -64,6 +64,12 @@ export default function SideNav() {
       linkTo: "/users/following",
     },
     {
+      icon: "bi bi-people-fill",
+      title: "Społeczności",
+      subTitle: "Zobacz wszystkie społeczności",
+      linkTo: "/communities/list",
+    },
+    {
       icon: "bi bi-person-fill",
       title: "Mój profil",
       subTitle: "Podgląd własnego profilu",
