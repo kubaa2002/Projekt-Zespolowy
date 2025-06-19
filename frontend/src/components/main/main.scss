@@ -5,36 +5,62 @@
 
 .main-container {
   display: flex;
-  justify-content: space-around;
-  .main-wrapper{
-    max-width: 966px;
-    flex-grow: 5;
-    margin-top:40px;
-    // At around 900px layout starts to break down and navbar is cramped
-    // Add  
-    // Possible media to remove searchbar and sidebar?
-    // margin can be replaced by flex-growing empty div
-    margin-right: 20%;
-  }
-  & > div{
-    padding: 0 10px;
-  }
-  .side-wrapper{
-    // min/max widths depending on cards size in the future
-    max-width: 400px;
-    min-width: 270px;
-    // flex-grow 2 or 3 works best. Adjust in the future to fit sidebar cards
-    flex-grow: 2;
-    .side-list-wrapper{
-      position: sticky;
-      top: 40px;  
-    }
-  }
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 10px;
+  width: 100%; 
 }
 
-.main-wrapper.main-wrapper-centered {
+.main-wrapper {
+  flex: 1; 
+  min-width: 0; 
+  max-width: 966px; 
+  margin-top: 40px;
+  padding: 0 10px;
+}
+
+.main-wrapper-centered {
   margin-top: auto;
   margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 80px); 
+  flex: 1; 
+  max-width: 966px; 
+}
+
+.side-wrapper,
+.side-nav-2 {
+  max-width: 400px;
+  min-width: 270px;
+  flex-grow: 0; 
+  flex-shrink: 1;
+  flex-basis: 300px;
+  padding: 0 10px;
+  margin-top: 40px;
+}
+
+.side-list-wrapper {
+  position: sticky;
+  top: 40px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+.side-nav-2 {
+  .btn {
+    @include fonts.body-buttons-from-dots-post-date-user();
+    color: map.get(colors.$key-colors, razacy-rozowy);
+    background-color: map.get(colors.$key-colors, white);
+    border: 1px solid map.get(colors.$key-colors, black);
+    padding: 10px;
+    &:hover {
+      background-color: color.adjust(map.get(colors.$key-colors, white), $lightness: -20%);
+    }
+  }
 }
 
 .main-think {
@@ -67,69 +93,124 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap:14px;
-    .btn-plus{
-        border:1px solid map.get(colors.$key-colors, black);
-        border-radius: 50%;
-        width: 38px;
-        display: flex;
-        justify-content: center;
-        color: map.get(colors.$key-colors, white);
-        background-color: map.get(colors.$key-colors, razacy-rozowy);
+    gap: 14px;
+    .btn-plus {
+      border: 1px solid map.get(colors.$key-colors, black);
+      border-radius: 50%;
+      width: 38px;
+      display: flex;
+      justify-content: center;
+      color: map.get(colors.$key-colors, white);
+      background-color: map.get(colors.$key-colors, razacy-rozowy);
     }
   }
 }
 
-.dropdown-menu-custom{
-    border: 1px solid map.get(colors.$key-colors, black);
-    z-index: 1;
+.dropdown-menu-custom {
+  border: 1px solid map.get(colors.$key-colors, black);
+  z-index: 1;
 }
 
 .dropdown-item.dropdown-item-sort {
-    @include fonts.body-modal-warnings-stars-tooltipt-sortby();
-    user-select: text;
-    pointer-events: none;
-    cursor: default;
+  @include fonts.body-modal-warnings-stars-tooltipt-sortby();
+  user-select: text;
+  pointer-events: none;
+  cursor: default;
 }
 
-.dropdown-item{
-    @include fonts.body-buttons-from-dots-post-date-user();
+.dropdown-item {
+  @include fonts.body-buttons-from-dots-post-date-user();
 }
 
-.dropdown-sort{
-    margin-top:41px;
-    display: flex;
-    justify-content: space-between;
+.dropdown-sort {
+  margin-top: 41px;
+  display: flex;
+  justify-content: space-between;
 }
 
-.btn-sort{
-    color:map.get(colors.$key-colors, razacy-rozowy);
-    background-color: map.get(colors.$key-colors, white);
-    border:none;
-    &:hover {
-		background-color: color.adjust(map.get(colors.$key-colors,white), $lightness: -20%);
-	}
+.btn-sort {
+  color: map.get(colors.$key-colors, razacy-rozowy);
+  background-color: map.get(colors.$key-colors, white);
+  border: none;
+  &:hover {
+    background-color: color.adjust(map.get(colors.$key-colors, white), $lightness: -20%);
+  }
 }
+
 .dropdown-item:hover {
-    background-color: map.get(colors.$key-colors, razacy-rozowy);
-    color: map.get(colors.$key-colors, white);
-    cursor: pointer;
-    user-select: none;
+  background-color: map.get(colors.$key-colors, razacy-rozowy);
+  color: map.get(colors.$key-colors, white);
+  cursor: pointer;
+  user-select: none;
 }
 
 .no-more-posts {
-    text-align: center;
-    margin: 47px 0;
-    @include fonts.title-post-ended-modal-header();
-    color: map.get(colors.$key-colors, razacy-rozowy);
+  text-align: center;
+  margin: 47px 0;
+  @include fonts.title-post-ended-modal-header();
+  color: map.get(colors.$key-colors, razacy-rozowy);
 }
 
-@media screen and (max-width: 900px) {
-  .side-wrapper{
+@media screen and (max-width: 1100px) {
+  .main-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .main-wrapper,
+  .main-wrapper-centered {
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    flex: none; 
+  }
+  .side-wrapper,
+  .side-nav-2 {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    padding: 0 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .side-list-wrapper {
+    position: static;
+  }
+  .side-list-wrapper {
+  max-height: 100%;
+}
+
+}
+
+
+@media screen and (max-width: 1416px) {
+  .main-container {
+    justify-content: center; 
+    gap: 15px; 
+    padding: 0 10px; 
+    max-width: 1200px; 
+  }
+
+  .side-nav-2 {
     display: none;
   }
-  .main-container .main-wrapper{
-    margin: 0;
+
+  .side-wrapper {
+    min-width: 200px; 
+    flex-basis: 220px; 
+    padding: 0 10px;
+  }
+
+  .main-wrapper,
+  .main-wrapper-centered {
+    max-width: 800px; 
+    padding: 0 10px;
+    flex: 1; 
   }
 }
 
+@media screen and (min-width: 1100px) {
+  .b1 {
+    display: none !important; 
+  }
+}
