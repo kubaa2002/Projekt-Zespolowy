@@ -76,8 +76,8 @@ const TextEditor = ({ onContentChange, content }) => {
       return new Promise((resolve) => {
         new Compressor(file, {
           quality: 0.4, 
-          maxWidth: 1000, 
-          maxHeight: 1000, 
+          maxWidth: 512, 
+          maxHeight: 512, 
           success(compressedFile) {
             if (compressedFile.size > 5 * 1024 * 1024) { 
               alert('Plik po kompresji jest za duży. Maksymalny rozmiar to 5 MB.');
