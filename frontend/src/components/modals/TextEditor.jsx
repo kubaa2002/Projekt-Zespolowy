@@ -18,12 +18,14 @@ import {
   FaImage,
   FaHeading,
 } from 'react-icons/fa';
+import Compressor from 'compressorjs';
 import './textEditor.scss';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const TextEditor = ({ onContentChange, content }) => {
   const [selectedColor, setSelectedColor] = useState('#000000');
+  const [uploadProgress, setUploadProgress] = useState(null); 
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -49,7 +51,7 @@ const TextEditor = ({ onContentChange, content }) => {
     editorProps: {
       handlePaste: (view, event) => {
         handlePaste(event);
-        return true; // Blokuje domyślną obsługę Tiptap
+        return true;
       },
     },
   });
@@ -64,44 +66,83 @@ const TextEditor = ({ onContentChange, content }) => {
 
   const uploadImage = useCallback(
     async (file) => {
-      if (file) {
-        if (file.size > 5242880) {
-          alert('Plik jest za duży. Maksymalny rozmiar to 5 MB.');
-          return null;
-        }
-        if (!file.type.startsWith('image/')) {
-          alert('Proszę wybrać plik graficzny.');
-          return null;
-        }
+      if (!file) return null;
 
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-          const response = await fetch(`${BASE_URL}/img/add/general`, {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: formData,
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to upload image');
-          }
-
-          const data = await response.json();
-          const relativeUrl = data.url;
-          const imageUrl = `${BASE_URL}${relativeUrl}`;
-          return imageUrl;
-        } catch (error) {
-          console.error('Error uploading image:', error);
-          alert(`Nie udało się przesłać obrazka: ${error.message}`);
-          return null;
-        }
+      if (!file.type.startsWith('image/')) {
+        alert('Proszę wybrać plik graficzny (np. PNG, JPEG).');
+        return null;
       }
-      return null;
+
+      return new Promise((resolve) => {
+        new Compressor(file, {
+          quality: 0.4, 
+          maxWidth: 1000, 
+          maxHeight: 1000, 
+          success(compressedFile) {
+            if (compressedFile.size > 5 * 1024 * 1024) { 
+              alert('Plik po kompresji jest za duży. Maksymalny rozmiar to 5 MB.');
+              resolve(null);
+              return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', compressedFile);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `${BASE_URL}/img/add/general`, true);
+            xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('token')}`);
+
+            xhr.upload.onprogress = (event) => {
+              if (event.lengthComputable) {
+                const percent = Math.round((event.loaded / event.total) * 100);
+                setUploadProgress(percent);
+              }
+            };
+
+            xhr.onload = () => {
+              setUploadProgress(null); 
+              if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                  const data = JSON.parse(xhr.responseText);
+                  const relativeUrl = data.url;
+                  const imageUrl = `${BASE_URL}${relativeUrl}`;
+                  resolve(imageUrl);
+                } catch (error) {
+                  console.error('Error parsing response:', error);
+                  alert('Błąd podczas przetwarzania odpowiedzi serwera.');
+                  resolve(null);
+                }
+              } else {
+                let errorMessage = 'Nie udało się przesłać obrazka.';
+                try {
+                  const errorData = JSON.parse(xhr.responseText);
+                  errorMessage = errorData.message || `Błąd serwera: ${xhr.status}`;
+                  if (xhr.status === 413) {
+                    errorMessage = 'Plik jest za duży dla serwera (limit: 5 MB).';
+                  }
+                } catch (error) {
+                  console.error('Error parsing error response:', error);
+                }
+                alert(errorMessage);
+                resolve(null);
+              }
+            };
+
+            xhr.onerror = () => {
+              setUploadProgress(null);
+              alert('Błąd sieci podczas przesyłania obrazka.');
+              resolve(null);
+            };
+
+            xhr.send(formData);
+          },
+          error(err) {
+            console.error('Error compressing image:', err);
+            alert('Błąd podczas kompresji obrazu.');
+            resolve(null);
+          },
+        });
+      });
     },
     [],
   );
@@ -119,12 +160,11 @@ const TextEditor = ({ onContentChange, content }) => {
             if (imageUrl && editor) {
               editor.chain().focus().setImage({ src: imageUrl }).run();
             }
-            return; // Zakończ po przetworzeniu obrazu
+            return; 
           }
         }
       }
 
-      // Obsłuż wklejanie tekstu, jeśli nie ma obrazu
       const text = event.clipboardData.getData('text/plain');
       if (text && editor) {
         editor.chain().focus().insertContent(text).run();
@@ -288,9 +328,15 @@ const TextEditor = ({ onContentChange, content }) => {
         <button
           onClick={() => fileInputRef.current?.click()}
           title="Wstaw obrazek z pliku"
+          disabled={uploadProgress !== null}
         >
           <FaImage />
         </button>
+        {uploadProgress !== null && (
+          <div className="progress-bar">
+            Przesyłanie: {uploadProgress}%
+          </div>
+        )}
       </div>
       <div className="editor-wrapper">
         <EditorContent editor={editor} />
