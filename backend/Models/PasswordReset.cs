@@ -1,8 +1,4 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Projekt_Zespolowy.Authentication;
-using Projekt_Zespolowy.Models;
 
 namespace Projekt_Zespolowy.Models
 {

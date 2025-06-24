@@ -1,9 +1,4 @@
-﻿using Projekt_Zespolowy.Authentication;
-using Projekt_Zespolowy.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
-namespace Projekt_Zespolowy.Models
+﻿namespace Projekt_Zespolowy.Models
 {
     public class ShareDTO
     {

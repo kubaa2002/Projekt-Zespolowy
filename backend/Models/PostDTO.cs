@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Projekt_Zespolowy.Likes;
+﻿using Projekt_Zespolowy.Likes;
 
 namespace Projekt_Zespolowy.Models
 {
