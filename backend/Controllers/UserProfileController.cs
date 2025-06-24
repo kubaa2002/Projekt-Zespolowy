@@ -3,12 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Linq;
-using System;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
-using Projekt_Zespolowy.UserProfile;
 
 namespace Projekt_Zespolowy.Controllers;
 
@@ -41,7 +37,7 @@ public class UserProfileController : ControllerBase
         var isFollower = await _dbContext.Followers.AnyAsync(f =>
                 f.FollowerId == user.Id && f.FollowingId == currentUserId);
 
-        var profile = new UserProfileDTo
+        var profile = new UserProfileDTO
         {
             Id = user.Id,
             UserName = user.UserName ?? "",

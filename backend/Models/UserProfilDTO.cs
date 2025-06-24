@@ -1,6 +1,6 @@
-﻿namespace Projekt_Zespolowy.UserProfile
+﻿namespace Projekt_Zespolowy.Models
 {
-    public class UserProfileDTo
+    public class UserProfileDTO
     {
         public string Id { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
