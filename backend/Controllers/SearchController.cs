@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Models;
 
-namespace Projekt_Zespolowy.Controllers;
-
-
-
+namespace Projekt_Zespolowy.Controllers
+{
     [ApiController]
     [Route("search")]
     public class SearchController : ControllerBase
@@ -18,11 +16,9 @@ namespace Projekt_Zespolowy.Controllers;
             _context = context;
         }
 
-
         [HttpGet("community/{community_id}")]
         public async Task<IActionResult> SearchCommunityPosts(int community_id, [FromQuery] string q, [FromQuery] int? start = 0, [FromQuery] int? amount = 10)
         {
-
             var communityExists = await _context.Communities.AnyAsync(c => c.Id == community_id);
             if (!communityExists)
             {
@@ -60,11 +56,9 @@ namespace Projekt_Zespolowy.Controllers;
             return Ok(results);
         }
 
-
         [HttpGet("user/{user_id}")]
         public async Task<IActionResult> SearchUserPosts(string user_id, [FromQuery] string q, [FromQuery] int? start = 0, [FromQuery] int? amount = 10)
         {
-
             var userExists = await _context.Users.AnyAsync(u => u.Id == user_id);
             if (!userExists)
             {
@@ -93,14 +87,14 @@ namespace Projekt_Zespolowy.Controllers;
                 .Take(amount ?? 10)
                 .Select(p => (PostDTO)p.Post)
                 .ToListAsync();
-        if (!results.Any())
+                
+            if (!results.Any())
             {
                 return NoContent();
             }
 
             return Ok(results);
         }
-
 
         [HttpGet("user")]
         public async Task<IActionResult> SearchUsers([FromQuery] string q, [FromQuery] int? start = 0, [FromQuery] int? amount = 10)
@@ -138,27 +132,26 @@ namespace Projekt_Zespolowy.Controllers;
             return Ok(results);
         }
 
-
         [HttpGet("community")]
         public async Task<IActionResult> SearchCommunities([FromQuery] string q, [FromQuery] int? start = 0, [FromQuery] int? amount = 10)
         {
-        var query = _context.Communities
-            .GroupJoin(_context.CommunityMembers,
-                community => community.Id,
-                member => member.CommunityId,
-                (community, members) => new
-                {
-                    Community = community,
-                    MemberCount = members.Count()
-                })
-            .Where(c => c.Community.Name.Contains(q))
-            .OrderByDescending(c => c.MemberCount);
+            var query = _context.Communities
+                .GroupJoin(_context.CommunityMembers,
+                    community => community.Id,
+                    member => member.CommunityId,
+                    (community, members) => new
+                    {
+                        Community = community,
+                        MemberCount = members.Count()
+                    })
+                .Where(c => c.Community.Name.Contains(q))
+                .OrderByDescending(c => c.MemberCount);
 
-        var results = await query
-                .Skip(start ?? 0)
-                .Take(amount ?? 10)
-                .Select(c => c.Community)
-                .ToListAsync();
+            var results = await query
+                    .Skip(start ?? 0)
+                    .Take(amount ?? 10)
+                    .Select(c => c.Community)
+                    .ToListAsync();
 
             if (!results.Any())
             {
@@ -196,3 +189,4 @@ namespace Projekt_Zespolowy.Controllers;
             return Ok(results);
         }
     }
+}

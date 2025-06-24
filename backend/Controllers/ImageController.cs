@@ -1,9 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Projekt_Zespolowy.Authentication;
 using Projekt_Zespolowy.Services;
 namespace Projekt_Zespolowy.Controllers
 {
@@ -12,12 +10,10 @@ namespace Projekt_Zespolowy.Controllers
     public class ImageController : Controller
     {
         private readonly ImageService imageService;
-        private readonly UserManager<AppUser> userManager;
 
-        public ImageController(ImageService imageService, UserManager<AppUser> userManager) 
+        public ImageController(ImageService imageService) 
         {
             this.imageService = imageService;
-            this.userManager = userManager;
         }
 
         [Authorize]

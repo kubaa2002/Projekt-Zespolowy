@@ -21,7 +21,6 @@ public class UserController : ControllerBase
     private readonly UserManager<AppUser> _userManager;
     private readonly IConfiguration _configuration;
     private readonly AppDbContext _dbContext;
-
     private readonly IEmailService _emailService;
 
     public UserController(UserManager<AppUser> userManager, IConfiguration configuration, AppDbContext dbContext, IEmailService emailService)

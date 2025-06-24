@@ -122,10 +122,6 @@ namespace Projekt_Zespolowy.Services
         }
         public ServiceResponse<List<Post>> GetPostsFromRange(int start, int length)
         {
-            //Po dodaniu połączenia z bazą danych prawdopodobnie dochodziłoby tu do zapytania o posty o indeksach (start, start+length),
-            //ale jeśli jakieś posty zostałyby usunięte doprowadziłoby to do wyświetlenie mniejszej liczby postów niż length, nie sądzę,
-            //żeby było to docelowe działanie
-            //context.Posts.Where(x => x.Id >= start && x.Id < start + length); <--- to o czym myślę
             List<Post> foundPosts = context.Posts.Where(p => !p.IsDeleted).Where(x => x.ParentId == null).Include(x => x.Likes).ThenInclude(x => x.Reaction).Include(p => p.Author).Include(p => p.Replies).ToList();
             // When no posts
             if (start > foundPosts.Count)
@@ -174,17 +170,6 @@ namespace Projekt_Zespolowy.Services
                 return new ServiceResponse<List<Post>>(StatusCodes.Status206PartialContent, foundPosts.Skip(start).ToList());
             // When ok
             return new ServiceResponse<List<Post>>(StatusCodes.Status200OK, foundPosts.GetRange(start, length));
-        }
-
-        public ServiceResponse<IEnumerable<Post>> GetAll()
-        {
-            var result = context.Posts.Include(p => p.Likes).ThenInclude(l => l.Reaction).Include(p => p.Author).Include(p => p.Replies).ToList();
-            if (result.Count() == 0)
-            {
-                return new ServiceResponse<IEnumerable<Post>>(StatusCodes.Status204NoContent, null);
-            }
-            else
-                return new ServiceResponse<IEnumerable<Post>>(StatusCodes.Status200OK, result);
         }
         public ServiceResponse<Post> GetById(int id)
         {
@@ -300,7 +285,6 @@ namespace Projekt_Zespolowy.Services
             }
 
             post.IsDeleted = true;
-            //var temp = Update(post);
             context.Posts.Update(post);
             context.SaveChanges();
 

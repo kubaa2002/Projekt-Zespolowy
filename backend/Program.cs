@@ -143,14 +143,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
-
-app.MapGet("/", () => "Hello World!");
-
-app.MapGet("/posty", async (AppDbContext db) => await db.Posts.ToListAsync());
-app.MapGet("/reakcje", async (AppDbContext db) => await db.Likes.ToListAsync());
-
-
 app.MapControllers();
 
 app.Run();

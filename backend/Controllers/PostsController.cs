@@ -8,15 +8,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 namespace Projekt_Zespolowy.Controllers
 {
-[ApiController]
+    [ApiController]
     [Route("posts")]
     public class PostsController : Controller
     {
-        PostsService postsService;
-        CommunityService communityService;
-
-        LikesService likesService;
-        
+        private readonly PostsService postsService;
+        private readonly CommunityService communityService;
+        private readonly LikesService likesService;
         private readonly UserManager<AppUser> userManager;
         public PostsController(PostsService postsService, CommunityService communityService, LikesService likesService, UserManager<AppUser> userManager)
         {
@@ -137,14 +135,6 @@ namespace Projekt_Zespolowy.Controllers
             else
                 return StatusCode(StatusCodes.Status206PartialContent, postsDTO);
         }
-        [HttpGet("[action]")]
-        [ProducesResponseType(typeof(IEnumerable<PostDTO>), 200)]
-        public IActionResult GetAll()
-        {
-            var result = postsService.GetAll();
-            return result.ResponseBody != null ? Ok(result.ResponseBody.Select(x => (PostDTO)x).ToList()) : NoContent();
-        }
-
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PostDTO), 200)]
         public IActionResult GetById(int id)

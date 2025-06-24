@@ -40,9 +40,6 @@ namespace Projekt_Zespolowy.Services
 
                 using (var client = new SmtpClient())
                 {
-                    // For demo purposes, allow insecure options if needed, but avoid in production
-                    // client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-
                     await client.ConnectAsync(_smtpServer, _smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
                     await client.AuthenticateAsync(_smtpUsername, _smtpPassword);
                     await client.SendAsync(message);
@@ -52,9 +49,8 @@ namespace Projekt_Zespolowy.Services
             }
             catch (Exception ex)
             {
-                // Log the exception details for debugging
-                Console.WriteLine($"Error sending email: {ex.Message}");
                 // In production, use a proper logger (e.g., ILogger)
+                Console.WriteLine($"Error sending email: {ex.Message}");
                 return false;
             }
         }
